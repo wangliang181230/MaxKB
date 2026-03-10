@@ -9,6 +9,11 @@ on:
         description: 'Image Tag'
         default: 'v2.6.0-dev'
         required: true
+      dockerImageTagWithLatest:
+        description: '是否发布latest tag（正式发版时选择，测试版本切勿选择）'
+        default: false
+        required: true
+        type: boolean
       architecture:
         description: 'Architecture'
         required: true
@@ -18,15 +23,6 @@ on:
           - linux/amd64
           - linux/arm64
           - linux/amd64,linux/arm64
-      registry:
-        description: 'Push To Registry'
-        required: true
-        default: 'fit2cloud-registry'
-        type: choice
-        options:
-          - fit2cloud-registry
-          - dockerhub
-          - dockerhub, fit2cloud-registry
 
 jobs:
   build-and-push-to-dockerhub:
@@ -46,7 +42,12 @@ jobs:
           DOCKER_IMAGE=wangliang181230/maxkb
           DOCKER_PLATFORMS=${{ github.event.inputs.architecture }}
           TAG_NAME=${{ github.event.inputs.dockerImageTag }}          
-          DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME}"
+          TAG_NAME_WITH_LATEST=${{ github.event.inputs.dockerImageTagWithLatest }}
+          if [[ ${TAG_NAME_WITH_LATEST} == 'true' ]]; then            
+            DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME} --tag ${DOCKER_IMAGE}:${TAG_NAME%%.*} --tag ${DOCKER_IMAGE}:latest"
+          else
+            DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME}"
+          fi
           echo "buildx_args=--platform ${DOCKER_PLATFORMS} --memory-swap -1 \
             --build-arg DOCKER_IMAGE_TAG=${{ github.event.inputs.dockerImageTag }} --build-arg BUILD_AT=$(TZ=Asia/Shanghai date +'%Y-%m-%dT%H:%M') --build-arg GITHUB_COMMIT=`git rev-parse --short HEAD` --no-cache \
             ${DOCKER_IMAGE_TAGS} ." >> $GITHUB_OUTPUT
