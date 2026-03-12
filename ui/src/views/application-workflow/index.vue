@@ -699,7 +699,7 @@ onBeforeUnmount(() => {
   bottom: 16px;
   right: 16px;
   overflow: hidden;
-  width: 460px;
+  width: 550px;
   height: 680px;
 
   .workflow-debug-header {
