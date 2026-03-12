@@ -397,19 +397,19 @@ async def _initialize_skills(mcp_servers, temp_dir):
 
     client = MultiServerMCPClient(mcp_config)
 
-    return client, skills_dir
+    return client
 
 
 async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable=True, tool_init_params={},
                               source_id=None, source_type=None, temp_dir=None, chat_id=None):
     try:
         checkpointer = MemorySaver()
-        client, skills_dir = await _initialize_skills(mcp_servers, temp_dir)
+        client = await _initialize_skills(mcp_servers, temp_dir)
         tools = await client.get_tools()
         agent = create_deep_agent(
             model=chat_model,
-            backend=SandboxShellBackend(root_dir=temp_dir, virtual_mode=False),
-            skills=[skills_dir],
+            backend=SandboxShellBackend(root_dir=temp_dir, virtual_mode=True),
+            skills=['/skills'],
             tools=tools,
             interrupt_on={
                 "write_file": False,
