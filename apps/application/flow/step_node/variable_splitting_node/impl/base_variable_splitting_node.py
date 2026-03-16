@@ -6,6 +6,7 @@
     @date：2025/10/13 15:02
     @desc:
 """
+import json
 from jsonpath_ng import parse
 
 from application.flow.i_step_node import NodeResult
@@ -20,6 +21,10 @@ def smart_jsonpath_search(data: dict, path: str):
     - 多个匹配: 返回值的列表
     - 无匹配: 返回None
     """
+
+    if type(data).__name__ == "string":
+        data = json.loads(data)
+
     jsonpath_expr = parse(path)
     matches = jsonpath_expr.find(data)
 
