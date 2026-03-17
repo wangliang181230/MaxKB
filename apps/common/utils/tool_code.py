@@ -13,7 +13,6 @@ import subprocess
 import sys
 import tempfile
 import time
-import hashlib
 from contextlib import contextmanager
 from contextlib import suppress
 from textwrap import dedent
@@ -40,18 +39,7 @@ _process_limit_mem_mb = int(CONFIG.get("SANDBOX_PYTHON_PROCESS_LIMIT_MEM_MB", '2
 class ToolExecutor:
 
     def __init__(self):
-        self._code_cache = {}
-        self._cache_max_size = 100
-        self._file_cache_dir = os.path.join(PROJECT_DIR, 'tmp', 'sandbox_code_cache')
-        self._init_file_cache_dir()
-
-    def _init_file_cache_dir(self):
-        try:
-            os.makedirs(self._file_cache_dir, exist_ok=True)
-            maxkb_logger.debug(f"Initialized file cache directory: {self._file_cache_dir}")
-        except Exception as e:
-            maxkb_logger.warning(f"Failed to create file cache directory: {e}")
-            self._file_cache_dir = None
+        pass
 
     @staticmethod
     def init_sandbox_dir():
@@ -103,20 +91,6 @@ class ToolExecutor:
 
     def exec_code(self, code_str, keywords, function_name=None):
         _id = str(uuid.uuid7())
-        cache_key = self._generate_cache_key(code_str, keywords, function_name)
-
-        if cache_key in self._code_cache:
-            cached_info = self._code_cache[cache_key]
-            cached_file_path = cached_info.get('file_path')
-
-            if cached_file_path and os.path.exists(cached_file_path):
-                maxkb_logger.debug(f"Using cached file: {cached_file_path}")
-                with execution_timer(_id):
-                    subprocess_result = self._exec(cached_file_path)
-                return self._process_exec_result(subprocess_result, _id)
-
-            del self._code_cache[cache_key]
-
         action_function = f'({function_name !a}, locals_v.get({function_name !a}))' if function_name else 'locals_v.popitem()'
         set_run_user = f'os.setgid({pwd.getpwnam(_run_user).pw_gid});os.setuid({pwd.getpwnam(_run_user).pw_uid});' if _enable_sandbox else ''
         _exec_code = f"""
@@ -145,47 +119,12 @@ except Exception as e:
 sys.stdout.write("\\n")
 sys.stdout.flush()
 """
-
-        cached_file_path = None
-        if self._file_cache_dir:
-            cached_file_path = os.path.join(self._file_cache_dir, f"{cache_key}.py")
-            try:
-                with open(cached_file_path, 'w', encoding='utf-8') as f:
-                    f.write(_exec_code)
-                maxkb_logger.debug(f"Cached code to file: {cached_file_path}")
-            except Exception as e:
-                maxkb_logger.warning(f"Failed to cache file: {e}")
-                cached_file_path = None
-
-        if not cached_file_path:
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-                f.write(_exec_code)
-                cached_file_path = f.name
-
-        try:
-            maxkb_logger.debug(f"Sandbox execute code: {cached_file_path}")
+        maxkb_logger.debug(f"Sandbox execute code: {_exec_code}")
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=True) as f:
+            f.write(_exec_code)
+            f.flush()
             with execution_timer(_id):
-                subprocess_result = self._exec(cached_file_path)
-            result = self._process_exec_result(subprocess_result, _id)
-
-            if len(self._code_cache) >= self._cache_max_size:
-                oldest_key = next(iter(self._code_cache))
-                del self._code_cache[oldest_key]
-
-            self._code_cache[cache_key] = {
-                'file_path': cached_file_path,
-                'code': _exec_code
-            }
-
-            return result
-        finally:
-            if not self._file_cache_dir and os.path.exists(cached_file_path):
-                try:
-                    os.remove(cached_file_path)
-                except Exception:
-                    pass
-
-    def _process_exec_result(self, subprocess_result, _id):
+                subprocess_result = self._exec(f.name)
         if subprocess_result.returncode != 0:
             raise Exception(subprocess_result.stderr or subprocess_result.stdout or "Unknown exception occurred")
         lines = subprocess_result.stdout.splitlines()
@@ -197,10 +136,6 @@ sys.stdout.flush()
         if result.get('code') == 200:
             return result.get('data')
         raise Exception(result.get('msg') + (f'\n{subprocess_result.stderr}' if subprocess_result.stderr else ''))
-
-    def _generate_cache_key(self, code_str, keywords, function_name):
-        key_string = f"{code_str}|{json.dumps(keywords, sort_keys=True)}|{function_name}"
-        return hashlib.sha256(key_string.encode()).hexdigest()
 
     def _generate_mcp_server_code(self, _code, params, name=None, description=None, tool_id=None):
         # 解析代码,提取导入语句和函数定义
