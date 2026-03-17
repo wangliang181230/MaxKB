@@ -22,7 +22,7 @@ def smart_jsonpath_search(data: dict, path: str):
     - 无匹配: 返回None
     """
 
-    if type(data).__name__ == "string":
+    if type(data).__name__ == "str":
         data = json.loads(data)
 
     jsonpath_expr = parse(path)
