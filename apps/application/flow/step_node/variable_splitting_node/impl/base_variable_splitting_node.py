@@ -22,9 +22,6 @@ def smart_jsonpath_search(data: dict, path: str):
     - 无匹配: 返回None
     """
 
-    if type(data).__name__ == "str":
-        data = json.loads(data)
-
     jsonpath_expr = parse(path)
     matches = jsonpath_expr.find(data)
 
@@ -45,6 +42,12 @@ class BaseVariableSplittingNode(IVariableSplittingNode):
         self.context['exception_message'] = details.get('err_message')
 
     def execute(self, input_variable, variable_list, **kwargs) -> NodeResult:
+        if type(input_variable).__name__ == "str":
+            try:
+                input_variable = json.loads(input_variable)
+            except Exception:
+                pass
+
         self.context['request'] = input_variable
         response = {v['field']: smart_jsonpath_search(input_variable, v['expression']) for v in variable_list}
         return NodeResult({'result': response, **response}, {})
