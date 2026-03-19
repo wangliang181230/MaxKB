@@ -21,7 +21,6 @@ def smart_jsonpath_search(data: dict, path: str):
     - 多个匹配: 返回值的列表
     - 无匹配: 返回None
     """
-
     jsonpath_expr = parse(path)
     matches = jsonpath_expr.find(data)
 
