@@ -162,14 +162,14 @@ const submit = async (formEl: FormInstance | undefined) => {
 defineExpose({ open, close })
 </script>
 <style lang="scss" scoped>
-:deep(.el-tooltip__popper) {
+.expression_tip {
   a {
-    color: var(--el-color-primary);
-    text-decoration: underline;
+    color: var(--el-color-primary-light-5);
+  }
 
-    &:hover {
-      opacity: 0.8;
-    }
+  a:hover {
+    color: var(--el-color-primary-light-7);
+    text-decoration: underline;
   }
 }
 </style>
