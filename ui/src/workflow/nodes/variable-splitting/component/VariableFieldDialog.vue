@@ -57,11 +57,11 @@
             >
             <el-tooltip
               effect="dark"
-              :content="
-                $t('workflow.nodes.variableSplittingNode.expression.tooltip')
-              "
               placement="right"
             >
+              <template #content>
+                <span v-html="$t('workflow.nodes.variableSplittingNode.expression.tooltip')"></span>
+              </template>
               <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
             </el-tooltip>
           </div>
