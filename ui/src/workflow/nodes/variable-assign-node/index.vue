@@ -68,7 +68,7 @@
 
             <el-form-item
               v-if="item.type === 'string'"
-              class="mr-8"
+              class="w-full mr-8"
               :prop="'variable_list.' + index + '.value'"
               :rules="{
                 message: t('common.inputPlaceholder'),
@@ -77,6 +77,7 @@
               }"
             >
               <el-input
+                class="w-full"
                 v-model="item.value"
                 :placeholder="$t('common.inputPlaceholder')"
                 show-word-limit
@@ -86,7 +87,7 @@
             </el-form-item>
             <el-form-item
               v-else-if="item.type === 'num'"
-              class="mr-8"
+              class="w-full mr-8"
               :prop="'variable_list.' + index + '.value'"
               :rules="{
                 message: $t('common.inputPlaceholder'),
@@ -94,10 +95,10 @@
                 required: true,
               }"
             >
-              <el-input-number v-model="item.value"></el-input-number>
+              <el-input-number v-model="item.value" class="w-full"></el-input-number>
             </el-form-item>
             <el-form-item
-              class="mr-8"
+              class="w-full mr-8"
               v-else-if="item.type === 'json'"
               :prop="'variable_list.' + index + '.value'"
               :rules="[
@@ -122,16 +123,14 @@
               <CodemirrorEditor
                 title="JSON"
                 v-model="item.value"
-                :style="{
-                  height: '100px',
-                  width: '155px',
-                }"
+                style="height: 100px"
+                class="w-full"
                 @submitDialog="(val: string) => (form_data.variable_list[index].value = val)"
               />
             </el-form-item>
             <el-form-item
               v-else-if="item.type === 'bool'"
-              class="mr-8"
+              class="w-full mr-8"
               :prop="'variable_list.' + index + '.value'"
               :rules="{
                 message: $t('common.inputPlaceholder'),
@@ -139,7 +138,7 @@
                 required: true,
               }"
             >
-              <el-select v-model="item.value" style="width: 155px" :teleported="false">
+              <el-select v-model="item.value" class="w-full" :teleported="false">
                 <el-option label="true" :value="true" />
                 <el-option label="false" :value="false" />
               </el-select>
