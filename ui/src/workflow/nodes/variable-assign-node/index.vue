@@ -185,7 +185,7 @@ const workflowMode = inject('workflowMode') as WorkflowMode
 const props = defineProps<{ nodeModel: any }>()
 
 const typeOptions = ['string', 'num', 'json', 'bool']
-const targetTypeOptions = ['string', 'int', 'float', 'json_object', 'json_string', 'boolean']
+const targetTypeOptions = ['---', 'string', 'int', 'float', 'json_object', 'json_string', 'boolean']
 
 const wheel = (e: any) => {
   if (e.ctrlKey === true) {
