@@ -144,8 +144,8 @@
               </el-select>
             </el-form-item>
 
-            <el-select v-model="item.target_type" style="max-width: 120px" placeholder="转换类型">
-              <el-option v-for="item in targetTypeOptions" :key="item" :label="item" :value="item" />
+            <el-select v-model="item.target_type" style="max-width: 120px" :placeholder="$t('workflow.nodes.variableAssignNode.convertType')">
+              <el-option v-for="item in targetTypeOptions" :key="item.key" :label="item.label" :value="item" />
             </el-select>
           </div>
           <el-form-item v-else>
@@ -158,8 +158,8 @@
               v-model="item.reference"
             />
 
-            <el-select v-model="item.target_type" style="max-width: 120px" placeholder="转换类型">
-              <el-option v-for="item in targetTypeOptions" :key="item" :label="item" :value="item" />
+            <el-select v-model="item.target_type" style="max-width: 120px" :placeholder="$t('workflow.nodes.variableAssignNode.convertType')">
+              <el-option v-for="item in targetTypeOptions" :key="item.key" :label="item.label" :value="item" />
             </el-select>
           </el-form-item>
         </el-card>
@@ -185,7 +185,15 @@ const workflowMode = inject('workflowMode') as WorkflowMode
 const props = defineProps<{ nodeModel: any }>()
 
 const typeOptions = ['string', 'num', 'json', 'bool']
-const targetTypeOptions = ['---', 'string', 'int', 'float', 'json_object', 'json_string', 'boolean']
+const targetTypeOptions = [
+  { label: t('workflow.nodes.variableAssignNode.convertType'), key: null },
+  { label: 'string', key: 'string' },
+  { label: 'int', key: 'int' },
+  { label: 'float', key: 'float' },
+  { label: 'json_object', key: 'json_object' },
+  { label: 'json_string', key: 'json_string' },
+  { label: 'boolean', key: 'boolean' },
+]
 
 const wheel = (e: any) => {
   if (e.ctrlKey === true) {

@@ -32,7 +32,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
             self.workflow_manage.chat_context[variable['fields'][1]] = value
 
     def convert(self, val, target_type):
-        if not target_type or target_type == '---' or val is None:
+        if not target_type or val is None:
             return val
 
         if target_type == 'json_object':
