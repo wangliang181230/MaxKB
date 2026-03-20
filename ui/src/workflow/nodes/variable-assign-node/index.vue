@@ -68,6 +68,7 @@
             </el-select>
 
             <el-form-item
+              class="w-full"
               v-if="item.type === 'string'"
               :prop="'variable_list.' + index + '.value'"
               :rules="{
@@ -77,6 +78,7 @@
               }"
             >
               <el-input
+                class="w-full"
                 v-model="item.value"
                 :placeholder="$t('common.inputPlaceholder')"
                 show-word-limit
@@ -121,10 +123,8 @@
               <CodemirrorEditor
                 title="JSON"
                 v-model="item.value"
-                :style="{
-                  height: '100px',
-                  width: '155px',
-                }"
+                class="w-full"
+                style="height: 100px"
                 @submitDialog="(val: string) => (form_data.variable_list[index].value = val)"
               />
             </el-form-item>
@@ -142,15 +142,28 @@
                 <el-option label="false" :value="false" />
               </el-select>
             </el-form-item>
+
+            <el-select
+              v-if="item.type === 'string'"
+              v-model="item.target_type"
+              style="max-width: 120px; margin-left: 8px"
+              :placeholder="$t('workflow.nodes.variableAssignNode.convertType')"
+            >
+              <el-option v-for="item2 in targetTypeOptions" :key="item2.key" :label="item2.label" :value="item2.key" />
+            </el-select>
           </div>
           <el-form-item v-else-if="item.source === 'referencing'">
             <NodeCascader
               ref="nodeCascaderRef2"
               :nodeModel="nodeModel"
-              class="w-full"
+              style="width: 230px"
               :placeholder="$t('workflow.variable.placeholder')"
               v-model="item.reference"
             />
+
+            <el-select v-model="item.target_type" style="max-width: 120px; margin-left: 8px" :placeholder="$t('workflow.nodes.variableAssignNode.convertType')">
+              <el-option v-for="item2 in targetTypeOptions" :key="item2.key" :label="item2.label" :value="item2.key" />
+            </el-select>
           </el-form-item>
         </el-card>
       </template>
@@ -175,6 +188,15 @@ const workflowMode = inject('workflowMode') as WorkflowMode
 const props = defineProps<{ nodeModel: any }>()
 
 const typeOptions = ['string', 'num', 'json', 'bool']
+const targetTypeOptions = [
+  { label: t('workflow.nodes.variableAssignNode.doNotConvert'), key: '' },
+  { label: 'string', key: 'string' },
+  { label: 'int', key: 'int' },
+  { label: 'float', key: 'float' },
+  { label: 'json_object', key: 'json_object' },
+  { label: 'json_string', key: 'json_string' },
+  { label: 'boolean', key: 'boolean' },
+]
 
 const wheel = (e: any) => {
   if (e.ctrlKey === true) {
