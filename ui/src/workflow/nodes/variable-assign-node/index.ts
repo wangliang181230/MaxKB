@@ -9,7 +9,7 @@ class VariableAssignNode extends AppNode {
 
 class VariableAssignModel extends AppNodeModel {
   get_width() {
-    return 450
+    return 470
   }
 }
 

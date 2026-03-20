@@ -144,7 +144,7 @@
               </el-select>
             </el-form-item>
 
-            <el-select v-model="item.target_type" style="max-width: 100px" placeholder="转换类型">
+            <el-select v-model="item.target_type" style="max-width: 120px" placeholder="转换类型">
               <el-option v-for="item in targetTypeOptions" :key="item" :label="item" :value="item" />
             </el-select>
           </div>
@@ -158,7 +158,7 @@
               v-model="item.reference"
             />
 
-            <el-select v-model="item.target_type" style="max-width: 100px" placeholder="转换类型">
+            <el-select v-model="item.target_type" style="max-width: 120px" placeholder="转换类型">
               <el-option v-for="item in targetTypeOptions" :key="item" :label="item" :value="item" />
             </el-select>
           </el-form-item>
