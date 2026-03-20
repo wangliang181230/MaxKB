@@ -153,7 +153,7 @@
               ref="nodeCascaderRef2"
               :nodeModel="nodeModel"
               class="mr-8"
-              style="width: 250px"
+              style="width: 230px"
               :placeholder="$t('workflow.variable.placeholder')"
               v-model="item.reference"
             />
