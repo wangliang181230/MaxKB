@@ -166,8 +166,7 @@ defineExpose({ open, close })
   color: var(--el-color-primary-light-5);
 
   &:hover {
-    color: var(--el-color-primary-light-7);
-    text-decoration: underline;
+    color: var(--el-color-primary-light-3);
   }
 }
 </style>
