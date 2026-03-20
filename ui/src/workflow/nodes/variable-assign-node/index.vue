@@ -137,7 +137,7 @@
                 required: true,
               }"
             >
-              <el-select v-model="item.value" :teleported="false">
+              <el-select v-model="item.value" style="width: 155px" :teleported="false">
                 <el-option label="true" :value="true" />
                 <el-option label="false" :value="false" />
               </el-select>
