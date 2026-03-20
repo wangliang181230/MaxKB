@@ -330,6 +330,8 @@ export default {
       label: '变量赋值',
       text: '更新全局变量的值',
       assign: '赋值',
+      convertType: '转换类型',
+      doNotConvert: '不转换',
     },
     mcpNode: {
       label: 'MCP 调用',
