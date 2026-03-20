@@ -145,7 +145,7 @@
             </el-form-item>
 
             <el-select v-model="item.target_type" style="max-width: 120px" :placeholder="$t('workflow.nodes.variableAssignNode.convertType')">
-              <el-option v-for="item in targetTypeOptions" :key="item.key" :label="item.label" :value="item" />
+              <el-option v-for="item2 in targetTypeOptions" :key="item2.key" :label="item2.label" :value="item2.key" />
             </el-select>
           </div>
           <el-form-item v-else>
@@ -159,7 +159,7 @@
             />
 
             <el-select v-model="item.target_type" style="max-width: 120px" :placeholder="$t('workflow.nodes.variableAssignNode.convertType')">
-              <el-option v-for="item in targetTypeOptions" :key="item.key" :label="item.label" :value="item" />
+              <el-option v-for="item2 in targetTypeOptions" :key="item2.key" :label="item2.label" :value="item2.key" />
             </el-select>
           </el-form-item>
         </el-card>
@@ -186,7 +186,7 @@ const props = defineProps<{ nodeModel: any }>()
 
 const typeOptions = ['string', 'num', 'json', 'bool']
 const targetTypeOptions = [
-  { label: t('workflow.nodes.variableAssignNode.convertType'), key: null },
+  { label: t('workflow.nodes.variableAssignNode.convertType'), key: '' },
   { label: 'string', key: 'string' },
   { label: 'int', key: 'int' },
   { label: 'float', key: 'float' },
