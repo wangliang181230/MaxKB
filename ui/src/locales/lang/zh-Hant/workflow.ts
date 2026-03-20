@@ -333,6 +333,8 @@ export default {
       label: '變數賦值',
       text: '更新全域變數的值',
       assign: '賦值',
+      convertType: '轉換類型',
+      doNotConvert: '不轉換',
     },
     variableAggregationNode: {
       label: '變量聚合',

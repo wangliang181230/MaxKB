@@ -38,6 +38,37 @@ class BaseVariableAssignNode(IVariableAssignNode):
         else:
             self.workflow_manage.out_context[variable['fields'][1]] = value
 
+    def convert(self, val, target_type):
+        if not target_type or val is None:
+            return val
+
+        if target_type == 'json_object':
+            if isinstance(val, dict) or isinstance(val, list):
+                return val
+            return json.loads(val)
+        elif target_type == 'json_string':
+            if isinstance(val, str):
+                return val
+            return json.dumps(val, ensure_ascii=False)
+        elif target_type == 'string':
+            if isinstance(val, str):
+                return val
+            return str(val)
+        elif target_type == 'int':
+            if isinstance(val, int):
+                return val
+            return int(val)
+        elif target_type == 'float':
+            if isinstance(val, float):
+                return val
+            return float(val)
+        elif target_type == 'boolean':
+            if isinstance(value, str) and value.lower() in ('false', '0', '[]', ''):
+                return False
+            return bool(val)
+        else:
+            return val
+
     def handle(self, variable, evaluation):
         result = {
             'name': variable['name'],
@@ -49,19 +80,23 @@ class BaseVariableAssignNode(IVariableAssignNode):
                     val = variable['value']
                 else:
                     val = json.loads(variable['value'])
+                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = variable['value'] = val
             elif variable['type'] == 'string':
                 # 变量解析 例如：{{global.xxx}}
                 val = self.workflow_manage.generate_prompt(variable['value'])
+                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = val
             else:
                 val = variable['value']
+                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = val
         elif variable['source'] == 'referencing':
             reference = self.get_reference_content(variable['reference'])
+            reference = self.convert(reference, variable.get('target_type'))
             evaluation(variable, reference)
             result['output_value'] = reference
         else:
