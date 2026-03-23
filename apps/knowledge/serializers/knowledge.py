@@ -747,8 +747,8 @@ class KnowledgeSerializer(serializers.Serializer):
             return [
                 {
                     **p,
-                    'similarity': hit_dict.get(p.get('id')).get('similarity'),
-                    'comprehensive_score': hit_dict.get(p.get('id')).get('comprehensive_score')
+                    'similarity': (hit_dict.get(p.get('id')) or {}).get('similarity'),
+                    'comprehensive_score': (hit_dict.get(p.get('id')) or {}).get('comprehensive_score')
                 } for p in p_list
             ]
 

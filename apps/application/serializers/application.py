@@ -523,9 +523,10 @@ class ApplicationSerializer(serializers.Serializer):
         work_flow = app.get('work_flow')
         for node in work_flow.get('nodes', []):
             if node.get('type') == 'base-node':
-                node_data = node.get('properties').get('node_data')
-                node_data['name'] = instance.get('name')
-                node_data['desc'] = instance.get('desc')
+                node_data = (node.get('properties') or {}).get('node_data')
+                if node_data is not None:
+                    node_data['name'] = instance.get('name')
+                    node_data['desc'] = instance.get('desc')
         QuerySet(Application).filter(id=app.get('id')).update(
             name=instance.get('name'),
             desc=instance.get('desc'),
