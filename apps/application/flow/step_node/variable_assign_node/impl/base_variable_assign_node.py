@@ -123,9 +123,10 @@ class BaseVariableAssignNode(IVariableAssignNode):
             elif 'loop' == variable['fields'][0]:
                 result = self.handle(variable, self.loop_evaluation)
                 result_list.append(result)
-            if 'output' == variable['fields'][0]:
+            elif 'output' == variable['fields'][0]:
                 result = self.handle(variable, self.out_evaluation)
                 result_list.append(result)
+
         if contains_chat_variable:
             from application.flow.loop_workflow_manage import LoopWorkflowManage
             if isinstance(self.workflow_manage, LoopWorkflowManage):
