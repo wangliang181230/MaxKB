@@ -31,6 +31,13 @@ class BaseVariableAssignNode(IVariableAssignNode):
         else:
             self.workflow_manage.chat_context[variable['fields'][1]] = value
 
+    def out_evaluation(self, variable, value):
+        from application.flow.loop_workflow_manage import LoopWorkflowManage
+        if isinstance(self.workflow_manage, LoopWorkflowManage):
+            self.workflow_manage.parentWorkflowManage.out_context[variable['fields'][1]] = value
+        else:
+            self.workflow_manage.out_context[variable['fields'][1]] = value
+
     def convert(self, val, target_type):
         if not target_type or val is None:
             return val
@@ -116,7 +123,9 @@ class BaseVariableAssignNode(IVariableAssignNode):
             elif 'loop' == variable['fields'][0]:
                 result = self.handle(variable, self.loop_evaluation)
                 result_list.append(result)
-
+            if 'output' == variable['fields'][0]:
+                result = self.handle(variable, self.out_evaluation)
+                result_list.append(result)
         if contains_chat_variable:
             from application.flow.loop_workflow_manage import LoopWorkflowManage
             if isinstance(self.workflow_manage, LoopWorkflowManage):
