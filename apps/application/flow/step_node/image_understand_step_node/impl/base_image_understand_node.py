@@ -237,7 +237,8 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
 
     @staticmethod
     def reset_message_list(message_list: List[BaseMessage], answer_text):
-        result = [{'role': 'user' if isinstance(message, HumanMessage) else 'ai', 'content': message.content} for
+        result = [{'role': 'user' if isinstance(message, HumanMessage) else (
+            'system' if isinstance(message, SystemMessage) else 'ai'), 'content': message.content} for
                   message
                   in
                   message_list]
