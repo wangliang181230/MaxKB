@@ -104,7 +104,6 @@ class ApplicationChatRecordQuerySerializers(serializers.Serializer):
     def list(self, with_valid=True):
         if with_valid:
             self.is_valid(raise_exception=True)
-        QuerySet(ChatRecord).filter(chat_id=self.data.get('chat_id'))
         order_by = 'create_time' if self.data.get('order_asc') is None or self.data.get(
             'order_asc') else '-create_time'
         return [ChatRecordSerializerModel(chat_record).data for chat_record in
@@ -166,10 +165,9 @@ class ApplicationChatRecordQuerySerializers(serializers.Serializer):
                                                     'type') == 'start-node')]}
         return {
             **ChatRecordSerializerModel(chat_record).data,
-            'padding_problem_text': chat_record.details.get('problem_padding').get(
-                'padding_problem_text') if 'problem_padding' in chat_record.details else None,
+            'padding_problem_text': (chat_record.details.get('problem_padding') or {}).get('padding_problem_text'),
             **(show_source_dict if show_source else {}),
-            **(show_exec_dict if show_exec else show_exec_dict)
+            **(show_exec_dict if show_exec else {})
         }
 
     def page(self, current_page: int, page_size: int, with_valid=True, show_source=None, show_exec=None):
