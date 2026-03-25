@@ -75,7 +75,7 @@ def valid_reference_value(_type, value, name):
             raise Exception(_(
                 'Field: {name} Type: {_type} Value: {value} Unsupported types'
             ).format(name=name, _type=_type))
-    except:
+    except Exception:
         return value
     if not isinstance(value, instance_type):
         raise Exception(_(
@@ -250,6 +250,7 @@ class BaseToolLibNodeNode(IToolLibNode):
     def tool_exec_record(self, tool_lib, all_params):
         task_record_id = uuid.uuid7()
         start_time = time.time()
+        filtered_args = all_params
         try:
             # 过滤掉 tool_init_params 中的参数
             tool_init_params = json.loads(rsa_long_decrypt(tool_lib.init_params)) if tool_lib.init_params else {}

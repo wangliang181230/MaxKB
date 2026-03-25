@@ -43,7 +43,7 @@ def valid_parameter_type(value, _type, desc):
             raise Exception(_(
                 'Field: {name} Type: {_type} Value: {value} Unsupported types'
             ).format(name=desc, _type=_type))
-    except:
+    except Exception:
         return value
     if not isinstance(value, instance_type):
         raise Exception(_(

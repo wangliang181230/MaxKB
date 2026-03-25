@@ -39,7 +39,7 @@ class BaseLoopStartStepNode(ILoopStarNode):
 
     def get_details(self, index: int, **kwargs):
         global_fields = []
-        for field in self.node.properties.get('config')['globalFields']:
+        for field in (self.node.properties.get('config') or {}).get('globalFields', []):
             key = field['value']
             global_fields.append({
                 'label': field['label'],
