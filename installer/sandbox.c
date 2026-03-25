@@ -22,15 +22,18 @@
 #include <pty.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <execinfo.h>
 
 #define CONFIG_FILE ".sandbox.conf"
 #define KEY_BANNED_HOSTS "SANDBOX_PYTHON_BANNED_HOSTS"
 #define KEY_ALLOW_DL_PATHS "SANDBOX_PYTHON_ALLOW_DL_PATHS"
+#define KEY_ALLOW_DL_OPEN "SANDBOX_PYTHON_ALLOW_DL_OPEN"
 #define KEY_ALLOW_SUBPROCESS "SANDBOX_PYTHON_ALLOW_SUBPROCESS"
 #define KEY_ALLOW_SYSCALL "SANDBOX_PYTHON_ALLOW_SYSCALL"
 
 static char *banned_hosts = NULL;
 static char *allow_dl_paths = NULL;
+static int allow_dl_open = 0;
 static int allow_subprocess = 0; // 默认禁止
 static int allow_syscall = 0;
 
@@ -39,6 +42,7 @@ static void load_sandbox_config() {
     if (dladdr((void *)load_sandbox_config, &info) == 0 || !info.dli_fname) {
         banned_hosts = strdup("");
         allow_dl_paths = strdup("");
+        allow_dl_open = 0;
         allow_subprocess = 0;
         allow_syscall = 0;
         return;
@@ -53,6 +57,7 @@ static void load_sandbox_config() {
     if (!fp) {
         banned_hosts = strdup("");
         allow_dl_paths = strdup("");
+        allow_dl_open = 0;
         allow_subprocess = 0;
         allow_syscall = 0;
         return;
@@ -62,6 +67,7 @@ static void load_sandbox_config() {
     if (allow_dl_paths) { free(allow_dl_paths); allow_dl_paths = NULL; }
     banned_hosts = strdup("");
     allow_dl_paths = strdup("");
+    allow_dl_open = 0;
     allow_subprocess = 0;
     allow_syscall = 0;
     while (fgets(line, sizeof(line), fp)) {
@@ -80,6 +86,8 @@ static void load_sandbox_config() {
         } else if (strcmp(key, KEY_ALLOW_DL_PATHS) == 0) {
             free(allow_dl_paths);
             allow_dl_paths = strdup(value);  // 逗号分隔字符串
+        } else if (strcmp(key, KEY_ALLOW_DL_OPEN) == 0) {
+            allow_dl_open = atoi(value);
         } else if (strcmp(key, KEY_ALLOW_SUBPROCESS) == 0) {
             allow_subprocess = atoi(value);
         } else if (strcmp(key, KEY_ALLOW_SYSCALL) == 0) {
@@ -219,15 +227,11 @@ static int match_banned_ip(const char *ip_str, const char *rules) {
     free(list);
     return blocked;
 }
-
-// ------------------ 网络拦截 ------------------
-int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
-    RESOLVE_REAL(connect);
-    ensure_config_loaded();
-    if (is_sandbox_user() && addr->sa_family == AF_UNIX) {
+static int match_banned_addr(const struct sockaddr *addr) {
+    if (addr->sa_family == AF_UNIX) {
         struct sockaddr_un *un = (struct sockaddr_un *)addr;
         throw_permission_denied_err(false, "access unix socket: %s", un->sun_path[0] ? un->sun_path : "(abstract)");
-        return -1;
+        return 1;
     }
     char ip[INET6_ADDRSTRLEN] = {0};
     if (addr->sa_family == AF_INET) {
@@ -244,12 +248,13 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
             inet_ntop(AF_INET6, &sin6->sin6_addr, ip, sizeof(ip));
         }
     }
-    if (is_sandbox_user() && match_banned_ip(ip, banned_hosts)) {
+    if (match_banned_ip(ip, banned_hosts)) {
         throw_permission_denied_err(false, "access %s", ip);
-        return -1;
+        return 1;
     }
-    return real_connect(sockfd, addr, addrlen);
+    return 0;
 }
+// ------------------ 网络拦截 ------------------
 int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints,
                 struct addrinfo **res) {
@@ -266,6 +271,34 @@ int getaddrinfo(const char *node, const char *service,
         }
     }
     return real_getaddrinfo(node, service, hints, res);
+}
+int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
+    RESOLVE_REAL(connect);
+    ensure_config_loaded();
+    if (is_sandbox_user() && match_banned_addr(addr)) {
+        return -1;
+    }
+    return real_connect(sockfd, addr, addrlen);
+}
+ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+               const struct sockaddr *addr, socklen_t addrlen) {
+    RESOLVE_REAL(sendto);
+    ensure_config_loaded();
+    if (is_sandbox_user() && match_banned_addr(addr)) {
+        return -1;
+    }
+    return real_sendto(sockfd, buf, len, flags, addr, addrlen);
+}
+ssize_t sendmsg(int sockfd, const struct msghdr *msg, int flags) {
+    RESOLVE_REAL(sendmsg);
+    ensure_config_loaded();
+    if (msg && msg->msg_name) {
+        const struct sockaddr *addr = (const struct sockaddr *)msg->msg_name;
+        if (is_sandbox_user() && match_banned_addr(addr)) {
+            return -1;
+        }
+    }
+    return real_sendmsg(sockfd, msg, flags);
 }
 /**
  * 限制创建子进程
@@ -331,6 +364,9 @@ int __execlp(const char *file, const char *arg, ...) {
 }
 int execle(const char *path, const char *arg, ...) {
     return not_supported("execle");
+}
+int sendmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen, int flags) {
+    return not_supported("sendmmsg");
 }
 pid_t fork(void) {
     RESOLVE_REAL(fork);
@@ -475,6 +511,7 @@ long syscall(long number, ...) {
         case SYS_accept:
         case SYS_accept4:
         case SYS_sendto:
+        case SYS_sendmsg:
         case SYS_recvmsg:
         case SYS_getsockopt:
         case SYS_setsockopt:
@@ -491,6 +528,7 @@ long syscall(long number, ...) {
 #endif
         case SYS_fchmodat:
         case SYS_mprotect:
+        case SYS_pkey_mprotect:
 #ifdef SYS_open
         case SYS_open:
 #endif
@@ -505,6 +543,9 @@ long syscall(long number, ...) {
         case SYS_shmget:
         case SYS_shmctl:
         case SYS_prctl:
+        case SYS_io_uring_setup:
+        case SYS_io_uring_enter:
+        case SYS_io_uring_register:
             if (!allow_access_syscall()) {
                 throw_permission_denied_err(true, "access syscall %ld", number);
              }
@@ -515,7 +556,24 @@ long syscall(long number, ...) {
 /**
  * 限制加载动态链接库
  */
-static int is_in_allow_dl_paths(const char *filename) {
+static int called_from_python_import() {
+    if (allow_dl_open) return 1;
+    void *buf[32];
+    int n = backtrace(buf, 32);
+    for (int i = 0; i < n; i++) {
+        Dl_info info;
+        if (dladdr(buf[i], &info) && info.dli_sname) {
+            if (strstr(info.dli_sname, "PyImport") ||
+                strstr(info.dli_sname, "_PyImport")) {
+                return 1;
+            }
+        }
+    }
+    throw_permission_denied_err(true, "open dynamic link library");
+    return 0;
+}
+static int is_allow_dl(const char *filename) {
+    if (!called_from_python_import()) return 0;
     if (!filename || !*filename) return 1;
     ensure_config_loaded();
     if (!allow_dl_paths || !*allow_dl_paths) return 0;
@@ -542,7 +600,7 @@ static int is_in_allow_dl_paths(const char *filename) {
 }
 void *dlopen(const char *filename, int flag) {
     RESOLVE_REAL(dlopen);
-    if (is_sandbox_user() && !is_in_allow_dl_paths(filename)) {
+    if (is_sandbox_user() && !is_allow_dl(filename)) {
         throw_permission_denied_err(true, "access file %s", filename);
     }
     return real_dlopen(filename, flag);
@@ -552,7 +610,7 @@ void *__dlopen(const char *filename, int flag) {
 }
 void *dlmopen(Lmid_t lmid, const char *filename, int flags) {
     RESOLVE_REAL(dlmopen);
-    if (is_sandbox_user() && !is_in_allow_dl_paths(filename)) {
+    if (is_sandbox_user() && !is_allow_dl(filename)) {
         throw_permission_denied_err(true, "access file %s", filename);
     }
     return real_dlmopen(lmid, filename, flags);
@@ -574,7 +632,7 @@ void* mmap(void *addr, size_t len, int prot, int flags, int fd, off_t off) {
             throw_permission_denied_err(true, "mmap(readlink failed)");
         }
         real_path[n] = '\0';
-        if (!is_in_allow_dl_paths(real_path)) {
+        if (!is_allow_dl(real_path)) {
             throw_permission_denied_err(true, "mmap %s", real_path);
         }
     }

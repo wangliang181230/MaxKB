@@ -44,19 +44,17 @@
             </div>
           </template>
           <div class="flex-between w-full" v-if="chat_data.model_id_type !== 'reference'">
-            <div>
-              <ModelSelect
-                @change="model_change"
-                @wheel="wheel"
-                :teleported="false"
-                v-model="chat_data.model_id"
-                :placeholder="$t('views.application.form.aiModel.placeholder')"
-                :options="modelOptions"
-                @submitModel="getSelectModel"
-                showFooter
-                :model-type="'LLM'"
-              ></ModelSelect>
-            </div>
+            <ModelSelect
+              @change="model_change"
+              @wheel="wheel"
+              :teleported="false"
+              v-model="chat_data.model_id"
+              :placeholder="$t('views.application.form.aiModel.placeholder')"
+              :options="modelOptions"
+              @submitModel="getSelectModel"
+              showFooter
+              :model-type="'LLM'"
+            ></ModelSelect>
             <div class="ml-8">
               <el-button
                 :disabled="!chat_data.model_id"
@@ -144,7 +142,14 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="[WorkflowMode.Application, WorkflowMode.ApplicationLoop].includes(workflowMode)"
+          v-if="
+            [
+              WorkflowMode.Application,
+              WorkflowMode.ApplicationLoop,
+              WorkflowMode.Tool,
+              WorkflowMode.ToolLoop,
+            ].includes(workflowMode)
+          "
         >
           <template #label>
             <div class="flex-between">
@@ -449,7 +454,14 @@
         </el-form-item>
         <el-form-item
           @click.prevent
-          v-if="[WorkflowMode.Application, WorkflowMode.ApplicationLoop].includes(workflowMode)"
+          v-if="
+            [
+              WorkflowMode.Application,
+              WorkflowMode.ApplicationLoop,
+              WorkflowMode.Tool,
+              WorkflowMode.ToolLoop,
+            ].includes(workflowMode)
+          "
         >
           <template #label>
             <div class="flex align-center">

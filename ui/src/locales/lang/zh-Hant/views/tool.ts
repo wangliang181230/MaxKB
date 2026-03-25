@@ -6,6 +6,11 @@ export default {
   importTool: '匯入工具',
   settingTool: '設定工具',
   updatedVersion: '更新版本',
+  toolWorkflow: {
+    creatToolWorkflow: '創建工作流',
+    toActiveTip: '無法啓用，請先發布工作流。',
+    debugResult: '調試結果',
+  },
   dataSource: {
     title: '數據源',
     createDataSource: '創建數據源',
@@ -62,14 +67,18 @@ export default {
   },
   form: {
     toolName: {
-      name: '工具名稱',
+      label: '工具名稱',
       placeholder: '請輸入工具名稱',
       requiredMessage: '請輸入工具名稱',
     },
     mcpName: {
-      name: 'MCP 名稱',
       placeholder: '請輸入 MCP 名稱',
       requiredMessage: '請輸入 MCP 名稱',
+    },
+    workflowName: {
+      label: '工作流名稱',
+      placeholder: '請輸入工作流名稱',
+      requiredMessage: '請輸入工作流名稱',
     },
     paramName: {
       label: '參數名',
