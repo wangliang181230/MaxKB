@@ -400,7 +400,7 @@ async def _initialize_skills(mcp_servers, temp_dir):
     return client
 
 
-async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable=True, tool_init_params={},
+async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable=True, tool_init_params=None,
                               source_id=None, source_type=None, temp_dir=None, chat_id=None):
     try:
         checkpointer = MemorySaver()
@@ -733,7 +733,7 @@ async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_ty
     await sync_to_async(tool_record.save)()
 
 
-def mcp_response_generator(chat_model, message_list, mcp_servers, mcp_output_enable=True, tool_init_params={},
+def mcp_response_generator(chat_model, message_list, mcp_servers, mcp_output_enable=True, tool_init_params=None,
                            source_id=None, source_type=None, chat_id=None):
     """使用全局事件循环，不创建新实例"""
     result_queue = queue.Queue()

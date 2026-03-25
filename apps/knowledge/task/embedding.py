@@ -25,6 +25,8 @@ def get_embedding_model(model_id, exception_handler=lambda e: maxkb_logger.error
     ))):
     try:
         model = QuerySet(Model).filter(id=model_id).first()
+        if model is None:
+            raise Exception(_('Vector model does not exist'))
 
         default_params = get_model_default_params(model)
 

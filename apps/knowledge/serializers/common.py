@@ -132,6 +132,8 @@ def get_embedding_model_by_knowledge_id_list(knowledge_id_list: List):
 
 def get_embedding_model_by_knowledge_id(knowledge_id: str):
     knowledge = QuerySet(Knowledge).select_related('embedding_model').filter(id=knowledge_id).first()
+    if knowledge is None:
+        raise Exception(_('Knowledge base does not exist'))
 
     default_params = get_model_default_params(knowledge.embedding_model)
 
@@ -148,6 +150,8 @@ def get_embedding_model_by_knowledge(knowledge):
 
 def get_embedding_model_id_by_knowledge_id(knowledge_id):
     knowledge = QuerySet(Knowledge).select_related('embedding_model').filter(id=knowledge_id).first()
+    if knowledge is None:
+        raise Exception(_('Knowledge base does not exist'))
     return str(knowledge.embedding_model_id)
 
 
@@ -162,12 +166,11 @@ def get_embedding_model_id_by_knowledge_id_list(knowledge_id_list: List):
 
 def zip_dir(zip_path, output=None):
     output = output or os.path.basename(zip_path) + '.zip'
-    zip = zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED)
-    for root, dirs, files in os.walk(zip_path):
-        relative_root = '' if root == zip_path else root.replace(zip_path, '') + os.sep
-        for filename in files:
-            zip.write(os.path.join(root, filename), relative_root + filename)
-    zip.close()
+    with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as zip:
+        for root, dirs, files in os.walk(zip_path):
+            relative_root = '' if root == zip_path else root.replace(zip_path, '') + os.sep
+            for filename in files:
+                zip.write(os.path.join(root, filename), relative_root + filename)
 
 
 def is_valid_uuid(s):

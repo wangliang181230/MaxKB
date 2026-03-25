@@ -6,6 +6,7 @@ from typing import List, Dict, Any
 from functools import reduce
 
 from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from application.flow.i_step_node import INode, NodeResult
@@ -17,6 +18,8 @@ from .prompt_template import PROMPT_TEMPLATE
 
 def get_default_model_params_setting(model_id):
     model = QuerySet(Model).filter(id=model_id).first()
+    if model is None:
+        raise Exception(_('Model does not exist'))
     credential = get_model_credential(model.provider, model.model_type, model.model_name)
     model_params_setting = credential.get_model_params_setting_form(
         model.model_name).get_default_form_data()
