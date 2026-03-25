@@ -75,7 +75,6 @@ class VoteSerializer(serializers.Serializer):
                     chat_record_details_model.vote_status = VoteChoices.STAR
                     chat_record_details_model.vote_reason = vote_reason
                     chat_record_details_model.vote_other_content = vote_other_content
-
                 elif vote_status == VoteChoices.TRAMPLE:
                     # 点踩
                     chat_record_details_model.vote_status = VoteChoices.TRAMPLE

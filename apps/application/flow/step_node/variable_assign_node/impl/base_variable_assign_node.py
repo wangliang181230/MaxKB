@@ -38,37 +38,6 @@ class BaseVariableAssignNode(IVariableAssignNode):
         else:
             self.workflow_manage.out_context[variable['fields'][1]] = value
 
-    def convert(self, val, target_type):
-        if not target_type or val is None:
-            return val
-
-        if target_type == 'json_object':
-            if isinstance(val, dict) or isinstance(val, list):
-                return val
-            return json.loads(val)
-        elif target_type == 'json_string':
-            if isinstance(val, str):
-                return val
-            return json.dumps(val, ensure_ascii=False)
-        elif target_type == 'string':
-            if isinstance(val, str):
-                return val
-            return str(val)
-        elif target_type == 'int':
-            if isinstance(val, int):
-                return val
-            return int(val)
-        elif target_type == 'float':
-            if isinstance(val, float):
-                return val
-            return float(val)
-        elif target_type == 'boolean':
-            if isinstance(val, bool):
-                return val
-            return bool(val)
-        else:
-            return val
-
     def handle(self, variable, evaluation):
         result = {
             'name': variable['name'],
@@ -80,38 +49,27 @@ class BaseVariableAssignNode(IVariableAssignNode):
                     val = variable['value']
                 else:
                     val = json.loads(variable['value'])
-                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = variable['value'] = val
             elif variable['type'] == 'string':
                 # 变量解析 例如：{{global.xxx}}
                 val = self.workflow_manage.generate_prompt(variable['value'])
-                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = val
             else:
                 val = variable['value']
-                val = self.convert(val, variable.get('target_type'))
                 evaluation(variable, val)
                 result['output_value'] = val
-        elif variable['source'] == 'null':
-            val = None
-            evaluation(variable, val)
-            result['output_value'] = val
         else:
             reference = self.get_reference_content(variable['reference'])
-            reference = self.convert(reference, variable.get('target_type'))
             evaluation(variable, reference)
             result['output_value'] = reference
-
-        result['input_type'] = type(result.get('input_value')).__name__
-        result['output_type'] = type(result.get('output_value')).__name__
         return result
 
     def execute(self, variable_list, **kwargs) -> NodeResult:
         #
         result_list = []
-        contains_chat_variable = False
+        is_chat = False
         for variable in variable_list:
             if 'fields' not in variable:
                 continue
@@ -122,7 +80,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
             elif 'chat' == variable['fields'][0]:
                 result = self.handle(variable, self.chat_evaluation)
                 result_list.append(result)
-                contains_chat_variable = True
+                is_chat = True
             elif 'loop' == variable['fields'][0]:
                 result = self.handle(variable, self.loop_evaluation)
                 result_list.append(result)
@@ -130,7 +88,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
                 result = self.handle(variable, self.out_evaluation)
                 result_list.append(result)
 
-        if contains_chat_variable:
+        if is_chat:
             from application.flow.loop_workflow_manage import LoopWorkflowManage
             if isinstance(self.workflow_manage, LoopWorkflowManage):
                 self.workflow_manage.parentWorkflowManage.get_chat_info().set_chat_variable(

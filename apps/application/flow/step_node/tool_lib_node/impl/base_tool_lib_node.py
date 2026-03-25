@@ -259,8 +259,6 @@ class BaseToolLibNodeNode(IToolLibNode):
                     k: v for k, v in all_params.items()
                     if k not in tool_init_params
                 }
-            else:
-                filtered_args = all_params
             ToolRecord(
                 id=task_record_id,
                 workspace_id=tool_lib.workspace_id,
