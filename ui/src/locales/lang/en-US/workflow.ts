@@ -188,7 +188,7 @@ export default {
       result: 'Search Results',
       searchParam: 'Search Parameters',
       select_variable: 'Select Variable',
-      valueMessage: `Value or name `,
+      valueMessage: 'Value or name',
 
       searchQuestion: {
         label: 'Search Question',
@@ -318,8 +318,6 @@ You are a master of problem optimization, adept at accurately inferring user int
       label: 'Variable Assign',
       text: 'Update the value of the global variable',
       assign: 'Set Value',
-      convertType: 'Convert type',
-      doNotConvert: 'Do not convert',
     },
     variableAggregationNode: {
       label: 'Variable Aggregation',
@@ -509,7 +507,7 @@ You are a master of problem optimization, adept at accurately inferring user int
       expression: {
         label: 'Expression',
         placeholder: 'Please enter expression',
-        tooltip: 'Please use JSON Path expressions to split variables, e.g.: $.store.book <a href="https://pypi.org/project/jsonpath-ng/1.8.0/" target="_blank" class="expression_tip">Click for details ➜ pypi.org</a>',
+        tooltip: 'Please use JSON Path expressions to split variables, e.g.: $.store.book',
       },
     },
     parameterExtractionNode: {

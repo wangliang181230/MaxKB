@@ -193,7 +193,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                <pre>{{ data.system || '-' }}</pre>
+                {{ data.system || '-' }}
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
@@ -256,7 +256,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                <pre>{{ data.system || '-' }}</pre>
+                {{ data.system || '-' }}
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="data.type !== WorkflowType.Application">
@@ -545,7 +545,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                <pre>{{ data.system || '-' }}</pre>
+                {{ data.system || '-' }}
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
@@ -631,7 +631,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                <pre>{{ data.system || '-' }}</pre>
+                {{ data.system || '-' }}
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
@@ -880,7 +880,7 @@
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
                 <div v-for="(f, i) in data.result_list" :key="i" class="mb-8">
-                  <span class="color-secondary">{{ f.name }}:</span> {{ f.input_value }}({{ f.input_type }})
+                  <span class="color-secondary">{{ f.name }}:</span> {{ f.input_value }}
                 </div>
               </div>
             </div>
@@ -890,7 +890,7 @@
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
                 <div v-for="(f, i) in data.result_list" :key="i" class="mb-8">
-                  <span class="color-secondary">{{ f.name }}({{ f.output_type }}):</span> {{ f.output_value }}
+                  <span class="color-secondary">{{ f.name }}:</span> {{ f.output_value }}
                 </div>
               </div>
             </div>
