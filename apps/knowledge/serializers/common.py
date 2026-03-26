@@ -190,10 +190,10 @@ def write_image(zip_path: str, image_list: List[str]):
                 r = text.replace('(./oss/file/', '').replace(')', '')
                 r = r.strip().split(" ")[0]
                 if not is_valid_uuid(r):
-                    break
+                    continue
                 file = QuerySet(File).filter(id=r).first()
                 if file is None:
-                    break
+                    continue
                 zip_inner_path = os.path.join('oss', 'file', r)
                 file_path = os.path.join(zip_path, zip_inner_path)
                 if not os.path.exists(os.path.dirname(file_path)):
@@ -249,6 +249,8 @@ def create_knowledge_index(knowledge_id=None, document_id=None):
         k_id = knowledge_id
     else:
         document = QuerySet(Document).filter(id=document_id).first()
+        if document is None:
+            raise AppApiException(500, _('Document does not exist'))
         k_id = document.knowledge_id
 
     sql = f"SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'embedding' AND indexname = 'embedding_hnsw_idx_{k_id}'"
@@ -274,6 +276,8 @@ def drop_knowledge_index(knowledge_id=None, document_id=None):
         k_id = knowledge_id
     else:
         document = QuerySet(Document).filter(id=document_id).first()
+        if document is None:
+            raise AppApiException(500, _('Document does not exist'))
         k_id = document.knowledge_id
 
     sql = f"SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'embedding' AND indexname = 'embedding_hnsw_idx_{k_id}'"
@@ -286,6 +290,8 @@ def drop_knowledge_index(knowledge_id=None, document_id=None):
 
 def update_resource_mapping_by_knowledge(knowledge_id: str):
     knowledge = QuerySet(Knowledge).filter(id=knowledge_id).first()
+    if knowledge is None:
+        return
     instance_mapping = get_instance_resource(knowledge, ResourceType.KNOWLEDGE, str(knowledge.id),
                                              knowledge_instance_field_call_dict)
     if knowledge.type == KnowledgeType.WORKFLOW:
