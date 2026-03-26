@@ -30,7 +30,7 @@ def get_initialization_resource_mapping():
                                                      application_instance_field_call_dict)
             resource_mapping_list += workflow_mapping
             resource_mapping_list += instance_mapping
-        except:
+        except Exception:
             pass
     knowledge_ids = list(Knowledge.objects.values_list('id', flat=True))
     for knowledge_id in knowledge_ids:
@@ -47,7 +47,7 @@ def get_initialization_resource_mapping():
                                                      knowledge_instance_field_call_dict)
 
             resource_mapping_list += instance_mapping
-        except:
+        except Exception:
             pass
     application_knowledge_mapping = [
         ResourceMapping(source_type=ResourceType.APPLICATION, target_type=ResourceType.KNOWLEDGE,

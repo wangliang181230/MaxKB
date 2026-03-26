@@ -77,7 +77,7 @@ def json_loads(response, expected_fields):
         try:
             result = strategy()
             return result
-        except:
+        except Exception:
             continue
     return generate_example(expected_fields)
 
