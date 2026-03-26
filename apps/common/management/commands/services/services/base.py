@@ -101,7 +101,7 @@ class BaseService(object):
         if not self._process:
             try:
                 self._process = psutil.Process(self.pid)
-            except:
+            except Exception:
                 pass
         return self._process
 
@@ -109,7 +109,8 @@ class BaseService(object):
 
     # -- action --
     def open_subprocess(self):
-        kwargs = {'cwd': self.cwd, 'stderr': self.log_file, 'stdout': self.log_file}
+        log_file = self.log_file
+        kwargs = {'cwd': self.cwd, 'stderr': log_file, 'stdout': log_file}
         self._process = subprocess.Popen(self.cmd, **kwargs)
 
     def start(self):
@@ -139,7 +140,7 @@ class BaseService(object):
             return
         try:
             self.process.wait(1)
-        except:
+        except Exception:
             pass
 
         for i in range(self.STOP_TIMEOUT):
@@ -163,7 +164,7 @@ class BaseService(object):
         if self.process:
             try:
                 self.process.wait(1)  # 不wait，子进程可能无法回收
-            except:
+            except Exception:
                 pass
 
         if self.is_running:
