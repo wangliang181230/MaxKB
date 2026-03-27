@@ -28,6 +28,8 @@ class BaseResetProblemStep(IResetProblemStep):
         chat_model = get_model_instance_by_model_workspace_id(model_id, workspace_id) if model_id is not None else None
         if chat_model is None:
             return problem_text
+        if history_chat_record is None:
+            history_chat_record = []
         start_index = len(history_chat_record) - 3
         history_message = [[history_chat_record[index].get_human_message(), history_chat_record[index].get_ai_message()]
                            for index in
