@@ -231,6 +231,8 @@ def native_page_handler(page_size: int,
         page_sql = exec_sql + " " + limit_sql
         result = select_list(page_sql, exec_params)
         yield result
+        if not result:
+            break
         processed_count += page_size
         last_id = get_primary_value(result[-1])
 
