@@ -44,4 +44,7 @@ class OllamaEmbedding(MaxKBBaseModel, OllamaEmbeddings):
         Returns:
             Embeddings for the text.
         """
-        return self.embed_documents([text])[0]
+        result = self.embed_documents([text])
+        if not result:
+            raise ValueError("embed_documents returned an empty result")
+        return result[0]

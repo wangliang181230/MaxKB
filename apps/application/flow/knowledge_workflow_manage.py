@@ -41,6 +41,9 @@ class KnowledgeWorkflowManage(WorkflowManage):
     def get_start_node(self):
         start_node_list = [node for node in self.flow.nodes if
                            self.params.get('data_source', {}).get('node_id') == node.id]
+        if not start_node_list:
+            raise ValueError(
+                f"No start node found with node_id: {self.params.get('data_source', {}).get('node_id')}")
         return start_node_list[0]
 
     def run(self):

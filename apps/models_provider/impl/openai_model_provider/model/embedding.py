@@ -37,6 +37,8 @@ class OpenAIEmbeddingModel(MaxKBBaseModel):
 
     def embed_query(self, text: str):
         res = self.embed_documents([text])
+        if not res:
+            raise ValueError("embed_documents returned an empty result")
         return res[0]
 
     def embed_documents(
