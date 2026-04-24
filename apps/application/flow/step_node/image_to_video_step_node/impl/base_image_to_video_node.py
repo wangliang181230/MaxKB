@@ -64,9 +64,9 @@ class BaseImageToVideoNode(IImageToVideoNode):
         first_frame_url = self.get_file_base64(first_frame_url)
         last_frame_url = self.get_file_base64(last_frame_url)
         connection.close()
-        video_urls = ttv_model.generate_video(question, negative_prompt, first_frame_url, last_frame_url)
+        video_url = ttv_model.generate_video(question, negative_prompt, first_frame_url, last_frame_url)
         # 保存图片
-        if video_urls is None or video_urls == '':
+        if video_url is None or video_url == '':
             return NodeResult({'answer': gettext('Failed to generate video')}, {})
         file_name = 'generated_video.mp4'
         if isinstance(video_urls, str) and video_urls.startswith('http'):
