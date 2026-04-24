@@ -365,6 +365,7 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                     raise AppApiException(500, _("Illegal download url"))
                 # 查找匹配的版本名称
                 res = requests.get(download_url, timeout=5)
+                res.raise_for_status()
                 KnowledgeWorkflowSerializer.Import(
                     data={
                         "user_id": self.data.get("user_id"),
@@ -377,7 +378,7 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                     download_callback_url = template_instance.get("downloadCallbackUrl", "")
                     if not download_callback_url.startswith("https://apps.fit2cloud.com"):
                        raise AppApiException(500, _("Illegal download callback url"))
-                    requests.get(download_callback_url, timeout=5)
+                    requests.get(download_callback_url, timeout=5).raise_for_status()
                 except Exception as e:
                     maxkb_logger.error(f"callback appstore tool download error: {e}")
 
@@ -612,6 +613,7 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                     raise AppApiException(500, _("Illegal download url"))
                 # 查找匹配的版本名称
                 res = requests.get(download_url, timeout=5)
+                res.raise_for_status()
                 KnowledgeWorkflowSerializer.Import(
                     data={
                         "user_id": self.data.get("user_id"),
@@ -623,8 +625,8 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                 try:
                     download_callback_url = template_instance.get("downloadCallbackUrl", "")
                     if not download_callback_url.startswith("https://apps.fit2cloud.com"):
-                       raise AppApiException(500, _("Illegal download callback url")) 
-                    requests.get(download_callback_url, timeout=5)
+                       raise AppApiException(500, _("Illegal download callback url"))
+                    requests.get(download_callback_url, timeout=5).raise_for_status()
                 except Exception as e:
                     maxkb_logger.error(f"callback appstore tool download error: {e}")
 
