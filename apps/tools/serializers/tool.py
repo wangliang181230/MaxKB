@@ -481,6 +481,7 @@ class ToolSerializer(serializers.Serializer):
                     raise AppApiException(500, _("Illegal download url"))
                 # 查找匹配的版本名称
                 res = requests.get(download_url, timeout=5, allow_redirects=False)
+                res.raise_for_status()
                 tool = ToolSerializer.Import(
                     data={
                         "file": bytes_to_uploaded_file(res.content, "file.tool"),
@@ -494,7 +495,7 @@ class ToolSerializer(serializers.Serializer):
                     download_callback_url = template_instance.get("downloadCallbackUrl", "")
                     if not validate_trusted_url(download_callback_url, ALLOWED_CALLBACK_HOSTS):
                        raise AppApiException(500, _("Illegal download callback url"))
-                    requests.get(download_callback_url, timeout=5, allow_redirects=False)
+                    requests.get(download_callback_url, timeout=5, allow_redirects=False).raise_for_status()
                 except Exception as e:
                     maxkb_logger.error(f"callback appstore tool download error: {e}")
                 return tool
@@ -1338,6 +1339,7 @@ class ToolSerializer(serializers.Serializer):
                 (version.get("name") for version in versions if version.get("downloadUrl") == download_url),
             )
             res = requests.get(download_url, timeout=5, allow_redirects=False)
+            res.raise_for_status()
             tool_data = RestrictedUnpickler(io.BytesIO(res.content)).load().tool
             tool_id = uuid.uuid7()
             # 如果是SKILL类型的工具，保存文件内容到file表，并将code替换为file_id
@@ -1384,7 +1386,7 @@ class ToolSerializer(serializers.Serializer):
                 download_callback_url = instance.get("download_callback_url")
                 if not validate_trusted_url(download_callback_url, ALLOWED_CALLBACK_HOSTS):
                     raise AppApiException(500, _("Illegal download callback url"))
-                requests.get(download_callback_url, timeout=5, allow_redirects=False)
+                requests.get(download_callback_url, timeout=5, allow_redirects=False).raise_for_status()
             except Exception as e:
                 maxkb_logger.error(f"callback appstore tool download error: {e}")
             return ToolModelSerializer(tool).data
@@ -1417,6 +1419,7 @@ class ToolSerializer(serializers.Serializer):
                 ),
             )
             res = requests.get(self.data.get("download_url"), timeout=5, allow_redirects=False)
+            res.raise_for_status()
             tool_data = RestrictedUnpickler(io.BytesIO(res.content)).load().tool
             # 如果是SKILL类型的工具，保存文件内容到file表，并将code替换为file_id
             if tool_data.get("tool_type") == ToolType.SKILL:
@@ -1442,7 +1445,7 @@ class ToolSerializer(serializers.Serializer):
                 download_callback_url = self.data.get("download_callback_url")
                 if not validate_trusted_url(download_callback_url, ALLOWED_CALLBACK_HOSTS):
                     raise AppApiException(500, _("Illegal download callback url"))
-                requests.get(download_callback_url, timeout=5, allow_redirects=False)
+                requests.get(download_callback_url, timeout=5, allow_redirects=False).raise_for_status()
             except Exception as e:
                 maxkb_logger.error(f"callback appstore tool download error: {e}")
             return ToolModelSerializer(tool).data
