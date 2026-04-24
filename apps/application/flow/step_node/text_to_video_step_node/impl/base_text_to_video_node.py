@@ -55,9 +55,9 @@ class BaseTextToVideoNode(ITextToVideoNode):
         self.context['message_list'] = message_list
         self.context['dialogue_type'] = dialogue_type
         self.context['negative_prompt'] = self.generate_prompt_question(negative_prompt)
-        video_urls = ttv_model.generate_video(question, negative_prompt)
+        video_url = ttv_model.generate_video(question, negative_prompt)
         # 保存图片
-        if video_urls is None:
+        if video_url is None:
             return NodeResult({'answer': gettext('Failed to generate video')}, {})
         file_name = 'generated_video.mp4'
         if isinstance(video_urls, str) and video_urls.startswith('http'):
