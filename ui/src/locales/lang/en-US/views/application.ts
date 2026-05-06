@@ -106,6 +106,11 @@ After disabling, the long-term memory of the conversation users will be cleared,
          - Please use concise and professional language to answer the user's question.
          `,
     },
+    prompt_template: {
+      label: 'Prompt Template',
+      requiredMessage: 'Please enter Prompt template',
+      tooltip: 'Please pay attention to the placeholders in the template: {classification_list}、{user_input}、{output_json}',
+    },
     historyRecord: {
       label: 'Chat History',
     },
