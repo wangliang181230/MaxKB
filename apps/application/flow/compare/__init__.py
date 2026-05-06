@@ -80,7 +80,6 @@ def _assertion(workflow_manage, field_list: List[str], compare: str, target_valu
         target_value = workflow_manage.generate_field_value(target_value)
     except Exception as e:
         maxkb_logger.debug(f"Failed to generate field value for comparison: {e}")
-
     field_value = None
     try:
         field_value = workflow_manage.get_reference_field(field_list[0], field_list[1:])

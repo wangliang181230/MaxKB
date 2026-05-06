@@ -64,9 +64,7 @@ class MCPToolHandler:
         }).open()
 
     def call_tool(self, params):
-        # name = params["name"]
         args = params.get("arguments", {})
-        # print(params)
 
         payload = {
             'message': args.get('message'),

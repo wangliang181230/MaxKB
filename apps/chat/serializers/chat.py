@@ -386,7 +386,6 @@ class ChatSerializers(serializers.Serializer):
             chat_record = QuerySet(ChatRecord).filter(id=chat_record_id, chat_id=chat_info.chat_id).first()
             if chat_record is None:
                 raise ChatException(500, _("Conversation record does not exist"))
-
             return chat_record
         chat_record = QuerySet(ChatRecord).filter(id=chat_record_id).first()
         return chat_record
