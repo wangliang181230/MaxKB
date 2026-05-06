@@ -83,6 +83,42 @@
           />
         </el-form-item>
         <el-form-item
+          :label="$t('views.application.form.prompt_template.label')"
+          prop="prompt_template"
+          :rules="{
+            required: true,
+            message: $t('views.application.form.prompt_template.requiredMessage'),
+            trigger: 'blur',
+          }"
+        >
+          <template #label>
+            <div class="flex align-center">
+              <div class="mr-4">
+                <span
+                >{{ $t('views.application.form.prompt_template.label')
+                  }}<span class="color-danger">*</span></span
+                >
+              </div>
+              <el-tooltip effect="dark" placement="right" popper-class="max-w-200">
+                <template #content>{{ $t('views.application.form.prompt_template.tooltip', {
+                  classification_list: '{classification_list}',
+                  user_input: '{user_input}',
+                  output_json: '{output_json}',
+                }) }}</template>
+                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
+              </el-tooltip>
+            </div>
+          </template>
+          <MdEditorMagnify
+            @wheel="wheel"
+            :title="$t('views.application.form.prompt_template.label')"
+            v-model="form_data.prompt_template"
+            style="height: 100px"
+            @submitDialog="submitTemplateDialog"
+            :placeholder="`${t('workflow.PromptTemplatePlaceholder')}{{${t('workflow.nodes.startNode.label')}.question}}`"
+          />
+        </el-form-item>
+        <el-form-item
           prop="content_list"
           :label="$t('workflow.nodes.intentNode.input.label')"
           :rules="{
@@ -134,7 +170,9 @@
               </el-button>
             </div>
           </template>
-          <div>
+          <div
+            class="w-full"
+          >
             <div v-for="(item, index) in form_data.branch" :key="item.id" class="mb-8">
               <el-form-item
                 :prop="`branch.${index}.content`"
@@ -144,16 +182,17 @@
                   required: true,
                 }"
               >
-                <el-row :gutter="12" align="middle">
-                  <el-col :span="21">
+                <el-row :gutter="12" align="middle" class="w-full">
+                  <el-col :span="22">
                     <el-input
                       v-model="item.content"
-                      style="width: 210px"
+                      :title="item.content"
+                      class="w-full"
                       :disabled="item.isOther"
                       :placeholder="$t('common.inputPlaceholder')"
                     />
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="2">
                     <el-button
                       link
                       size="large"
@@ -324,10 +363,17 @@ const model_change = (model_id?: string) => {
   }
 }
 
+const default_prompt_template = t('workflow.nodes.intentNode.default_prompt_template', {
+  classification_list: '{classification_list}',
+  user_input: '{user_input}',
+  output_json: '{output_json}',
+})
+
 const form = {
   model_id: '',
   model_id_type: 'default',
   model_id_reference: [],
+  prompt_template: default_prompt_template,
   branch: [
     {
       id: randomId(),
@@ -349,6 +395,10 @@ function refreshParam(data: any) {
   set(props.nodeModel.properties.node_data, 'model_params_setting', data)
 }
 
+function submitTemplateDialog(val: string) {
+  set(props.nodeModel.properties.node_data, 'prompt_template', val)
+}
+
 const openAIParamSettingDialog = (modelId: string) => {
   if (modelId) {
     AIModeParamSettingDialogRef.value?.open(modelId, id, form_data.value.model_params_setting)
@@ -362,6 +412,9 @@ const form_data = computed({
       }
       if (!props.nodeModel.properties.node_data.model_id_reference) {
         set(props.nodeModel.properties.node_data, 'model_id_reference', [])
+      }
+      if (!props.nodeModel.properties.node_data.prompt_template) {
+        set(props.nodeModel.properties.node_data, 'prompt_template', default_prompt_template)
       }
       if (props.nodeModel.properties.node_data.output_reason == null) {
         set(props.nodeModel.properties.node_data, 'output_reason', true)
