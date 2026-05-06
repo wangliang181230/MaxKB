@@ -14,6 +14,9 @@ const get_up_index_height = (branch_list: Array<any>, index: number) => {
 }
 
 class IntentModel extends AppNodeModel {
+    get_width() {
+        return 440
+    }
     refreshBranch() {
         // 更新节点连接边的path
         this.incoming.edges.forEach((edge: any) => {
@@ -47,7 +50,7 @@ class IntentModel extends AppNodeModel {
         })
 
         if (branch_condition_list) {
-            const FORM_ITEMS_HEIGHT = 397  // 上方表单占用高度
+            const FORM_ITEMS_HEIGHT = 543  // 上方表单占用高度
 
             for (let index = 0; index < branch_condition_list.length; index++) {
                 const element = branch_condition_list[index]
