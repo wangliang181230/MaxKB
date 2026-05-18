@@ -569,6 +569,8 @@ export default {
     len_lt: '長度小於',
     is_true: '為真',
     is_not_true: '不為真',
+    is_false: '爲假',
+    is_not_false: '不為假',
     type_is: '類型是',
     type_not: '類型不是',
   },

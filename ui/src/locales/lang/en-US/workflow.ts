@@ -584,6 +584,8 @@ Note:
     len_lt: 'Length less than',
     is_true: 'Is true',
     is_not_true: 'Is not true',
+    is_false: 'Is false',
+    is_not_false: 'Is not false',
     type_is: 'Type is',
     type_not: 'Type not',
   },
