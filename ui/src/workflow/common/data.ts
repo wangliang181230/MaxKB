@@ -1145,6 +1145,8 @@ export const compareList = [
   { value: 'len_lt', label: t('workflow.compare.len_lt') },
   { value: 'is_true', label: t('workflow.compare.is_true') },
   { value: 'is_not_true', label: t('workflow.compare.is_not_true') },
+  { value: 'is_false', label: t('workflow.compare.is_false') },
+  { value: 'is_not_false', label: t('workflow.compare.is_not_false') },
   { value: 'start_with', label: 'startWith' },
   { value: 'end_with', label: 'endWith' },
   { value: 'type_is', label: t('workflow.compare.type_is') },

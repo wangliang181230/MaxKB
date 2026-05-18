@@ -13,6 +13,8 @@ from .end_with import EndWithCompare
 from .equal_compare import EqualCompare
 from .ge_compare import GECompare
 from .gt_compare import GTCompare
+from .is_false import IsFalseCompare
+from .is_not_false import IsNotFalseCompare
 from .is_not_null_compare import IsNotNullCompare
 from .is_not_true import IsNotTrueCompare
 from .is_null_compare import IsNullCompare
@@ -54,6 +56,8 @@ _compare_handler_dict = {
     'len_lt': LenLTCompare(),
     'is_true': IsTrueCompare(),
     'is_not_true': IsNotTrueCompare(),
+    'is_false': IsFalseCompare(),
+    'is_not_false': IsNotFalseCompare(),
     'start_with': StartWithCompare(),
     'end_with': EndWithCompare(),
     'type_is': TypeIsCompare(),
