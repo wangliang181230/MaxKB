@@ -86,7 +86,8 @@
                     <template v-for="(f, i) in data.image_list" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getImageName(f)"
+                        :title="getImageName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -227,14 +228,27 @@
               </h5>
               <div class="p-8-12 border-t-dashed lighter pre-wrap">
                 <template v-if="Array.isArray(data.question)">
-                  <div v-for="(item, qIndex) in data.question" :key="qIndex">
+                  <!-- 先显示图片列表 -->
+                  <template v-for="(item, qIndex) in getImageList(data.question)" :key="qIndex">
                     <el-image
-                      v-if="item.type === 'image_url'"
                       :src="item.image_url?.url || item.image_url"
-                      alt=""
+                      :alt="getImageName(item)"
+                      :title="getImageName(item)"
                       fit="cover"
-                      style="width: 40px; height: 40px; display: block"
-                      class="border-r-6 mb-8"
+                      style="width: 40px; height: 40px"
+                      class="border-r-6 mb-8 mr-8"
+                      :preview-src-list="getImageList(data.question).map((img: any) => img.image_url?.url || img.image_url)"
+                      :initial-index="qIndex"
+                      :zoom-rate="1.2"
+                      :max-scale="7"
+                      :min-scale="0.2"
+                    />
+                  </template>
+                  <!-- 再显示视频和文本 -->
+                  <div v-for="(item, qIndex) in data.question" :key="qIndex">
+                    <span
+                      style="display:none"
+                      v-if="item.type === 'image_url'"
                       :zoom-rate="1.2"
                       :max-scale="7"
                       :min-scale="0.2"
@@ -600,7 +614,8 @@
                         <el-image
                           v-if="h.type === 'image_url'"
                           :src="h.image_url.url"
-                          alt=""
+                          :alt="getImageName(h)"
+                          :title="getImageName(h)"
                           fit="cover"
                           style="width: 40px; height: 40px; display: inline-block"
                           class="border-r-6 mr-8"
@@ -633,7 +648,8 @@
                     <template v-for="(f, i) in data.image_list" :key="i">
                       <el-image
                         :src="f.url || (f.file_id ? `./oss/file/${f.file_id}` : '')"
-                        alt=""
+                        :alt="getImageName(f)"
+                        :title="getImageName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -880,7 +896,8 @@
                 <div v-if="typeof data.first_frame_url === 'string'">
                   <el-image
                     :src="data.first_frame_url"
-                    alt=""
+                    :alt="getImageName(data)"
+                    :title="getImageName(data)"
                     fit="cover"
                     style="width: 40px; height: 40px; display: block"
                     class="border-r-6"
@@ -894,7 +911,8 @@
                     <template v-for="(f, i) in data.first_frame_url" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getImageName(f)"
+                        :title="getImageName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -917,7 +935,8 @@
                 <div v-if="typeof data.last_frame_url === 'string'">
                   <el-image
                     :src="data.last_frame_url"
-                    alt=""
+                    :alt="getImageName(data)"
+                    :title="getImageName(data)"
                     fit="cover"
                     style="width: 40px; height: 40px; display: block"
                     class="border-r-6"
@@ -931,7 +950,8 @@
                     <template v-for="(f, i) in data.last_frame_url" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getImageName(f)"
+                        :title="getImageName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -1455,6 +1475,27 @@ const isKnowLedge = computed(() => props.type === 'knowledge')
 const currentLoopNode = ref(0)
 const currentParagraph = ref(0)
 const currentWriteContent = ref(0)
+
+function getImageList (questions) {
+  const imageList = []
+  questions.forEach((question) => {
+    if (question.type === 'image_url') {
+      imageList.push(question)
+    }
+  })
+  return imageList
+}
+
+function getImageName(file: any) {
+  return file?.file_name || file?.image_url?.detail || file?.name
+}
+
+// 下载文件
+const downloadFile = (file: any) => {
+  if (file) {
+    window.open(file.url || `./oss/file/${file.file_id || file.id}`, '_blank')
+  }
+}
 </script>
 <style lang="scss" scoped>
 .execution-detail-card {
