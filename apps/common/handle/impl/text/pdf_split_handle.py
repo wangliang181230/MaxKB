@@ -14,6 +14,7 @@ import tempfile
 import time
 import traceback
 from typing import List
+import uuid_utils.compat as uuid
 
 import uuid_utils.compat as uuid
 from django.utils.translation import gettext_lazy as _
@@ -142,15 +143,41 @@ class PdfSplitHandle(BaseSplitHandle):
                 else:  # 正文
                     content += f"{text}\n"
 
+            # 处理页面中的图片
             for image_index in range(PdfSplitHandle.get_page_image_count(page)):
                 try:
-                    image = page.images[image_index]
+                    image_obj = page.images[image_index]
+                    image_uuid = uuid.uuid7()
+
+                    # 读取图片文件名
+                    original_name = getattr(image_obj, 'name', None) or f"image_{page_num}_{image_index}"
+                    # 移除文件扩展名（如果存在），因为后面会单独添加
+                    image_file_name = original_name.rsplit('.', 1)[0] if '.' in original_name else original_name
+                    # 清理文件名中的特殊字符
+                    image_file_name = re.sub(r'[^\w\-_\.]+', '_', image_file_name)
+                    if not image_file_name:
+                        image_file_name = f"image_{page_num}_{image_index}"
+
+                    # 获取图片扩展名
+                    file_extension = 'png'
+                    if hasattr(image_obj, 'name') and image_obj.name:
+                        ext = image_obj.name.rsplit('.', 1)[-1].lower() if '.' in image_obj.name else 'png'
+                        if ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'webp']:
+                            file_extension = ext
+
+                    # 保存图片到列表
+                    image_file = File(
+                        id=image_uuid,
+                        file_name=f"{image_file_name}.{file_extension}",
+                        meta={'debug': False, 'content': image_obj.data}
+                    )
+                    image_list.append(image_file)
+
+                    # 添加Markdown图片引用
+                    content += f"![{image_file_name}.{file_extension}](./oss/file/{image_uuid})\n\n"
                 except Exception as e:
-                    maxkb_logger.warning(f"File: {file.name}, Page: {page_num + 1}, Image: {image_index}, error: {e}")
-                    continue
-                image_id = uuid.uuid7()
-                image_list.append(File(id=image_id, file_name=image.name, meta={"debug": False, "content": image.data}))
-                content += f"![image](./oss/file/{image_id})\n\n"
+                    maxkb_logger.error(f"Error extracting image from PDF page {page_num}, index {image_index}: {e}")
+                    continue  # 抽取图片失败时不向正文注入无效图片链接，直接跳过该图
 
             content = content.replace("\0", "")
 
