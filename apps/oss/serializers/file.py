@@ -1,7 +1,13 @@
 # coding=utf-8
+import ipaddress
 import re
+import socket
+import time
 import urllib
+from urllib.parse import urlparse, urlunparse, urljoin
 
+import requests
+from requests.adapters import HTTPAdapter
 import uuid_utils.compat as uuid
 from application.models import Application, ApplicationAccessToken, ChatShareLink
 from common.auth.common import FileToken
@@ -9,6 +15,8 @@ from common.auth.handle.impl.user_token import get_auth
 from common.constants.authentication_type import AuthenticationType
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import AppApiException, AppUnauthorizedFailed, NotFound404
+from common.utils.common import get_env_bool
+from common.utils.logger import maxkb_logger
 from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.utils.translation import gettext
@@ -356,15 +364,31 @@ class FileSerializer(serializers.Serializer):
             return True
 
 
+# 应用未配置上传上限时的默认文件体积上限（字节）
+DEFAULT_FILE_LIMIT = 50 * 1024 * 1024
+
+
+def get_file_limit_bytes(application) -> int:
+    """读取应用配置的文件上传体积上限（字节），未配置时返回默认值"""
+    file_limit = DEFAULT_FILE_LIMIT
+    if application is not None and application.file_upload_setting and application.file_upload_setting.get('fileLimit'):
+        file_limit = application.file_upload_setting.get('fileLimit') * 1024 * 1024
+    return file_limit
+
+
+def get_application_file_limit_bytes(application_id: str = None) -> int:
+    """按应用 id 读取文件上传体积上限（字节），无应用上下文或应用不存在时返回默认值"""
+    application = QuerySet(Application).filter(id=application_id).first() if application_id else None
+    return get_file_limit_bytes(application)
+
+
 def get_url_content(url, application_id: str):
     application = Application.objects.filter(id=application_id).first()
     if application is None:
         raise AppApiException(500, _('Application does not exist'))
     if not application.file_upload_enable:
         raise AppApiException(500, _('File upload is not enabled'))
-    file_limit = 50 * 1024 * 1024
-    if application.file_upload_setting and application.file_upload_setting.get('fileLimit'):
-        file_limit = application.file_upload_setting.get('fileLimit') * 1024 * 1024
+    file_limit = get_file_limit_bytes(application)
     try:
         from common.utils.tool_code import ToolExecutor
         return ToolExecutor().exec_code(
@@ -374,3 +398,237 @@ def get_url_content(url, application_id: str):
         )
     except Exception as e:
         raise AppApiException(500, str(e))
+
+
+def _is_unsafe_ip(ip: str) -> bool:
+    """检查 IP 是否属于内网/环回/保留/链路本地/组播等不可对外访问的地址（含 IPv6 兼容地址）"""
+    try:
+        ip_addr = ipaddress.ip_address(ip)
+        is_ipv6_compat = ip_addr.version == 6 and (
+                ip_addr.ipv4_mapped or ip_addr.sixtofour or ip_addr.teredo or ip_addr.is_site_local
+        )
+        if is_ipv6_compat:
+            return True
+        return (
+                ip_addr.is_private or
+                ip_addr.is_loopback or
+                ip_addr.is_reserved or
+                ip_addr.is_link_local or
+                ip_addr.is_multicast or
+                not ip_addr.is_global
+        )
+    except Exception:
+        return True
+
+
+class SafeHTTPAdapter(HTTPAdapter):
+    """
+    安全的 HTTP 适配器，防止 DNS 重绑定攻击
+    在建立连接前验证目标 IP 地址
+
+    仅挂载到本次下载专用的 Session 上，不会修改进程级全局状态，
+    因此可安全用于 Web 进程的多线程环境。
+    """
+
+    def send(self, request, **kwargs):
+        host = urlparse(request.url).hostname
+        if host:
+            self._validate_host_ip(host)
+        return super().send(request, **kwargs)
+
+    @staticmethod
+    def _validate_host_ip(host: str):
+        """验证主机解析出的所有 IP 地址是否安全"""
+        try:
+            addr_infos = socket.getaddrinfo(host, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+        except Exception as e:
+            maxkb_logger.warning(f'Failed to resolve host: {host}, error: {e}')
+            raise ValueError(_('Failed to resolve host: {error}').format(error=str(e))) from e
+        if not addr_infos:
+            raise ValueError(_('Failed to resolve host: {error}').format(error=_("No address found")))
+        if any(_is_unsafe_ip(addr_info[4][0]) for addr_info in addr_infos):
+            raise ValueError(_('Access to internal IP addresses is blocked'))
+
+
+def fetch_file_from_url(url: str, file_limit: int, max_redirects: int = 0, connect_timeout: int = 10,
+                        read_timeout: int = 60, total_deadline: int = 120):
+    """
+    安全下载：预校验 URL + 连接前校验实际解析地址（防 DNS 重绑定）+ 流式读取硬上限
+
+    地址校验由会话级 SafeHTTPAdapter 完成，不触碰全局 socket.getaddrinfo，
+    因此不会影响同进程其他线程（Redis、内网模型服务等）的域名解析。
+
+    @return: (file_bytes, final_url, response_headers)
+    """
+    if not isinstance(file_limit, int) or file_limit <= 0:
+        raise ValueError("Invalid file size limit")
+    validated_url = validate_and_normalize_url(url)
+    parsed = urlparse(validated_url)
+    if parsed.port == 0:
+        raise ValueError("Invalid URL port")
+
+    deadline = time.monotonic() + total_deadline
+    with requests.Session() as session:
+        # 默认不走环境代理：走代理后 DNS 在代理侧解析，SafeHTTPAdapter 的落地地址校验会失效。
+        # 内网只能经代理出公网、或使用内部 CA 部署时，可通过 MAXKB_FILE_DOWNLOAD_TRUST_ENV=true 显式恢复
+        # requests 对 HTTP_PROXY/HTTPS_PROXY/REQUESTS_CA_BUNDLE 等环境变量的读取。
+        session.trust_env = get_env_bool('MAXKB_FILE_DOWNLOAD_TRUST_ENV', False)
+        safe_adapter = SafeHTTPAdapter()
+        session.mount('http://', safe_adapter)
+        session.mount('https://', safe_adapter)
+        session.max_redirects = max_redirects
+        current_url = validated_url
+        for _ in range(max_redirects + 1):
+            if time.monotonic() >= deadline:
+                raise TimeoutError(_('URL download timed out'))
+            try:
+                response = session.get(
+                    current_url,
+                    headers={"User-Agent": "MaxKB/2.10"},
+                    stream=True,
+                    timeout=(connect_timeout, read_timeout),
+                    allow_redirects=False,
+                )
+            except requests.exceptions.RequestException as e:
+                maxkb_logger.warning(f'Failed to download from URL: {current_url}, error: {e}', exc_info=True)
+                raise ValueError(_('Failed to download the file: {error}').format(error=str(e))) from e
+            try:
+                with response:
+                    # requests.Response 只有 is_redirect（无 is_redirection），3xx 统一按状态码判断
+                    if 300 <= response.status_code < 400:
+                        if max_redirects <= 0:
+                            raise ValueError("Redirects are not allowed")
+                        location = response.headers.get('Location')
+                        if not location:
+                            raise ValueError("Redirect without Location header")
+                        max_redirects -= 1
+                        current_url = validate_and_normalize_url(urljoin(current_url, location))
+                        continue
+                    response.raise_for_status()
+                    length = response.headers.get("Content-Length")
+                    expected = None
+                    # 只有未压缩响应体的长度才等于 Content-Length（read1 已解码 gzip/br）
+                    is_identity = (response.headers.get("Content-Encoding") or "identity").lower() == "identity"
+                    if length is not None:
+                        if not length.isascii() or not length.isdecimal():
+                            raise ValueError("Invalid Content-Length")
+                        expected = int(length) if is_identity else None
+                        if int(length) > file_limit:
+                            raise ValueError("File size exceeds limit")
+                    body = bytearray()
+                    while True:
+                        if time.monotonic() >= deadline:
+                            raise TimeoutError(_('URL download timed out'))
+                        chunk = response.raw.read1(min(64 * 1024, file_limit - len(body) + 1), decode_content=True)
+                        if not chunk:
+                            break
+                        if len(body) + len(chunk) > file_limit:
+                            raise ValueError("File size exceeds limit")
+                        body.extend(chunk)
+                    # 服务端提前断连与正常结束都表现为空块，靠 Content-Length 识别截断
+                    if expected is not None and len(body) != expected:
+                        raise ValueError("Incomplete download: Content-Length mismatch")
+                    # 返回 CaseInsensitiveDict，保留 HTTP 头大小写不敏感语义
+                    return bytes(body), current_url, response.headers
+            finally:
+                response.close()
+        raise ValueError("Too many redirects")
+
+
+def is_private_ip(host: str) -> bool:
+    """检测主机解析后的 IP 是否属于内网、环回、云 metadata 的危险地址（IPv4/IPv6 全部地址均校验）"""
+    try:
+        addr_infos = socket.getaddrinfo(host, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+    except Exception:
+        return True
+    if not addr_infos:
+        return True
+    return any(_is_unsafe_ip(addr_info[4][0]) for addr_info in addr_infos)
+
+
+def validate_and_normalize_url(url: str) -> str:
+    """
+    严格验证并规范化 URL，防止 URL 解析绕过攻击
+
+    防御场景：
+    - http://127.0.0.1:6666\@1.1.1.1/ （反斜杠绕过）
+    - http://127.0.0.1:6666@1.1.1.1/ （认证信息混淆）
+    - http://1.1.1.1#@127.0.0.1:6666/ （片段注入）
+    """
+    if not url:
+        raise ValueError("URL is required")
+
+    # 1. 拒绝包含危险字符的 URL
+    dangerous_patterns = [
+        r'\\',  # 反斜杠
+        r'\s',  # 空白字符
+        r'%00',  # 空字节
+        r'%0a',  # 换行符
+        r'%0d',  # 回车符
+    ]
+
+    url_lower = url.lower()
+    for pattern in dangerous_patterns:
+        if re.search(pattern, url_lower):
+            raise ValueError("URL contains dangerous characters")
+
+    # 2. 解析 URL
+    parsed = urlparse(url)
+
+    # 3. 仅允许 http / https
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("Only http and https are allowed")
+
+    # 4. 提取主机名（从 netloc 中）
+    netloc = parsed.netloc
+
+    # 5. 如果 netloc 中包含 @，说明有认证信息，需要特别处理
+    if '@' in netloc:
+        # 分离认证信息和主机
+        auth_part, host_part = netloc.rsplit('@', 1)
+
+        # 检查认证部分是否包含危险的 IP 或端口信息
+        # 攻击者可能在认证部分放置内网地址
+        if ':' in auth_part or '.' in auth_part:
+            raise ValueError("Authentication part contains suspicious content")
+
+        # 使用真实的主机部分
+        actual_host = host_part.split(':')[0] if ':' in host_part else host_part
+    else:
+        # 没有认证信息，直接提取主机
+        actual_host = parsed.hostname
+
+    # 6. 验证主机名不为空
+    if not actual_host:
+        raise ValueError("Invalid URL: missing hostname")
+
+    # 7. 验证主机不是 IP 地址形式的内网地址
+    # 这样可以防止直接在 URL 中使用内网 IP
+    try:
+        # 尝试解析为 IP 地址
+        ip_addr = ipaddress.ip_address(actual_host)
+        if is_private_ip(actual_host):
+            raise ValueError(_("Access to internal IP addresses is blocked"))
+    except ValueError as e:
+        # 如果不是 IP 地址（是域名），则继续检查
+        if "internal IP" in str(e):
+            raise
+        # 对于域名，检查其解析结果
+        if is_private_ip(actual_host):
+            raise ValueError(_("Access to internal IP addresses is blocked"))
+
+    # 8. 重新构建干净的 URL，移除可能的认证信息
+    clean_netloc = actual_host
+    if parsed.port:
+        clean_netloc = f"{actual_host}:{parsed.port}"
+
+    clean_url = urlunparse((
+        parsed.scheme,
+        clean_netloc,
+        parsed.path,
+        parsed.params,
+        parsed.query,
+        ''  # 移除 fragment，防止片段注入
+    ))
+
+    return clean_url
