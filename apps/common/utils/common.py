@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import mimetypes
+import os
 import pickle
 import re
 import secrets
@@ -28,6 +29,7 @@ from django.utils.translation import gettext as _
 from maxkb.settings import TIME_ZONE
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from pydub import AudioSegment
+from urllib.parse import urlparse
 
 from ..database_model_manage.database_model_manage import DatabaseModelManage
 from ..exception.app_exception import AppApiException
@@ -497,3 +499,300 @@ def reset_value(value):
         c = datetime.timezone(eastern._utcoffset)
         value = value.astimezone(c)
     return value
+
+
+def get_file_name_from_content_disposition(content_disposition: str, default: str = None) -> str:
+    """
+    尝试从响应头 `Content-Disposition` 中获取文件名
+
+    :param content_disposition: 响应头 `Content-Disposition`
+    :param default:             默认文件名
+    :return: 文件名
+    """
+    if not content_disposition:
+        return default
+
+    file_name = default
+    if 'filename=' in content_disposition:
+        filename_part = content_disposition.split('filename=')[1].split(';')[0].strip('"\'')
+        if filename_part:
+            file_name = filename_part
+
+    return file_name
+
+
+def get_file_name_from_url(url: str, default: str = None) -> str:
+    """
+    尝试从url中获取文件名
+    :param url:     文件URL地址
+    :param default: 默认文件名
+    :return: 文件名
+    """
+    if not url:
+        return default
+
+    parsed_url = urlparse(url)
+    path_parts = parsed_url.path.split('/')
+    return path_parts[-1] if path_parts and path_parts[-1] else default
+
+
+def _check_office_type(file_bytes: bytes) -> str:
+    """区分 zip 压缩包内的 office 类型"""
+    content = file_bytes.decode("ISO-8859-1", errors="ignore")
+    if "word/" in content:
+        return "docx"
+    elif "xl/" in content:
+        return "xlsx"
+    elif "ppt/" in content:
+        return "pptx"
+    return "zip"
+
+def get_file_type_from_bytes(file_bytes: bytes):
+    """
+    从文件二进制 bytes 判断文件类型
+    :param file_bytes: 文件二进制
+    :return: 文件后缀（如 pdf、png、jpg、zip、xlsx 等）
+    """
+    # 如果没有16个字节，则无法判断
+    if len(file_bytes) < 16:
+        return None
+
+    # 读取前16个字节（足够判断绝大多数文件）
+    header = file_bytes[:16].hex().lower()
+
+    # 常见文件签名对照表
+    signatures = {
+        # 图片
+        "ffd8ffe0": "jpg",
+        "ffd8ffdb": "jpg",
+        "89504e47": "png",
+        "47494638": "gif",
+
+        # 文档
+        "25504446": "pdf",
+        "d0cf11e0": "doc",  # office 97-2003
+        "504b0304": "zip",  # 新office/zip通用
+
+        # 压缩包
+        "52617221": "rar",
+        "377abcaf": "7z",
+        "425a68": "bz2",
+        "1f8b": "gz",
+
+        # 视频音频
+        "494433": "mp3",
+        "00000018": "mp4",
+        "1a45dfa3": "mkv",
+    }
+
+    # 先匹配普通唯一签名
+    for sig, ext in signatures.items():
+        if header.startswith(sig):
+            if ext == "zip":
+                return _check_office_type(file_bytes)
+            return ext
+
+    # RIFF 开头的格式：WebP / WAV / AVI
+    if header.startswith("52494646"):
+        # 第 8-12 字节区分类型
+        sub_type = file_bytes[8:12].hex().lower()
+        if sub_type == "57454250":  # WEBP
+            return "webp"
+        elif sub_type == "57415645":  # WAVE
+            return "wav"
+        elif sub_type == "41564920":  # AVI
+            return "avi"
+
+    return None
+
+
+def get_file_type_from_content_type(content_type: str):
+    """
+    从 HTTP 响应头 Content-Type 解析出文件后缀
+    :param content_type: 响应头里的 Content-Type，例如 "image/png"、"application/pdf"
+    :return: 文件后缀（不带点），如 png、pdf、jpg，无法识别返回 None
+    """
+    if not content_type:
+        return None
+
+    # 统一转小写，去掉编码等无关参数（例如 text/html; charset=utf-8）
+    content_type = content_type.lower().split(';')[0].split('/')[-1].strip()
+    if not content_type:
+        return None
+
+    # 需要转换的 Content-Type 后缀映射表
+    mime_map = {
+        # 图片
+        "svg+xml": "svg",
+
+        # 文档
+        "msword": "doc",
+        "ms-word": "doc",
+        "vnd.ms-word": "doc",
+        "vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+        "vnd.ms-excel": "xls",
+        "vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+        "vnd.ms-powerpoint": "ppt",
+        "vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+        "plain": "txt",
+
+        # 压缩包
+        "x-rar-compressed": "rar",
+        "x-7z-compressed": "7z",
+        "gzip": "gz",
+        "x-bzip2": "bz2",
+
+        # 音视频
+        "mpeg": "mp3",
+        "x-matroska": "mkv",
+    }
+
+    # 获取文件后缀名
+    file_type = mime_map.get(content_type) or content_type
+
+    # 如果长度小于等于32，则视为正常的文件类型
+    return file_type if len(file_type) <= 32 else None
+
+
+def get_file_name_from_url_or_response(url, response, default=None, file_bytes=None, content_type=None, headers=None):
+    """
+    从下载响应的头部/URL/文件头推断文件名
+    :param response: requests 响应对象，可为 None（例如安全下载助手只返回字节流）
+    :param file_bytes: response 为 None 时显式传入已下载的字节
+    :param content_type: response 为 None 时显式传入响应头 Content-Type
+    """
+    def is_known_type_file_name(name) -> bool:
+        # 判断是否有后缀名的文件名
+        return True if name and "." in name and not name.endswith(".") else False
+
+    def get_header(name) -> str:
+        # HTTP 头名称大小写不敏感（HTTP/2 强制小写），传入 headers 时统一按小写查找
+        if headers is not None:
+            return {str(k).lower(): v for k, v in headers.items()}.get(name.lower())
+        return response.headers.get(name) if response is not None else None
+
+    # 1. 先从 `响应头 Content-Disposition` 中获取文件名
+    file_name1 = get_file_name_from_content_disposition(get_header('Content-Disposition'))
+    if is_known_type_file_name(file_name1):
+        return file_name1
+
+    # 2. 再从URL路径中提取文件名
+    file_name2 = get_file_name_from_url(url)
+    if is_known_type_file_name(file_name2):
+        return file_name2
+
+    file_name = file_name1 or file_name2 or default
+    if not file_name:
+        file_name = "downloaded_file"
+    elif is_known_type_file_name(file_name):
+        return file_name
+
+    # 获取并判断是否成功下载文件
+    if file_bytes is None:
+        if response is None:
+            return file_name
+        file_bytes = response.content
+    if not isinstance(file_bytes, bytes):
+        return file_name
+
+    # 3. 如果没有获取到文件类型，则尝试从 `file_bytes` 或 `响应头 Content-Type` 中获取文件类型
+    file_type = get_file_type_from_bytes(file_bytes) or get_file_type_from_content_type(
+        content_type if content_type is not None else get_header('Content-Type'))
+    if file_type:
+        file_name += f".{file_type}"
+
+    return file_name
+
+
+# region long和UUID互转的两个方法
+FIXED_MASK = 0x0000000000000000  # 后面 8 个字节（64位）固定常量，可自定义，只要不修改就能保证映射不变（注：需与业务系统中的保持一致）
+def long_to_uuid(num: int) -> uuid.UUID:
+    """
+    long转UUID
+    :param num: Java long，Python int（仅支持无符号区间 [0, 2^64)）
+    :return: UUID对象
+    """
+    # Java long 可为负，而 UUID(int=负数<<64) 会直接抛 ValueError；超出区间也无法与 uuid_to_long 互逆，显式拒绝
+    if not isinstance(num, int) or isinstance(num, bool) or num < 0 or num >= 2 ** 64:
+        raise ValueError(f"long_to_uuid 仅支持 [0, 2^64) 区间的整数，非法值：{num}")
+    most_sig_bits = num
+    least_sig_bits = FIXED_MASK
+    return uuid.UUID(int=(most_sig_bits << 64) | least_sig_bits)
+
+
+def uuid_to_long(uid) -> int:
+    """
+    UUID转long
+    :param uid: uuid字符串或UUID实例
+    :return: 原始long值
+    """
+    if isinstance(uid, str):
+        uid = uuid.UUID(uid)
+    # 获取高64位 = original long
+    most = uid.int >> 64
+    return most
+
+
+def normalize_uuid(value) -> str | None:
+    """
+    将 UUID 规范化为 8-4-4-4-12 小写字符串（与表中主键的 `str(id)` 保持一致）
+
+    Django 查询时会把大写、无连字符等合法写法规范化后再比对，所以用原始字符串做批量查询的映射键，
+    会出现“查得到记录但取不到值”；两侧统一用本函数规范化即可。非法值返回 None。
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return str(uuid.UUID(str(value)))
+    except (ValueError, AttributeError, TypeError):
+        return None
+
+
+# endregion
+
+
+JINJA_SYNTAX_PATTERN = re.compile(r'\{\{.*?\}\}|\{%.*?%\}|\{#.*?#\}', re.S)
+
+
+def has_jinja_syntax(text) -> bool:
+    """是否包含 Jinja2 语法（{{ 变量 }} / {% 控制 %} / {# 注释 #} 任一即需渲染）"""
+    if not isinstance(text, str):
+        return False
+    return JINJA_SYNTAX_PATTERN.search(text) is not None
+
+
+def get_env_int(name: str, default: int, hard_limit: int = None) -> int:
+    """
+    解析整型环境变量，非法/空值回退默认值，避免在模块 import 阶段抛 ValueError 导致整个服务启动失败
+
+    :param hard_limit: 可选上限，未传时不设上限（下限恒为 1）
+    """
+    raw = (os.environ.get(name) or '').strip()
+    try:
+        value = int(raw) if raw else default
+    except ValueError:
+        return default
+    value = max(1, value)
+    return min(value, hard_limit) if hard_limit else value
+
+
+def get_workflow_max_workers(default=50, hard_limit=200) -> int:
+    """
+    解析 WORKFLOW_MAX_WORKERS 环境变量得到线程池容量
+
+    非法/空值回退默认值，避免在模块 import 阶段抛 ValueError 导致整个服务启动失败。
+    """
+    return get_env_int('WORKFLOW_MAX_WORKERS', default, hard_limit)
+
+
+def get_env_bool(name: str, default: bool = False) -> bool:
+    """
+    解析布尔型环境变量（1/true/yes/on 为真，0/false/no/off 为假，大小写不敏感），非法/空值回退默认值
+    """
+    raw = (os.environ.get(name) or '').strip().lower()
+    if raw in ('1', 'true', 'yes', 'on'):
+        return True
+    if raw in ('0', 'false', 'no', 'off'):
+        return False
+    return default
+
