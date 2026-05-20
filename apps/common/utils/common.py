@@ -28,6 +28,7 @@ from django.utils.translation import gettext as _
 from maxkb.settings import TIME_ZONE
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from pydub import AudioSegment
+from urllib.parse import urlparse
 
 from ..database_model_manage.database_model_manage import DatabaseModelManage
 from ..exception.app_exception import AppApiException
@@ -494,3 +495,190 @@ def reset_value(value):
         c = datetime.timezone(eastern._utcoffset)
         value = value.astimezone(c)
     return value
+
+
+def get_file_name_from_content_disposition(content_disposition: str, default: str = None) -> str:
+    """
+    尝试从响应头 `Content-Disposition` 中获取文件名
+
+    :param content_disposition: 响应头 `Content-Disposition`
+    :param default:             默认文件名
+    :return: 文件名
+    """
+    if not content_disposition:
+        return default
+
+    file_name = default
+    if 'filename=' in content_disposition:
+        filename_part = content_disposition.split('filename=')[1].split(';')[0].strip('"\'')
+        if filename_part:
+            file_name = filename_part
+
+    return file_name
+
+
+def get_file_name_from_url(url: str, default: str = None) -> str:
+    """
+    尝试从url中获取文件名
+    :param url:     文件URL地址
+    :param default: 默认文件名
+    :return: 文件名
+    """
+    if not url:
+        return default
+
+    parsed_url = urlparse(url)
+    path_parts = parsed_url.path.split('/')
+    return path_parts[-1] if path_parts and path_parts[-1] else default
+
+
+def _check_office_type(file_bytes: bytes) -> str:
+    """区分 zip 压缩包内的 office 类型"""
+    content = file_bytes.decode("ISO-8859-1", errors="ignore")
+    if "word/" in content:
+        return "docx"
+    elif "xl/" in content:
+        return "xlsx"
+    elif "ppt/" in content:
+        return "pptx"
+    return "zip"
+
+def get_file_type_from_bytes(file_bytes: bytes):
+    """
+    从文件二进制 bytes 判断文件类型
+    :param file_bytes: 文件二进制
+    :return: 文件后缀（如 pdf、png、jpg、zip、xlsx 等）
+    """
+    # 如果没有16个字节，则无法判断
+    if len(file_bytes) < 16:
+        return None
+
+    # 读取前16个字节（足够判断绝大多数文件）
+    header = file_bytes[:16].hex().lower()
+
+    # 常见文件签名对照表
+    signatures = {
+        # 图片
+        "ffd8ffe0": "jpg",
+        "ffd8ffdb": "jpg",
+        "89504e47": "png",
+        "47494638": "gif",
+
+        # 文档
+        "25504446": "pdf",
+        "d0cf11e0": "doc",  # office 97-2003
+        "504b0304": "zip",  # 新office/zip通用
+
+        # 压缩包
+        "52617221": "rar",
+        "377abcaf": "7z",
+        "425a68": "bz2",
+        "1f8b": "gz",
+
+        # 视频音频
+        "494433": "mp3",
+        "00000018": "mp4",
+        "1a45dfa3": "mkv",
+    }
+
+    # 先匹配普通唯一签名
+    for sig, ext in signatures.items():
+        if header.startswith(sig):
+            if ext == "zip":
+                return _check_office_type(file_bytes)
+            return ext
+
+    # RIFF 开头的格式：WebP / WAV / AVI
+    if header.startswith("52494646"):
+        # 第 8-12 字节区分类型
+        sub_type = file_bytes[8:12].hex().lower()
+        if sub_type == "57454250":  # WEBP
+            return "webp"
+        elif sub_type == "57415645":  # WAVE
+            return "wav"
+        elif sub_type == "41564920":  # AVI
+            return "avi"
+
+    return None
+
+
+def get_file_type_from_content_type(content_type: str):
+    """
+    从 HTTP 响应头 Content-Type 解析出文件后缀
+    :param content_type: 响应头里的 Content-Type，例如 "image/png"、"application/pdf"
+    :return: 文件后缀（不带点），如 png、pdf、jpg，无法识别返回 None
+    """
+    if not content_type:
+        return None
+
+    # 统一转小写，去掉编码等无关参数（例如 text/html; charset=utf-8）
+    content_type = content_type.lower().split(';')[0].split('/')[-1].strip()
+    if not content_type:
+        return None
+
+    # 需要转换的 Content-Type 后缀映射表
+    mime_map = {
+        # 图片
+        "svg+xml": "svg",
+
+        # 文档
+        "msword": "doc",
+        "ms-word": "doc",
+        "vnd.ms-word": "doc",
+        "vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+        "vnd.ms-excel": "xls",
+        "vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+        "vnd.ms-powerpoint": "ppt",
+        "vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+        "plain": "txt",
+
+        # 压缩包
+        "x-rar-compressed": "rar",
+        "x-7z-compressed": "7z",
+        "gzip": "gz",
+        "x-bzip2": "bz2",
+
+        # 音视频
+        "mpeg": "mp3",
+        "x-matroska": "mkv",
+    }
+
+    # 获取文件后缀名
+    file_type = mime_map.get(content_type) or content_type
+
+    # 如果长度小于等于32，则视为正常的文件类型
+    return file_type if len(file_type) <= 32 else None
+
+
+def get_file_name_from_url_or_response(url, response, default = None):
+    def is_known_type_file_name(name) -> bool:
+        # 判断是否有后缀名的文件名
+        return True if name and "." in name and not name.endswith(".") else False
+
+    # 1. 先从 `响应头 Content-Disposition` 中获取文件名
+    file_name1 = get_file_name_from_content_disposition(response.headers.get('Content-Disposition'))
+    if is_known_type_file_name(file_name1):
+        return file_name1
+
+    # 2. 再从URL路径中提取文件名
+    file_name2 = get_file_name_from_url(url)
+    if is_known_type_file_name(file_name2):
+        return file_name2
+
+    file_name = file_name1 or file_name2 or default
+    if not file_name:
+        file_name = "downloaded_file"
+    elif is_known_type_file_name(file_name):
+        return file_name
+
+    # 获取并判断是否成功下载文件
+    file_bytes = response.content
+    if not isinstance(file_bytes, bytes):
+        return file_name
+
+    # 3. 如果没有获取到文件类型，则尝试从 `file_bytes` 或 `响应头 Content-Type` 中获取文件类型
+    file_type = get_file_type_from_bytes(file_bytes) or get_file_type_from_content_type(response.headers.get('Content-Type'))
+    if file_type:
+        file_name += f".{file_type}"
+
+    return file_name
