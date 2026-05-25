@@ -454,6 +454,7 @@ async def _yield_mcp_response(
     chat_id=None,
     extra_tools=None,
 ):
+    tools = None
     try:
         checkpointer = MemorySaver()
         client = await _initialize_skills(mcp_servers, temp_dir)
@@ -727,10 +728,31 @@ async def _yield_mcp_response(
 
         real_error = get_real_error(eg)
         error_msg = f"{type(real_error).__name__}: {str(real_error)}"
+
+        maxkb_logger.error(f"""mcp error: {error_msg}
+chat_model: {chat_model}
+system_prompt: {system_prompt}
+message_list: {message_list}
+mcp_servers: {mcp_servers}
+tools: {tools}
+tool_init_params: {tool_init_params},
+chat_id: {chat_id}""")
+
         raise RuntimeError(error_msg) from None
 
     except Exception as e:
         error_msg = f"{type(e).__name__}: {str(e)}"
+
+        maxkb_logger.error(f"""mcp failed: {error_msg}
+chat_model: {chat_model}
+system_prompt: {system_prompt}
+message_list: {message_list}
+mcp_servers: {mcp_servers}
+tools: {tools}
+tool_init_params: {tool_init_params}
+chat_id: {chat_id}
+error: {e}""", exc_info=True)
+
         raise RuntimeError(error_msg) from None
 
 
@@ -745,6 +767,7 @@ async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_ty
         source_id=source_id,
         meta={"input": tool_info["input"], "output": tool_result},
         state=State.SUCCESS,
+        run_time=run_time
     )
     await sync_to_async(tool_record.save)()
 

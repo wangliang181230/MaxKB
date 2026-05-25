@@ -1129,6 +1129,8 @@ export const compareList = [
   { value: 'is_not_null', label: t('workflow.compare.is_not_null') },
   { value: 'contain', label: t('workflow.compare.contain') },
   { value: 'not_contain', label: t('workflow.compare.not_contain') },
+  { value: 'regex', label: t('workflow.compare.regex') },
+  { value: 'wildcard', label: t('workflow.compare.wildcard') },
   { value: 'eq', label: t('workflow.compare.eq') },
   { value: 'not_eq', label: t('workflow.compare.not_eq') },
   { value: 'ge', label: t('workflow.compare.ge') },
@@ -1147,8 +1149,6 @@ export const compareList = [
   { value: 'end_with', label: 'endWith' },
   { value: 'type_is', label: t('workflow.compare.type_is') },
   { value: 'type_not', label: t('workflow.compare.type_not') },
-  { value: 'regex', label: t('workflow.compare.regex') },
-  { value: 'wildcard', label: t('workflow.compare.wildcard') },
 ]
 export const nodeDict: any = {
   [WorkflowType.AiChat]: aiChatNode,

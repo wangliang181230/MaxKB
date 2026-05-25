@@ -104,6 +104,7 @@ class BaseQuestionNode(IQuestionNode):
                                                               **(model_params_setting or {}))
         history_message = self.get_history_message(history_chat_record, dialogue_number)
         self.context['history_message'] = history_message
+        prompt = self.workflow_manage.generate_prompt(prompt)
         question = self.generate_prompt_question(prompt)
         self.context['question'] = question.content
         system = self.workflow_manage.generate_prompt(system)
@@ -134,14 +135,14 @@ class BaseQuestionNode(IQuestionNode):
         return history_message
 
     def generate_prompt_question(self, prompt):
-        return HumanMessage(self.workflow_manage.generate_prompt(prompt))
+        return HumanMessage(prompt)
 
     def generate_message_list(self, system: str, prompt: str, history_message):
         if system is not None and len(system) > 0:
-            return [SystemMessage(self.workflow_manage.generate_prompt(system)), *history_message,
-                    HumanMessage(self.workflow_manage.generate_prompt(prompt))]
+            return [SystemMessage(system), *history_message,
+                    HumanMessage(prompt)]
         else:
-            return [*history_message, HumanMessage(self.workflow_manage.generate_prompt(prompt))]
+            return [*history_message, HumanMessage(prompt)]
 
     @staticmethod
     def reset_message_list(message_list: List[BaseMessage], answer_text):

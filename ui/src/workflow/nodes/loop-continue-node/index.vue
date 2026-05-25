@@ -74,7 +74,7 @@
             <el-col :span="6">
               <el-form-item
                 v-if="
-                  !['is_null', 'is_not_null', 'is_true', 'is_not_true'].includes(condition.compare)
+                  !['is_null', 'is_not_null', 'is_true', 'is_not_true', 'is_false', 'is_not_false'].includes(condition.compare)
                 "
                 :prop="'condition_list.' + index + '.value'"
                 :rules="{
