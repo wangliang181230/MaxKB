@@ -609,7 +609,7 @@ def get_file_type_from_content_type(content_type: str):
     return file_type if len(file_type) <= 32 else None
 
 
-def get_file_name_from_url_or_response(url, response, default = None):
+def get_file_name_from_url_or_response(url, response, default=None):
     def is_known_type_file_name(name) -> bool:
         # 判断是否有后缀名的文件名
         return True if name and "." in name and not name.endswith(".") else False

@@ -1,5 +1,9 @@
 FROM node:24-alpine AS web-build
 COPY ui ui
+
+RUN npm config set script-shell /bin/sh
+RUN npm config set ignore-scripts true
+
 RUN cd ui && ls -la && if [ -d "dist" ]; then exit 0; fi && \
     npm install --prefer-offline --no-audit && \
     npm install -D concurrently && \

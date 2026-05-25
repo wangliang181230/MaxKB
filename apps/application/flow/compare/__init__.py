@@ -38,6 +38,8 @@ _compare_handler_dict = {
     'is_not_null': IsNotNullCompare(),
     'contain': ContainCompare(),
     'not_contain': NotContainCompare(),
+    'regex': RegexCompare(),
+    'wildcard': WildcardCompare(),
     'eq': EqualCompare(),
     'not_eq': NotEqualCompare(),
     'ge': GECompare(),
@@ -56,8 +58,6 @@ _compare_handler_dict = {
     'end_with': EndWithCompare(),
     'type_is': TypeIsCompare(),
     'type_not': TypeNotCompare(),
-    'regex': RegexCompare(),
-    'wildcard': WildcardCompare(),
 }
 
 

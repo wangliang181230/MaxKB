@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="visible"
-    size="800px"
+    size="1000px"
     :modal="false"
     destroy-on-close
     :before-close="closeHandle"
