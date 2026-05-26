@@ -29,7 +29,7 @@ ARG DOCKER_IMAGE_TAG=dev \
     BUILD_AT \
     GITHUB_COMMIT
 
-ENV MAXKB_VERSION="${DOCKER_IMAGE_TAG} (build at ${BUILD_AT}, commit: ${GITHUB_COMMIT})" \
+ENV MAXKB_VERSION="${DOCKER_IMAGE_TAG} (build at ${BUILD_AT}, commit: <a href='https://github.com/wangliang181230/MaxKB/commits/${GITHUB_COMMIT}/' target='_blank'>${GITHUB_COMMIT}</a>)" \
     MAXKB_DB_NAME=maxkb \
     MAXKB_DB_HOST=127.0.0.1 \
     MAXKB_DB_PORT=5432  \
