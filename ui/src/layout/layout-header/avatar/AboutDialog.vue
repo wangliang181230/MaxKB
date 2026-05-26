@@ -32,7 +32,7 @@
       </div>
       <div class="flex">
         <span class="label">{{ $t('layout.about.version') }}</span
-        ><span>{{ user.version }}</span>
+        ><span v-html="user.version"></span>
       </div>
       <div class="flex">
         <span class="label">{{ $t('layout.about.serialNo') }}</span
@@ -164,6 +164,14 @@ defineExpose({open})
       width: 150px;
       text-align: left;
       color: var(--app-text-color-secondary);
+    }
+
+    a {
+      color: #2fa14d;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   }
 
