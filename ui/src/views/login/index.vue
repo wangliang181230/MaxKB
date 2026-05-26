@@ -1,5 +1,10 @@
 <template>
   <login-layout v-if="!loading" v-loading="loading">
+    <div class="about-entry">
+      <el-button link type="primary" @click="openAbout">
+        {{ $t('layout.about.title') }}
+      </el-button>
+    </div>
     <LoginContainer :subTitle="newDefaultSlogan">
       <h2 class="mb-24" v-if="!showQrCodeTab">{{ loginMode || $t('views.login.title') }}</h2>
       <div v-if="!showQrCodeTab">
@@ -123,6 +128,7 @@
         </template>
       </div>
     </LoginContainer>
+    <AboutDialog ref="AboutDialogRef" />
   </login-layout>
 </template>
 <script setup lang="ts">
@@ -132,6 +138,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import type { LoginRequest } from '@/api/type/login'
 import LoginContainer from '@/layout/login-layout/LoginContainer.vue'
 import LoginLayout from '@/layout/login-layout/LoginLayout.vue'
+import AboutDialog from '@/layout/layout-header/avatar/AboutDialog.vue'
 import loginApi from '@/api/user/login'
 import authApi from '@/api/system-settings/auth-setting'
 import { getBrowserLang, t } from '@/locales'
@@ -150,6 +157,10 @@ const loading = ref<boolean>(false)
 const route = useRoute()
 const identifyCode = ref<string>('')
 const loginFormRef = ref<FormInstance>()
+const AboutDialogRef = ref()
+const openAbout = () => {
+  AboutDialogRef.value?.open()
+}
 const authSetting = ref<any>(null)
 const defaultQrTab = ref<string>('')
 const loginForm = ref<LoginRequest>({
@@ -513,6 +524,21 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
+.about-entry {
+  position: absolute;
+  right: 20px;
+  top: 64px;
+  z-index: 10;
+  text-align: right;
+  :deep(.el-button) {
+    margin: 0;
+    height: auto;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 400;
+  }
+}
+
 .login-gradient-divider {
   position: relative;
   text-align: center;
