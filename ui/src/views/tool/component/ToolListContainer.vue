@@ -305,6 +305,14 @@
                             </el-dropdown-item>
 
                             <el-dropdown-item
+                              v-if="item.version"
+                              @click.stop="openDetailDialog(item)"
+                            >
+                              <AppIcon iconName="app-document" class="color-secondary"></AppIcon>
+                              {{ $t('common.showDetail') }}
+                            </el-dropdown-item>
+
+                            <el-dropdown-item
                               v-if="item.tool_type === 'WORKFLOW'"
                               @click.stop="toWorkflow(item)"
                             >
@@ -698,27 +706,8 @@ function openEditDialog(data?: any) {
   if (!permissionPrecise.value.edit(data?.id)) {
     return
   }
-  // 有template_id的不允许编辑，是模板转换来的
-  if (data?.template_id) {
-    return
-  }
-  // 共享过来的工具不让编辑
-  if (isShared.value) {
-    return
-  }
   if (data) {
     bus.emit('select_node', data.folder_id)
-  }
-  // 有版本号的展示readme，是商店更新过来的
-  if (data?.version) {
-    let readMe = ''
-    storeTools.value
-      .filter((item) => item.id === data.template_id)
-      .forEach((item) => {
-        readMe = item.readMe
-      })
-    toolStoreDescDrawerRef.value?.open(readMe, data)
-    return
   }
 
   // mcp工具
@@ -748,6 +737,19 @@ function openEditDialog(data?: any) {
       .then((res: any) => {
         ToolFormDrawerRef.value.open(res.data)
       })
+  }
+}
+
+function openDetailDialog(data?: any) {
+  // 有版本号的展示readme，是商店更新过来的
+  if (data?.version) {
+    let readMe = ''
+    storeTools.value
+      .filter((item) => item.id === data.template_id)
+      .forEach((item) => {
+        readMe = item.readMe
+      })
+    toolStoreDescDrawerRef.value?.open(readMe, data)
   }
 }
 
@@ -802,14 +804,6 @@ function openCreateDialog() {
 }
 
 function openCreateMcpDialog(data?: any) {
-  // 有template_id的不允许编辑，是模板转换来的
-  if (data?.template_id) {
-    return
-  }
-  // 共享过来的工具不让编辑
-  if (isShared.value) {
-    return
-  }
   McpToolDrawertitle.value = data
     ? t('views.tool.mcp.editMcpTool')
     : t('views.tool.mcp.createMcpTool')
@@ -825,25 +819,6 @@ function openCreateMcpDialog(data?: any) {
 }
 
 function openCreateSkillDialog(data?: any) {
-  // 有版本号的展示readme，是商店更新过来的
-  if (data?.version) {
-    let readMe = ''
-    storeTools.value
-      .filter((item) => item.id === data.template_id)
-      .forEach((item) => {
-        readMe = item.readMe
-      })
-    toolStoreDescDrawerRef.value?.open(readMe, data)
-    return
-  }
-  // 有template_id的不允许编辑，是模板转换来的
-  if (data?.template_id) {
-    return
-  }
-  // 共享过来的工具不让编辑
-  if (isShared.value) {
-    return
-  }
   SkillToolDrawertitle.value = data
     ? t('views.tool.skill.editSkillTool')
     : t('views.tool.skill.createSkillTool')
@@ -866,14 +841,6 @@ function toWorkflow(data: any) {
 const workflowFormDialogRef = ref<InstanceType<typeof WorkflowFormDialog>>()
 const workflowFormDialogTitle = ref('')
 const openCreateWorkflowDialog = (data?: any) => {
-  // 有template_id的不允许编辑，是模板转换来的
-  if (data?.template_id) {
-    return
-  }
-  // 共享过来的工具不让编辑
-  if (isShared.value) {
-    return
-  }
   workflowFormDialogTitle.value = data
     ? t('common.edit')
     : t('views.tool.toolWorkflow.creatToolWorkflow')
@@ -889,14 +856,6 @@ const openCreateWorkflowDialog = (data?: any) => {
 }
 
 function openCreateDataSourceDialog(data?: any) {
-  // 有template_id的不允许编辑，是模板转换来的
-  if (data?.template_id) {
-    return
-  }
-  // 共享过来的工具不让编辑
-  if (isShared.value) {
-    return
-  }
   DataSourceToolDrawertitle.value = data
     ? t('views.tool.dataSource.editDataSource')
     : t('views.tool.dataSource.createDataSource')
