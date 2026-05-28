@@ -104,7 +104,7 @@
                   <el-col :span="6">
                     <el-form-item
                       v-if="
-                        !['is_null', 'is_not_null', 'is_true', 'is_not_true'].includes(
+                        !['is_null', 'is_not_null', 'is_true', 'is_not_true', 'is_false', 'is_not_false'].includes(
                           condition.compare,
                         )
                       "
@@ -115,11 +115,25 @@
                         trigger: 'blur',
                       }"
                     >
-                      <el-input
+                      <el-select
+                        v-if="['type_is', 'type_not'].includes(condition.compare)"
                         v-model="condition.value"
-                        :placeholder="
-                          $t('workflow.nodes.conditionNode.valueMessage')
-                        "
+                        :placeholder="$t('workflow.nodes.conditionNode.verify_type_compare.requiredMessage')"
+                      >
+                        <el-option label="json" value="json" />
+                        <el-option label="dict" value="dict" />
+                        <el-option label="array" value="list" />
+                        <el-option label="string" value="str" />
+                        <el-option label="num" value="num" />
+                        <el-option label="int" value="int" />
+                        <el-option label="float" value="float" />
+                        <el-option label="boolean" value="bool" />
+                        <el-option label="null" value="NoneType" />
+                      </el-select>
+                      <el-input
+                        v-else
+                        v-model="condition.value"
+                        :placeholder="$t('workflow.nodes.conditionNode.valueMessage')"
                       />
                     </el-form-item>
                   </el-col>
@@ -335,7 +349,7 @@ function deleteCondition(index: number, cIndex: number) {
 }
 
 function changeCondition(val: string, index: number, cIndex: number) {
-  if (['is_null', 'is_not_null', 'is_true', 'is_not_true'].includes(val)) {
+  if (['is_null', 'is_not_null', 'is_true', 'is_not_true', 'is_false', 'is_not_false'].includes(val)) {
     const list = cloneDeep(props.nodeModel.properties.node_data.branch)
     list[index]['conditions'][cIndex].value = 1
     set(props.nodeModel.properties.node_data, 'branch', list)
