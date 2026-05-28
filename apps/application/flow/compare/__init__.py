@@ -13,6 +13,8 @@ from .end_with import EndWithCompare
 from .equal_compare import EqualCompare
 from .ge_compare import GECompare
 from .gt_compare import GTCompare
+from .is_false import IsFalseCompare
+from .is_not_false import IsNotFalseCompare
 from .is_not_null_compare import IsNotNullCompare
 from .is_not_true import IsNotTrueCompare
 from .is_null_compare import IsNullCompare
@@ -23,11 +25,14 @@ from .len_ge_compare import LenGECompare
 from .len_gt_compare import LenGTCompare
 from .len_le_compare import LenLECompare
 from .len_lt_compare import LenLTCompare
+from .len_not_equal_compare import LenNotEqualCompare
 from .lt_compare import LTCompare
 from .not_contain_compare import NotContainCompare
 from .not_equal_compare import NotEqualCompare
 from .regex_compare import RegexCompare
 from .start_with import StartWithCompare
+from .type_is_compare import TypeIsCompare
+from .type_not_compare import TypeNotCompare
 from .wildcard_compare import WildcardCompare
 
 _compare_handler_dict = {
@@ -35,6 +40,8 @@ _compare_handler_dict = {
     'is_not_null': IsNotNullCompare(),
     'contain': ContainCompare(),
     'not_contain': NotContainCompare(),
+    'regex': RegexCompare(),
+    'wildcard': WildcardCompare(),
     'eq': EqualCompare(),
     'not_eq': NotEqualCompare(),
     'ge': GECompare(),
@@ -42,16 +49,19 @@ _compare_handler_dict = {
     'le': LECompare(),
     'lt': LTCompare(),
     'len_eq': LenEqualCompare(),
+    'len_not_eq': LenNotEqualCompare(),
     'len_ge': LenGECompare(),
     'len_gt': LenGTCompare(),
     'len_le': LenLECompare(),
     'len_lt': LenLTCompare(),
     'is_true': IsTrueCompare(),
     'is_not_true': IsNotTrueCompare(),
+    'is_false': IsFalseCompare(),
+    'is_not_false': IsNotFalseCompare(),
+    'type_is': TypeIsCompare(),
+    'type_not': TypeNotCompare(),
     'start_with': StartWithCompare(),
     'end_with': EndWithCompare(),
-    'regex': RegexCompare(),
-    'wildcard': WildcardCompare(),
 }
 
 
@@ -70,7 +80,7 @@ def _assertion(workflow_manage, field_list: List[str], compare: str, value):
     field_value = None
     try:
         field_value = workflow_manage.get_reference_field(field_list[0], field_list[1:])
-    except  Exception:
+    except Exception:
         pass
     return _compare(field_value, compare, value)
 
