@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # MaxKB 应用
+  maxkb:
+    image: 1panel/maxkb:latest
+    container_name: maxkb
+    ports:
+      - "8080:8080"
+    environment:
+      # 基础配置
+      - MAXKB_CONFIG_TYPE=ENV
+      - MAXKB_DB_NAME=maxkb
+      - MAXKB_DB_HOST=db
+      - MAXKB_DB_PORT=5432
+      - MAXKB_DB_USER=postgres
+      - MAXKB_DB_PASSWORD=Password123@postgres
+      - MAXKB_REDIS_HOST=redis
+      - MAXKB_REDIS_PORT=6379
+      - MAXKB_REDIS_PASSWORD=Password123@redis
+      
+      # Logstash 配置
+      - MAXKB_LOGSTASH_ENABLE=true
+      - MAXKB_LOGSTASH_HOST=logstash
+      - MAXKB_LOGSTASH_PORT=5000
+      - MAXKB_LOGSTASH_PROTOCOL=tcp
+      - MAXKB_LOGSTASH_MESSAGE_TYPE=maxkb-log
+      - MAXKB_LOGSTASH_TAGS=maxkb,production
+      - MAXKB_LOG_LEVEL=INFO
+    volumes:
+      - ~/.maxkb:/opt/maxkb
+    depends_on:
+      - db
+      - redis
+      - logstash
+    networks:
+      - maxkb-network
+
+  # PostgreSQL 数据库
+  db:
+    image: postgres:15
+    container_name: maxkb-db
+    environment:
+      - POSTGRES_DB=maxkb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Password123@postgres
+    volumes:
+      - maxkb-db-data:/var/lib/postgresql/data
+    networks:
+      - maxkb-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7
+    container_name: maxkb-redis
+    command: redis-server --requirepass Password123@redis
+    volumes:
+      - maxkb-redis-data:/data
+    networks:
+      - maxkb-network
+
+  # Logstash
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: maxkb-logstash
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logstash-example.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    environment:
+      - LS_JAVA_OPTS=-Xmx256m -Xms256m
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - maxkb-network
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: maxkb-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - maxkb-es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - maxkb-network
+
+  # Kibana (可选)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: maxkb-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - maxkb-network
+
+volumes:
+  maxkb-db-data:
+  maxkb-redis-data:
+  maxkb-es-data:
+
+networks:
+  maxkb-network:
+    driver: bridge

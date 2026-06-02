@@ -47,6 +47,18 @@ class Config(dict):
         "REDIS_MAX_CONNECTIONS": 100,
         # 外置语言包路径
         "EXTERNAL_LOCALE_PATH": "/opt/maxkb/local/locales",
+        # Logstash 配置
+        'LOGSTASH_ENABLE': False,
+        'LOGSTASH_HOST': 'localhost',
+        'LOGSTASH_PORT': 5000,
+        'LOGSTASH_PROTOCOL': 'tcp',  # tcp or udp
+        'LOGSTASH_MESSAGE_TYPE': 'maxkb-log',
+        'LOGSTASH_TAGS': ['maxkb'],
+        'LOGSTASH_EXTRA_FIELDS': {},
+        # 日志级别
+        'LOG_LEVEL': 'DEBUG',
+        # Syslog 配置
+        'SYSLOG_ENABLE': False,
     }
 
     def get_debug(self) -> bool:
