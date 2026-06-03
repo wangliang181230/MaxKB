@@ -235,6 +235,9 @@ export default {
         requiredMessage: '请选择条件',
       },
       valueMessage: '请输入值',
+      verify_type_compare: {
+        requiredMessage: '请选择类型',
+      },
       addCondition: '添加条件',
       addBranch: '添加分支',
     },
@@ -543,6 +546,8 @@ export default {
     len_lt: '长度小于',
     is_true: '为真',
     is_not_true: '不为真',
+    type_is: '类型是',
+    type_not: '类型不是',
     regex: '正则匹配',
     wildcard: '通配符匹配',
   },

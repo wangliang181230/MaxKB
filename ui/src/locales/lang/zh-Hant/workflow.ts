@@ -235,6 +235,9 @@ export default {
         requiredMessage: '請選擇條件',
       },
       valueMessage: '請輸入值',
+      verify_type_compare: {
+        requiredMessage: '請選擇類型',
+      },
       addCondition: '添加條件',
       addBranch: '添加分支',
     },
@@ -537,6 +540,8 @@ export default {
     len_lt: '長度小於',
     is_true: '為真',
     is_not_true: '不為真',
+    type_is: '類型是',
+    type_not: '類型不是',
     regex: '正則匹配',
     wildcard: '通配符匹配',
   },

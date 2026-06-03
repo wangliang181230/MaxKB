@@ -235,6 +235,9 @@ You are a master of problem optimization, adept at accurately inferring user int
         requiredMessage: 'Please select conditions',
       },
       valueMessage: 'Please enter a value',
+      verify_type_compare: {
+        requiredMessage: 'Please select a type',
+      },
       addCondition: 'Add Condition',
       addBranch: 'Add Branch',
     },
@@ -552,6 +555,8 @@ You are a master of problem optimization, adept at accurately inferring user int
     len_lt: 'Length less than',
     is_true: 'Is true',
     is_not_true: 'Is not true',
+    type_is: 'Type is',
+    type_not: 'Type not',
     regex: 'Regex matching',
     wildcard: 'Wildcard matching',
   },

@@ -28,6 +28,8 @@ from .not_contain_compare import NotContainCompare
 from .not_equal_compare import NotEqualCompare
 from .regex_compare import RegexCompare
 from .start_with import StartWithCompare
+from .type_is_compare import TypeIsCompare
+from .type_not_compare import TypeNotCompare
 from .wildcard_compare import WildcardCompare
 
 _compare_handler_dict = {
@@ -50,6 +52,8 @@ _compare_handler_dict = {
     'is_not_true': IsNotTrueCompare(),
     'start_with': StartWithCompare(),
     'end_with': EndWithCompare(),
+    'type_is': TypeIsCompare(),
+    'type_not': TypeNotCompare(),
     'regex': RegexCompare(),
     'wildcard': WildcardCompare(),
 }
