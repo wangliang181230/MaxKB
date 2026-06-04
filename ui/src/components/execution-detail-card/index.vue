@@ -68,10 +68,15 @@
 
                   <el-space wrap>
                     <template v-for="(f, i) in data.document_list" :key="i">
-                      <el-card shadow="never" style="--el-card-padding: 8px" class="file cursor">
+                      <el-card
+                        shadow="never"
+                        style="--el-card-padding: 8px"
+                        class="file cursor"
+                        @click="downloadFile(f)"
+                      >
                         <div class="flex align-center">
                           <img :src="getImgUrl(f && f?.name)" alt="" width="24" />
-                          <div class="ml-4 ellipsis" :title="f && f?.name">
+                          <div class="ml-4 ellipsis" :title="getFileName(f)">
                             {{ f && f?.name }}
                           </div>
                         </div>
@@ -86,7 +91,8 @@
                     <template v-for="(f, i) in data.image_list" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getFileName(f)"
+                        :title="getFileName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -133,10 +139,15 @@
 
                   <el-space wrap>
                     <template v-for="(f, i) in data.other_list" :key="i">
-                      <el-card shadow="never" style="--el-card-padding: 8px" class="file cursor">
+                      <el-card
+                        shadow="never"
+                        style="--el-card-padding: 8px"
+                        class="file cursor"
+                        @click="downloadFile(f)"
+                      >
                         <div class="flex align-center">
                           <img :src="getImgUrl(f && f?.name)" alt="" width="24" />
-                          <div class="ml-4 ellipsis" :title="f && f?.name">
+                          <div class="ml-4 ellipsis" :title="getFileName(f)">
                             {{ f && f?.name }}
                           </div>
                         </div>
@@ -303,20 +314,26 @@
               </h5>
               <div class="p-8-12 border-t-dashed lighter pre-wrap">
                 <template v-if="Array.isArray(data.question)">
-                  <div v-for="(item, qIndex) in data.question" :key="qIndex">
+                  <!-- 先显示图片列表 -->
+                  <template v-for="(item, qIndex) in getImageList(data.question)" :key="`img-${qIndex}`">
                     <el-image
-                      v-if="item.type === 'image_url'"
                       :src="item.image_url?.url || item.image_url"
-                      alt=""
+                      :alt="getFileName(item)"
+                      :title="getFileName(item)"
                       fit="cover"
-                      style="width: 40px; height: 40px; display: block"
-                      class="border-r-6 mb-8"
+                      style="width: 40px; height: 40px"
+                      class="border-r-6 mb-8 mr-8"
+                      :preview-src-list="getImageList(data.question).map((img: any) => img.image_url?.url || img.image_url)"
+                      :initial-index="qIndex"
                       :zoom-rate="1.2"
                       :max-scale="7"
                       :min-scale="0.2"
                     />
+                  </template>
+                  <!-- 再显示视频和文本 -->
+                  <div v-for="(item, qIndex) in data.question" :key="`video-and-text-${qIndex}`">
                     <video
-                      v-else-if="item.type === 'video_url'"
+                      v-if="item.type === 'video_url'"
                       :src="item.video_url?.url || item.video_url"
                       style="width: 170px; display: block"
                       class="border-r-6 mb-8"
@@ -324,7 +341,7 @@
                       controls
                     />
                     <div v-else-if="item.type === 'text'" class="mb-8">{{ item.text }}</div>
-                    <div v-else class="mb-8">{{ item }}</div>
+                    <div v-else-if="item.type !== 'image_url'" class="mb-8">{{ item }}</div>
                   </div>
                 </template>
                 <template v-else>
@@ -450,6 +467,33 @@
           <!-- 文档内容提取 -->
           <template v-if="data.type === WorkflowType.DocumentExtractNode">
             <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('common.fileUpload.document') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div v-if="data.document_list?.length > 0">
+                  <el-space wrap>
+                    <template v-for="(doc, i) in data.document_list" :key="i">
+                      <el-card
+                        shadow="never"
+                        style="--el-card-padding: 8px"
+                        class="file cursor"
+                        @click="downloadFile(doc)"
+                      >
+                        <div class="flex align-center">
+                          <img :src="getImgUrl(doc && doc?.name)" alt="" width="24" />
+                          <div class="ml-4 ellipsis" :title="getFileName(doc)">
+                            {{ doc && doc?.name }}
+                          </div>
+                        </div>
+                      </el-card>
+                    </template>
+                  </el-space>
+                </div>
+                <div v-else>-</div>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
               <h5 class="p-8-12 flex align-center">
                 <span class="mr-4"> {{ $t('common.param.outputParam') }}</span>
 
@@ -688,7 +732,8 @@
                         <el-image
                           v-if="h.type === 'image_url'"
                           :src="h.image_url.url"
-                          alt=""
+                          :alt="getFileName(h)"
+                          :title="getFileName(h)"
                           fit="cover"
                           style="width: 40px; height: 40px; display: inline-block"
                           class="border-r-6 mr-8"
@@ -721,7 +766,8 @@
                     <template v-for="(f, i) in data.image_list" :key="i">
                       <el-image
                         :src="f.url || (f.file_id ? `./oss/file/${f.file_id}` : '')"
-                        alt=""
+                        :alt="getFileName(f)"
+                        :title="getFileName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -968,7 +1014,8 @@
                 <div v-if="typeof data.first_frame_url === 'string'">
                   <el-image
                     :src="data.first_frame_url"
-                    alt=""
+                    :alt="getFileName(data)"
+                    :title="getFileName(data)"
                     fit="cover"
                     style="width: 40px; height: 40px; display: block"
                     class="border-r-6"
@@ -982,7 +1029,8 @@
                     <template v-for="(f, i) in data.first_frame_url" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getFileName(f)"
+                        :title="getFileName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -1005,7 +1053,8 @@
                 <div v-if="typeof data.last_frame_url === 'string'">
                   <el-image
                     :src="data.last_frame_url"
-                    alt=""
+                    :alt="getFileName(data)"
+                    :title="getFileName(data)"
                     fit="cover"
                     style="width: 40px; height: 40px; display: block"
                     class="border-r-6"
@@ -1019,7 +1068,8 @@
                     <template v-for="(f, i) in data.last_frame_url" :key="i">
                       <el-image
                         :src="f.url"
-                        alt=""
+                        :alt="getFileName(f)"
+                        :title="getFileName(f)"
                         fit="cover"
                         style="width: 40px; height: 40px; display: block"
                         class="border-r-6"
@@ -1545,6 +1595,42 @@ const currentLoopNode = ref(0)
 const currentParagraph = ref(0)
 const currentWriteContent = ref(0)
 
+const getImageList = (questions: any) => {
+  const imageList: any[] = []
+  questions.forEach((question: any) => {
+    if (question.type === 'image_url') {
+      imageList.push(question)
+    }
+  })
+  return imageList
+}
+
+const getFileName = (file: any) => {
+  if (!file) return ''
+  return (
+    file.file_name ||
+    file.name ||
+    file.image_url?.details ||
+    file.image_url?.url ||
+    file.url ||
+    (() => {
+      try {
+        return JSON.stringify(file)
+      } catch {
+        return String(file)
+      }
+    })()
+  )
+}
+
+const downloadFile = (file: any) => {
+  if (file && (file.url || file.file_id || file.id)) {
+    const url = file.url || `./oss/file/${file.file_id || file.id}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  } else {
+    console.error('下载文件失败，原因：链接未知，file =', file)
+  }
+}
 
 // 格式化值显示
 const formatValue = (value: any, value_type: any): string => {
