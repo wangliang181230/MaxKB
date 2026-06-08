@@ -454,21 +454,21 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                     [],
                 )
                 # 存在的工具列表
-                exits_tool_id_list = [
+                exits_tool_id_set = {
                     str(tool.id) for tool in QuerySet(Tool).filter(id__in=tool_id_list, workspace_id=workspace_id)
-                ]
+                }
                 # 需要更新的工具集合
                 update_tool_map = {
                     tool.get("id"): generate_uuid((tool.get("id") + workspace_id or ""))
                     for tool in tool_list
-                    if not exits_tool_id_list.__contains__(tool.get("id"))
+                    if tool.get("id") not in exits_tool_id_set
                 }
 
                 tool_list = [
                     {**tool, "id": update_tool_map.get(tool.get("id"))}
                     for tool in tool_list
-                    if not exits_tool_id_list.__contains__(tool.get("id"))
-                    and not exits_tool_id_list.__contains__(generate_uuid((tool.get("id") + workspace_id or "")))
+                    if tool.get("id") not in exits_tool_id_set
+                    and generate_uuid((tool.get("id") + workspace_id or "")) not in exits_tool_id_set
                 ]
 
             work_flow = self.to_knowledge_workflow(

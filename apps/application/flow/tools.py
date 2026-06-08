@@ -8,6 +8,7 @@
 """
 
 import asyncio
+import concurrent.futures
 import io
 import json
 import os
@@ -364,6 +365,12 @@ def get_global_loop():
     with _loop_lock:
         if _global_loop is None:
             _global_loop = asyncio.new_event_loop()
+            # 设置较大的默认线程池，避免同步I/O阻塞事件循环
+            _default_executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=min(int(os.environ.get('ASYNC_LOOP_MAX_WORKERS', '20')), 50),
+                thread_name_prefix="AsyncLoopWorker"
+            )
+            _global_loop.set_default_executor(_default_executor)
 
             def run_forever():
                 asyncio.set_event_loop(_global_loop)
