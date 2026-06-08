@@ -19,9 +19,11 @@ from models_provider.models import Model
 from models_provider.tools import get_model_credential
 from tools.models.tool import Tool
 
-end_nodes = ['ai-chat-node', 'reply-node', 'empty-node', 'function-node', 'function-lib-node', 'application-node',
-             'image-understand-node', 'speech-to-text-node', 'text-to-speech-node', 'image-generate-node',
-             'variable-assign-node']
+END_NODES = frozenset([
+    'ai-chat-node', 'reply-node', 'empty-node', 'function-node', 'function-lib-node', 'application-node',
+    'image-understand-node', 'speech-to-text-node', 'text-to-speech-node', 'image-generate-node',
+    'variable-assign-node'
+])
 
 
 class Answer:
@@ -226,7 +228,7 @@ class Workflow:
 
         else:
             edge_list = [edge for edge in self.edges if edge.sourceNodeId == node.id]
-            if len(edge_list) == 0 and not end_nodes.__contains__(node.type):
+            if len(edge_list) == 0 and node.type not in END_NODES:
                 raise AppApiException(500, _("{node} Nodes cannot be considered as end nodes").format(
                     node=node.properties.get("stepName")))
 
