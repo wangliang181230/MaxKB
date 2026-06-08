@@ -4,6 +4,9 @@
     <span class="color-secondary">{{ content.content.input }}</span>
     <p class="mt-8 mb-8">{{ $t('common.param.outputParam') }}：</p>
     <span class="color-secondary"><pre>{{ content.content.output }}</pre></span>
+    <p class="mt-8 mb-8">
+      {{ $t('aiChat.KnowledgeSource.consumeTime') }}：{{ content.run_time }} s
+    </p>
   </div>
 </template>
 <script setup lang="ts">
