@@ -726,9 +726,8 @@ class ToolSerializer(serializers.Serializer):
             QuerySet(TriggerTask).filter(
                 source_type="TOOL", source_id=self.data.get("id")
             ).delete()
-            for trigger_id in trigger_ids:
-                trigger = Trigger.objects.filter(id=trigger_id["trigger_id"]).first()
-                if trigger and trigger.is_active:
+            for trigger in Trigger.objects.filter(id__in=[t["trigger_id"] for t in trigger_ids]):
+                if trigger.is_active:
                     deploy(TriggerModelSerializer(trigger).data, **{})
 
         def one(self):
@@ -804,11 +803,15 @@ class ToolSerializer(serializers.Serializer):
                     for tool in tool_list:
                         response.append(ToolExportModelSerializer(tool).data)
                 skill_tools = [tool for tool in tool_list if tool.tool_type == ToolType.SKILL]
-                for tool in skill_tools:
-                    skill_file = QuerySet(File).filter(id=tool.code).first()
-                    if skill_file:
-                        tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
-                        response.append(ToolExportModelSerializer(tool).data)
+                if skill_tools:
+                    skill_file_map = {
+                        str(f.id): f for f in QuerySet(File).filter(id__in=[tool.code for tool in skill_tools])
+                    }
+                    for tool in skill_tools:
+                        skill_file = skill_file_map.get(str(tool.code))
+                        if skill_file:
+                            tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
+                            response.append(ToolExportModelSerializer(tool).data)
 
             return response
 
@@ -1622,7 +1625,7 @@ class ToolBatchOperateSerializer(serializers.Serializer):
 
     @transaction.atomic
     def batch_delete(self, instance: Dict, with_valid=True):
-        from knowledge.serializers.common import BatchSerializer
+        from knowledge.serializers.common import BatchSerializer, is_valid_uuid
         from trigger.handler.simple_tools import deploy
         from trigger.serializers.trigger import TriggerModelSerializer
 
@@ -1634,11 +1637,17 @@ class ToolBatchOperateSerializer(serializers.Serializer):
 
         tool_query_set = QuerySet(Tool).filter(id__in=id_list, workspace_id=workspace_id)
 
+        icon_file_ids = []
+        skill_file_ids = []
         for tool in tool_query_set:
             if tool.template_id is None and tool.icon != "":
-                QuerySet(File).filter(id=tool.icon.split("/")[-1]).delete()
+                icon_file_ids.append(tool.icon.split("/")[-1])
             if tool.tool_type == ToolType.SKILL:
-                QuerySet(File).filter(id=tool.code).delete()
+                skill_file_ids.append(tool.code)
+        # 合并为批量删除，避免循环内逐个查询（N+1）；icon 尾部可能不是文件id（如静态图标路径），需过滤非法 UUID，避免整个批量删除报错
+        delete_file_ids = {fid for fid in (set(icon_file_ids) | set(skill_file_ids)) if is_valid_uuid(fid)}
+        if delete_file_ids:
+            QuerySet(File).filter(id__in=list(delete_file_ids)).delete()
 
         QuerySet(WorkspaceUserResourcePermission).filter(target__in=id_list).delete()
         QuerySet(ResourceMapping).filter(Q(target_id__in=id_list) | Q(source_id__in=id_list)).delete()
@@ -1649,9 +1658,9 @@ class ToolBatchOperateSerializer(serializers.Serializer):
         )
 
         QuerySet(TriggerTask).filter(source_type="TOOL", source_id__in=id_list).delete()
-        for trigger_id in trigger_ids:
-            trigger = Trigger.objects.filter(id=trigger_id["trigger_id"]).first()
-            if trigger and trigger.is_active:
+        # 批量查询触发器，避免循环内逐个查询（N+1）
+        for trigger in Trigger.objects.filter(id__in=[t["trigger_id"] for t in trigger_ids]):
+            if trigger.is_active:
                 deploy(TriggerModelSerializer(trigger).data, **{})
 
         tool_query_set.delete()

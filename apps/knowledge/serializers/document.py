@@ -1385,17 +1385,25 @@ class DocumentSerializers(serializers.Serializer):
             QuerySet(Document).bulk_create(document_model_list) if len(document_model_list) > 0 else None
             # 批量插入段落
             if len(paragraph_model_list) > 0:
+                document_id_str_list = [str(document.id) for document in document_model_list]
+                # 一次性分组聚合各文档已有段落的最大位置,避免逐文档查询
+                max_position_map = {
+                    str(row["document_id"]): row["max_position"] or 0
+                    for row in Paragraph.objects
+                    .filter(document_id__in=document_id_str_list)
+                    .values("document_id")
+                    .annotate(max_position=Max("position"))
+                }
+                paragraph_list_to_create = []
                 for document in document_model_list:
-                    max_position = (
-                        Paragraph.objects.filter(document_id=document.id).aggregate(max_position=Max("position"))[
-                            "max_position"
-                        ]
-                        or 0
-                    )
+                    max_position = max_position_map.get(str(document.id), 0)
                     sub_list = [p for p in paragraph_model_list if p.document_id == document.id]
                     for i, paragraph in enumerate(sub_list):
                         paragraph.position = max_position + i + 1
-                    QuerySet(Paragraph).bulk_create(sub_list if len(sub_list) > 0 else [])
+                    paragraph_list_to_create.extend(sub_list)
+                if paragraph_list_to_create:
+                    # 批量插入段落数据
+                    bulk_create_in_batches(Paragraph, paragraph_list_to_create, batch_size=1000)
             # 批量插入问题
             bulk_create_in_batches(Problem, problem_model_list, batch_size=1000)
             # 批量插入关联问题

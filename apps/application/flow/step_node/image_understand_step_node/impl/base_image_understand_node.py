@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from application.flow.i_step_node import NodeResult, INode
 from application.flow.step_node.image_understand_step_node.i_image_understand_node import IImageUnderstandNode
 from application.flow.tools import Reasoning
+from common.utils.common import normalize_uuid
 from knowledge.models import File
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
@@ -118,11 +119,25 @@ def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wor
     _write_context(node_variable, workflow_variable, node, workflow, content, reasoning_content)
 
 
-def file_id_to_base64(file_id: str):
-    file = QuerySet(File).filter(id=file_id).first()
-    file_bytes = file.get_bytes()
-    base64_image = base64.b64encode(file_bytes).decode("utf-8")
-    return [base64_image, what(None, file_bytes)]
+def get_file_map(file_id_list):
+    """批量查询文件，避免循环内逐个查询（N+1）；映射键为规范化后的 uuid 字符串"""
+    file_id_list = [file_id for file_id in {normalize_uuid(file_id) for file_id in (file_id_list or [])} if file_id]
+    if not file_id_list:
+        return {}
+    return {str(f.id): f for f in QuerySet(File).filter(id__in=file_id_list)}
+
+
+def file_id_list_to_base64(file_id_list):
+    """批量将文件转为 base64，保持与入参 file_id_list 一致的顺序"""
+    file_map = get_file_map(file_id_list)
+    result = []
+    for file_id in file_id_list:
+        file = file_map.get(normalize_uuid(file_id))
+        if file is None:
+            raise Exception(_('The file does not exist') + f": {file_id}")
+        file_bytes = file.get_bytes()
+        result.append([base64.b64encode(file_bytes).decode("utf-8"), what(None, file_bytes)])
+    return result
 
 
 class BaseImageUnderstandNode(IImageUnderstandNode):
@@ -263,7 +278,7 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
                         file_id_list.append(image.get('file_id'))
                     elif 'url' in image:
                         url_list.append(image.get('url'))
-                image_base64_list = [file_id_to_base64(file_id) for file_id in file_id_list]
+                image_base64_list = file_id_list_to_base64(file_id_list)
 
                 return HumanMessage(
                     content=[
@@ -286,10 +301,13 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
         if isinstance(image, str) and image.startswith('http'):
             images.append({'type': 'image_url', 'image_url': {'url': image}})
         elif image is not None and len(image) > 0:
+            file_map = get_file_map([img['file_id'] for img in image if 'file_id' in img])
             for img in image:
                 if 'file_id' in img:
                     file_id = img['file_id']
-                    file = QuerySet(File).filter(id=file_id).first()
+                    file = file_map.get(normalize_uuid(file_id))
+                    if file is None:
+                        raise Exception(_('The file does not exist') + f": {file_id}")
                     image_bytes = file.get_bytes()
                     base64_image = base64.b64encode(image_bytes).decode("utf-8")
                     image_format = what(None, image_bytes)
