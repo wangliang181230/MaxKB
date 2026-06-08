@@ -15,6 +15,7 @@ import queue
 import re
 import shutil
 import threading
+import time
 import zipfile
 from functools import reduce
 from typing import Iterator
@@ -328,7 +329,7 @@ def to_stream_response_simple(stream_event):
     return r
 
 
-def generate_tool_message_complete(icon, name, input_content, output_content):
+def generate_tool_message_complete(icon, name, input_content, output_content, run_time):
     """生成包含输入和输出的工具消息模版"""
     # 确保输入内容是字符串，如果不是则尝试转换为 JSON 字符串
     if not isinstance(input_content, str):
@@ -340,6 +341,7 @@ def generate_tool_message_complete(icon, name, input_content, output_content):
         "icon": icon,
         "title": name,
         "type": "simple-tool-calls",
+        "run_time": round(run_time, 3),
         "content": {"input": input_content, "output": output_content},
     }
     return f"<tool_calls_render>{json.dumps(content, ensure_ascii=False)}</tool_calls_render>"
@@ -479,7 +481,7 @@ async def _yield_mcp_response(
             stream_mode="messages",
         )
 
-        tool_calls_info = {}  # tool_id -> {'name': ..., 'input': ...}
+        tool_calls_info = {}  # tool_id -> {'name': ..., 'input': ..., 'start_time': ...}
         # key(index/id) -> {'id': ..., 'name': ..., 'arguments': ...}
         _tool_fragments = {}
 
@@ -619,7 +621,7 @@ async def _yield_mcp_response(
                                     else parsed_args
                                 )
                                 normalized_id = _extract_tool_id(entry["id"])
-                                info = {"name": entry["name"], "input": json.dumps(filtered_args, ensure_ascii=False)}
+                                info = {"name": entry["name"], "input": json.dumps(filtered_args, ensure_ascii=False), 'start_time': time.time()}
                                 tool_calls_info[entry["id"]] = info
                                 if normalized_id and normalized_id != entry["id"]:
                                     tool_calls_info[normalized_id] = info
@@ -637,6 +639,7 @@ async def _yield_mcp_response(
                                     "name": entry["name"],
                                     # Use raw arguments
                                     "input": entry["arguments"],
+                                    "start_time": time.time(),
                                 }
                                 tool_calls_info[entry["id"]] = info
                                 if normalized_id and normalized_id != entry["id"]:
@@ -683,6 +686,7 @@ async def _yield_mcp_response(
                 tool_info = tool_calls_info.get(tool_id) or tool_calls_info.get(normalized_tool_id)
 
                 if tool_info:
+                    run_time = 0
                     try:
                         if isinstance(chunk[0].content, str):
                             tool_result = json.loads(chunk[0].content)
@@ -698,13 +702,14 @@ async def _yield_mcp_response(
                             tool_lib_id = text_result.pop("tool_id") if "tool_id" in text_result else None
                         else:
                             tool_lib_id = tool_result.pop("tool_id") if "tool_id" in tool_result else None
+                        run_time = time.time() - tool_info.get('start_time', time.time())
                         if tool_lib_id:
-                            await save_tool_record(tool_lib_id, tool_info, tool_result, source_id, source_type)
+                            await save_tool_record(tool_lib_id, tool_info, tool_result, source_id, source_type, run_time)
                         tool_result = json.dumps(text_result, ensure_ascii=False)
                     except Exception as e:
                         tool_result = chunk[0].content
                     content = generate_tool_message_complete(
-                        tool_info.get("icon", ""), tool_info["name"], tool_info["input"], tool_result
+                        tool_info.get("icon", ""), tool_info["name"], tool_info["input"], tool_result, run_time
                     )
                     chunk[0].content = content
                 else:
@@ -733,7 +738,7 @@ async def _yield_mcp_response(
         raise RuntimeError(error_msg) from None
 
 
-async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_type):
+async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_type, run_time):
     tool = await sync_to_async(lambda: QuerySet(Tool).filter(id=tool_id).first())()
     tool_info["icon"] = tool.icon
     tool_record = ToolRecord(
@@ -744,6 +749,7 @@ async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_ty
         source_id=source_id,
         meta={"input": tool_info["input"], "output": tool_result},
         state=State.SUCCESS,
+        run_time=run_time,
     )
     await sync_to_async(tool_record.save)()
 
