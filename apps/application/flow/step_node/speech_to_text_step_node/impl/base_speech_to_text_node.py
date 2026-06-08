@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.speech_to_text_step_node.i_speech_to_text_node import ISpeechToTextNode
-from common.utils.common import split_and_transcribe, any_to_mp3
+from common.utils.common import split_and_transcribe, any_to_mp3, normalize_uuid
 from knowledge.models import File
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
@@ -46,8 +46,16 @@ class BaseSpeechToTextNode(ISpeechToTextNode):
         audio_list = audio
         self.context['audio_list'] = audio
 
-        def process_audio_item(audio_item, model):
-            file = QuerySet(File).filter(id=audio_item['file_id']).first()
+        # 批量查询音频文件，避免线程内逐个查询（N+1）
+        audio_file_id_list = [item['file_id'] for item in audio_list if item.get('file_id')]
+        audio_file_map = {}
+        audio_file_ids = [file_id for file_id in {normalize_uuid(file_id) for file_id in audio_file_id_list} if file_id]
+        if audio_file_ids:
+            audio_file_map = {str(f.id): f for f in QuerySet(File).filter(id__in=audio_file_ids)}
+
+        def process_audio_item(audio_item, model, file):
+            if file is None:
+                raise Exception(_('The file does not exist') + f": {audio_item.get('file_id')}")
             # 根据file_name 吧文件转成mp3格式
             file_format = file.file_name.split('.')[-1]
             with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_format}') as temp_file:
@@ -65,7 +73,10 @@ class BaseSpeechToTextNode(ISpeechToTextNode):
 
         def process_audio_items(audio_list, model):
             with ThreadPoolExecutor(max_workers=5) as executor:
-                results = list(executor.map(lambda item: process_audio_item(item, model), audio_list))
+                results = list(executor.map(
+                    lambda item: process_audio_item(
+                        item, model, audio_file_map.get(normalize_uuid(item['file_id']))),
+                    audio_list))
             return results
 
         result = process_audio_items(audio_list, stt_model)

@@ -104,16 +104,15 @@ def clean_method(query_conditions, clean_log=True):
             max_create_times = ChatRecord.objects.filter(id__in=chat_record_ids).values('chat_id').annotate(
                 max_create_time=Max('create_time'))
 
-            # 收集需要删除的文件
+            # 收集需要删除的文件(合并为一条查询，避免逐条记录查库)
+            max_create_time_map = {str(item['chat_id']): item['max_create_time'] for item in max_create_times}
             files_to_delete = []
-            for record in chat_records:
-                max_create_time = next(
-                    (item['max_create_time'] for item in max_create_times if
-                     str(item['chat_id']) == str(record.chat_id)), None)
-                if max_create_time:
-                    files_to_delete.extend(
-                        File.objects.filter(source_id=str(record.chat_id), create_time__lt=max_create_time)
-                    )
+            file_query = None
+            for chat_id, max_create_time in max_create_time_map.items():
+                cond = Q(source_id=str(chat_id), create_time__lt=max_create_time)
+                file_query = cond if file_query is None else (file_query | cond)
+            if file_query is not None:
+                files_to_delete = list(File.objects.filter(file_query))
             # 删除 ChatRecord
             deleted_count = 0
             if clean_log:
@@ -127,9 +126,12 @@ def clean_method(query_conditions, clean_log=True):
 
                 count_map = {item['chat_id']: item['count'] for item in updated_counts}
 
-                for chat_id in chat_ids:
-                    count = count_map.get(chat_id, 0)  # 如果没有记录则为0
-                    Chat.objects.filter(id=chat_id).update(chat_record_count=count)
+                chat_updates = [
+                    Chat(id=chat_id, chat_record_count=count_map.get(chat_id, 0))
+                    for chat_id in chat_ids
+                ]
+                if chat_updates:
+                    Chat.objects.bulk_update(chat_updates, ['chat_record_count'], batch_size=batch_size)
 
                 # 删除已经没有关联 ChatRecord 的 Chat
                 orphan_chat_ids = [chat_id for chat_id in chat_ids if count_map.get(chat_id, 0) == 0]

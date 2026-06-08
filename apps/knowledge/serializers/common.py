@@ -186,6 +186,7 @@ def is_valid_uuid(s):
 
 
 def write_image(zip_path: str, image_list: List[str]):
+    image_id_list = []
     for image in image_list:
         # Match (./oss/file/<id>) from both image syntax and regular links/HTML src
         src_match = re.search(r'\bsrc=["\'](\./oss/(?:file|image)/[^"\']+)["\']', image)
@@ -199,7 +200,14 @@ def write_image(zip_path: str, image_list: List[str]):
             continue
         if not is_valid_uuid(image_id):
             continue
-        file = QuerySet(File).filter(id=image_id).first()
+        if image_id not in image_id_list:
+            image_id_list.append(image_id)
+    if not image_id_list:
+        return
+    # 批量查询图片文件，避免循环内逐个查询（N+1）
+    file_map = {str(f.id): f for f in QuerySet(File).filter(id__in=image_id_list)}
+    for image_id in image_id_list:
+        file = file_map.get(image_id)
         if file is None:
             continue
         zip_inner_path = os.path.join('oss', 'file', image_id)

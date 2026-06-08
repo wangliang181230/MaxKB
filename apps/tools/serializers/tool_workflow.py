@@ -79,6 +79,7 @@ def is_valid_tool_workflow_circular_dependency(workflow, _id, visited=None, stac
 
     stack.add(_id)
 
+    child_tool_id_list = []
     for node in workflow.get("nodes", []):
         child_tool_ids = []
         if node.get("type") == "ai-chat-node":
@@ -87,14 +88,22 @@ def is_valid_tool_workflow_circular_dependency(workflow, _id, visited=None, stac
         if node.get("type") == "tool-workflow-lib-node":
             child_tool_id = node.get("properties", {}).get("node_data", {}).get("tool_lib_id")
             child_tool_ids.append(child_tool_id)
-        for child_tool_id in child_tool_ids:
-            if child_tool_id:
-                child_workflow = QuerySet(ToolWorkflow).filter(tool_id=child_tool_id).first()
-                if child_workflow:
-                    if not is_valid_tool_workflow_circular_dependency(
-                        child_workflow.work_flow, str(child_tool_id), visited, stack
-                    ):
-                        return False
+        child_tool_id_list.extend([child_tool_id for child_tool_id in child_tool_ids if child_tool_id])
+
+    # 批量查询子工具工作流，避免循环内逐个查询（N+1）
+    child_workflow_map = {}
+    if child_tool_id_list:
+        child_workflow_map = {
+            str(tw.tool_id): tw
+            for tw in QuerySet(ToolWorkflow).filter(tool_id__in=list(set(map(str, child_tool_id_list))))
+        }
+    for child_tool_id in child_tool_id_list:
+        child_workflow = child_workflow_map.get(str(child_tool_id))
+        if child_workflow:
+            if not is_valid_tool_workflow_circular_dependency(
+                child_workflow.work_flow, str(child_tool_id), visited, stack
+            ):
+                return False
 
     stack.remove(_id)
     visited.add(_id)

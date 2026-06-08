@@ -214,13 +214,19 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
 
 
 def get_tokens(loop_node_data):
+    if not loop_node_data:
+        return {'message_tokens': 0, 'answer_tokens': 0}
+
     message_tokens = 0
     answer_tokens = 0
-    for details in (loop_node_data or {}):
-        message_tokens += sum([row.get('message_tokens') or 0 for row in details.values() if
-                               'message_tokens' in row and row.get('message_tokens') is not None])
-        answer_tokens += sum([row.get('answer_tokens') or 0 for row in details.values() if
-                              'answer_tokens' in row and row.get('answer_tokens') is not None])
+    for details in loop_node_data:
+        if not isinstance(details, dict):
+            continue
+        for row in details.values():
+            if not isinstance(row, dict):
+                continue
+            message_tokens += row.get('message_tokens') or 0
+            answer_tokens += row.get('answer_tokens') or 0
     return {'message_tokens': message_tokens, 'answer_tokens': answer_tokens}
 
 

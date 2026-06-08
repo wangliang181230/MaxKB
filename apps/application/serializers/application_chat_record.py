@@ -364,6 +364,22 @@ class ApplicationChatRecordAddKnowledgeSerializer(serializers.Serializer):
         paragraphs = []
         paragraph_ids = []
         problem_paragraph_mappings = []
+        # 批量查询并创建问题，避免循环内逐个 get_or_create 查询（N+1）
+        problem_content_list = list(dict.fromkeys(chat_record.problem_text for chat_record in chat_record_list))
+        problem_map = {}
+        if problem_content_list:
+            problem_map = {
+                problem.content: problem
+                for problem in Problem.objects.filter(knowledge_id=knowledge_id, content__in=problem_content_list)
+            }
+        new_problem_list = [
+            Problem(id=uuid.uuid7(), content=content, knowledge_id=knowledge_id)
+            for content in problem_content_list
+            if content not in problem_map
+        ]
+        if new_problem_list:
+            Problem.objects.bulk_create(new_problem_list)
+            problem_map.update({problem.content: problem for problem in new_problem_list})
         for chat_record in chat_record_list:
             paragraph = Paragraph(
                 id=uuid.uuid7(),
@@ -373,7 +389,7 @@ class ApplicationChatRecordAddKnowledgeSerializer(serializers.Serializer):
                 title=chat_record.problem_text,
                 chunks=text_to_chunk(chat_record.answer_text),
             )
-            problem, _ = Problem.objects.get_or_create(content=chat_record.problem_text, knowledge_id=knowledge_id)
+            problem = problem_map[chat_record.problem_text]
             problem_paragraph_mapping = ProblemParagraphMapping(
                 id=uuid.uuid7(),
                 knowledge_id=knowledge_id,

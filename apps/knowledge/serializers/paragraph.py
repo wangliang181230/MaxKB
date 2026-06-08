@@ -11,6 +11,7 @@ from common.exception.app_exception import AppApiException
 from common.utils.common import post
 from django.db import transaction
 from django.db.models import Count, F, QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -682,12 +683,15 @@ class ParagraphSerializers(serializers.Serializer):
                 Paragraph.objects.filter(document_id=target_document_id).exclude(id__in=paragraph_id_list).update(
                     position=F("position") + len(paragraph_id_list)
                 )
-                # 重新查询迁移的段落
-                paragraph_list = Paragraph.objects.filter(id__in=paragraph_id_list, document_id=target_document_id)
                 # 将迁移的段落位置设置为从1开始的序号
+                paragraph_list = list(
+                    Paragraph.objects.filter(id__in=paragraph_id_list, document_id=target_document_id)
+                )
+                update_time = timezone.now()
                 for i, paragraph in enumerate(paragraph_list):
                     paragraph.position = i + 1
-                    paragraph.save()
+                    paragraph.update_time = update_time
+                Paragraph.objects.bulk_update(paragraph_list, ["position", "update_time"], batch_size=100)
             # 不同数据集迁移
             else:
                 problem_list = QuerySet(Problem).filter(
@@ -736,12 +740,15 @@ class ParagraphSerializers(serializers.Serializer):
                 Paragraph.objects.filter(document_id=target_document_id).exclude(id__in=pid_list).update(
                     position=F("position") + len(pid_list)
                 )
-                # 重新查询迁移的段落
-                paragraph_list = Paragraph.objects.filter(id__in=pid_list, document_id=target_document_id)
                 # 将迁移的段落位置设置为从1开始的序号
+                paragraph_list = list(
+                    Paragraph.objects.filter(id__in=pid_list, document_id=target_document_id)
+                )
+                update_time = timezone.now()
                 for i, paragraph in enumerate(paragraph_list):
                     paragraph.position = i + 1
-                    paragraph.save()
+                    paragraph.update_time = update_time
+                Paragraph.objects.bulk_update(paragraph_list, ["position", "update_time"], batch_size=100)
                 # 修改向量段落信息
                 update_embedding_document_id(pid_list, target_document_id, target_knowledge_id, embedding_model_id)
 
