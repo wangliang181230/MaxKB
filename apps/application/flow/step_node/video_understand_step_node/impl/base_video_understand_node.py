@@ -6,11 +6,13 @@ from typing import List, Dict
 
 from django.db import connection
 from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AIMessage
 
 from application.flow.i_step_node import NodeResult, INode
 from application.flow.step_node.video_understand_step_node.i_video_understand_node import IVideoUnderstandNode
 from application.flow.tools import Reasoning
+from common.utils.common import normalize_uuid
 from knowledge.models import File
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
@@ -117,11 +119,12 @@ def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wor
     _write_context(node_variable, workflow_variable, node, workflow, content, reasoning_content)
 
 
-def file_id_to_base64(file_id: str, video_model):
-    file = QuerySet(File).filter(id=file_id).first()
-    file_bytes = file.get_bytes()
-    url = video_model.upload_file_and_get_url(file_bytes, file.file_name)
-    return url
+def get_file_map(file_id_list):
+    """批量查询文件，避免循环内逐个查询（N+1）；映射键为规范化后的 uuid 字符串"""
+    file_id_list = [file_id for file_id in {normalize_uuid(file_id) for file_id in (file_id_list or [])} if file_id]
+    if not file_id_list:
+        return {}
+    return {str(f.id): f for f in QuerySet(File).filter(id__in=file_id_list)}
 
 
 class BaseVideoUnderstandNode(IVideoUnderstandNode):
@@ -263,7 +266,13 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
                         file_id_list.append(image.get('file_id'))
                     elif 'url' in image:
                         url_list.append(image.get('url'))
-                video_base64_list = [file_id_to_base64(video.get('file_id'), video_model) for video in video_list]
+                file_map = get_file_map(file_id_list)
+                video_base64_list = []
+                for file_id in file_id_list:
+                    file = file_map.get(normalize_uuid(file_id))
+                    if file is None:
+                        raise Exception(_('The file does not exist') + f": {file_id}")
+                    video_base64_list.append(video_model.upload_file_and_get_url(file.get_bytes(), file.file_name))
                 return HumanMessage(
                     content=[
                         {'type': 'text', 'text': data['question']},
@@ -281,10 +290,13 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
         if isinstance(image, str) and image.startswith('http'):
             videos.append({'type': 'video_url', 'video_url': {'url': image}})
         elif image is not None and len(image) > 0:
+            file_map = get_file_map([img['file_id'] for img in image if 'file_id' in img])
             for img in image:
                 if 'file_id' in img:
                     file_id = img['file_id']
-                    file = QuerySet(File).filter(id=file_id).first()
+                    file = file_map.get(normalize_uuid(file_id))
+                    if file is None:
+                        raise Exception(_('The file does not exist') + f": {file_id}")
                     url = video_model.upload_file_and_get_url(file.get_bytes(), file.file_name)
                     videos.append(
                         {'type': 'video_url', 'video_url': {'url': url}})

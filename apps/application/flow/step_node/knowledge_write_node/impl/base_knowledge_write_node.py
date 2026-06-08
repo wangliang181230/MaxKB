@@ -291,14 +291,25 @@ class BaseKnowledgeWriteNode(IKnowledgeWriteNode):
         QuerySet(Document).bulk_create(document_model_list) if len(document_model_list) > 0 else None
 
         if len(paragraph_model_list) > 0:
+            # 一次分组聚合各文档已有的最大 position，避免循环内逐个聚合查询（N+1）
+            max_position_map = {
+                row['document_id']: row['max_position'] or 0
+                for row in Paragraph.objects.filter(
+                    document_id__in=[document.id for document in document_model_list]
+                ).values('document_id').annotate(max_position=Max('position'))
+            }
+            paragraph_group_map = {}
+            for paragraph in paragraph_model_list:
+                paragraph_group_map.setdefault(paragraph.document_id, []).append(paragraph)
+            paragraph_list_to_create = []
             for document in document_model_list:
-                max_position = Paragraph.objects.filter(document_id=document.id).aggregate(
-                    max_position=Max('position')
-                )['max_position'] or 0
-                sub_list = [p for p in paragraph_model_list if p.document_id == document.id]
-                for i, paragraph in enumerate(sub_list):
+                max_position = max_position_map.get(document.id, 0)
+                for i, paragraph in enumerate(paragraph_group_map.get(document.id, [])):
                     paragraph.position = max_position + i + 1
-                QuerySet(Paragraph).bulk_create(sub_list if len(sub_list) > 0 else [])
+                    paragraph_list_to_create.append(paragraph)
+            if paragraph_list_to_create:
+                # 分批插入，避免单次 bulk_create 参数过多超出 PostgreSQL 协议限制
+                bulk_create_in_batches(Paragraph, paragraph_list_to_create, batch_size=1000)
 
         bulk_create_in_batches(Problem, problem_model_list, batch_size=1000)
 

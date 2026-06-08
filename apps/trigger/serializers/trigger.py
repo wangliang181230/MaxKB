@@ -463,13 +463,12 @@ class TriggerSerializer(serializers.Serializer):
                 self.is_valid(raise_exception=True)
             workspace_id = self.data.get("workspace_id")
             trigger_id_list = instance.get("id_list")
-            trigger_id_list = list(
+            triggers = list(
                 QuerySet(Trigger)
                 .filter(id__in=trigger_id_list, workspace_id=workspace_id)
-                .values_list("id", flat=True)
             )
-            for trigger_id in trigger_id_list:
-                trigger = QuerySet(Trigger).filter(id=trigger_id).first()
+            trigger_id_list = [str(trigger.id) for trigger in triggers]
+            for trigger in triggers:
                 undeploy(TriggerModelSerializer(trigger).data, **{})
 
             TaskRecord.objects.filter(trigger_id__in=trigger_id_list).delete()
@@ -490,13 +489,13 @@ class TriggerSerializer(serializers.Serializer):
             is_active = instance.get("is_active")
             Trigger.objects.filter(workspace_id=workspace_id, id__in=trigger_id_list, is_active=not is_active).update(
                 is_active=is_active)
+            # 批量查询触发器，避免循环内逐个查询（N+1）
+            triggers = list(QuerySet(Trigger).filter(workspace_id=workspace_id, id__in=trigger_id_list))
             if is_active:
-                for trigger_id in trigger_id_list:
-                    trigger = QuerySet(Trigger).filter(id=trigger_id).first()
+                for trigger in triggers:
                     deploy(TriggerModelSerializer(trigger).data, **{})
             else:
-                for trigger_id in trigger_id_list:
-                    trigger = QuerySet(Trigger).filter(id=trigger_id).first()
+                for trigger in triggers:
                     undeploy(TriggerModelSerializer(trigger).data, **{})
 
             return True
