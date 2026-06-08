@@ -118,16 +118,20 @@ class ChatRecordShareLinkSerializer(serializers.Serializer):
             raise AppApiException(500, _('Chat id does not exist'))
 
     def generate_link(self, instance, with_valid=True):
+        sorted_ids = None
         if with_valid:
             request_serializer = ChatRecordShareLinkRequestSerializer(data=instance)
             request_serializer.is_valid(raise_exception=True)
             self.is_valid(raise_exception=True)
             if not instance.get('is_current_all', False):
                 chat_record_ids: list[str] = instance.get('chat_record_ids')
-
-                record_count = ChatRecord.objects.filter(id__in=chat_record_ids,
-                                                         chat_id=self.data.get('chat_id')).count()
-                if record_count != len(chat_record_ids):
+                sorted_ids = list(
+                    ChatRecord.objects.filter(id__in=chat_record_ids,
+                                              chat_id=self.data.get('chat_id'))
+                    .order_by('create_time')
+                    .values_list('id', flat=True)
+                )
+                if len(sorted_ids) != len(chat_record_ids):
                     raise AppApiException(500, _('Invalid chat record ids'))
         chat_id = self.data.get('chat_id')
         application_id = self.data.get('application_id')
@@ -140,7 +144,13 @@ class ChatRecordShareLinkSerializer(serializers.Serializer):
             )
         else:
             chat_record_ids: list[str] = instance.get('chat_record_ids')
-            sorted_ids = list(ChatRecord.objects.filter(id__in=chat_record_ids).order_by('create_time').values_list('id',flat=True))
+            if sorted_ids is None:
+                sorted_ids = list(
+                    ChatRecord.objects.filter(id__in=chat_record_ids,
+                                              chat_id=chat_id)
+                    .order_by('create_time')
+                    .values_list('id', flat=True)
+                )
 
         existing = ChatShareLink.objects.filter(
             chat_id=chat_id, application_id=application_id,
