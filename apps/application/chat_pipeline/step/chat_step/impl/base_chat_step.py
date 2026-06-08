@@ -379,8 +379,10 @@ class BaseChatStep(IChatStep):
         tools = get_tools("APPLICATION", agent_id, tool_ids, workspace_id, runtime_user_id)
         if tool_ids and len(tool_ids) > 0:  # 如果有工具ID，则将其转换为MCP
             self.context["tool_ids"] = tool_ids
+            # 批量查询Tool，避免N+1
+            custom_tools = {str(t.id): t for t in QuerySet(Tool).filter(id__in=tool_ids, tool_type=ToolType.CUSTOM)}
             for tool_id in tool_ids:
-                tool = QuerySet(Tool).filter(id=tool_id, tool_type=ToolType.CUSTOM).first()
+                tool = custom_tools.get(str(tool_id))
                 if tool is None or tool.is_active is False:
                     continue
                 executor = ToolExecutor()
@@ -395,16 +397,18 @@ class BaseChatStep(IChatStep):
 
         if application_ids and len(application_ids) > 0:
             self.context["application_ids"] = application_ids
+            # 批量查询Application、ApplicationApiKey、ApplicationAccessToken，避免N+1
+            app_map = {str(a.id): a for a in QuerySet(Application).filter(id__in=application_ids, is_publish=True)}
+            api_key_map = {str(k.application_id): k for k in QuerySet(ApplicationApiKey).filter(application_id__in=application_ids, is_active=True)}
+            access_token_map = {str(t.application_id): t for t in QuerySet(ApplicationAccessToken).filter(application_id__in=application_ids)}
             for application_id in application_ids:
-                app = QuerySet(Application).filter(id=application_id, is_publish=True).first()
+                app = app_map.get(str(application_id))
                 if app is None:
                     continue
-                app_key = QuerySet(ApplicationApiKey).filter(application_id=application_id, is_active=True).first()
+                app_key = api_key_map.get(str(application_id))
                 if app_key is not None:
                     api_key = app_key.secret_key
-                    application_access_token = (
-                        QuerySet(ApplicationAccessToken).filter(application_id=app_key.application_id).first()
-                    )
+                    application_access_token = access_token_map.get(str(app_key.application_id))
                     if application_access_token is not None and application_access_token.authentication:
                         raise AppApiException(
                             500,
@@ -423,9 +427,10 @@ class BaseChatStep(IChatStep):
         if skill_tool_ids and len(skill_tool_ids) > 0:
             self.context["skill_tool_ids"] = skill_tool_ids
             skill_file_items = []
-
+            # 批量查询skill tool，避免N+1
+            skill_tools = {str(t.id): t for t in QuerySet(Tool).filter(id__in=skill_tool_ids, is_active=True)}
             for tool_id in skill_tool_ids:
-                tool = QuerySet(Tool).filter(id=tool_id, is_active=True).first()
+                tool = skill_tools.get(str(tool_id))
                 if tool is None or tool.is_active is False:
                     continue
                 init_params_default_value = {i["field"]: i.get("default_value") for i in tool.init_field_list}
