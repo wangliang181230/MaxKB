@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from collections import Counter
+
 import uuid_utils.compat as uuid
 from django.db import transaction
 from django.db.models import QuerySet, Q, Func, F, TextField
@@ -256,38 +258,56 @@ class FolderSerializer(serializers.Serializer):
 
             # 工作空间管理员可以删除
             workspace_manage = is_workspace_manage(self.data.get('user_id'), self.data.get('workspace_id'))
+            nodes = list(Folder.objects.filter(id=self.data.get('id')).get_descendants(include_self=True))
+            # 一次查询所有节点下的资源，避免循环内逐个查询（N+1）
+            source_map = self.get_source_map(Source, nodes)
             if workspace_manage:
-                nodes = Folder.objects.filter(id=self.data.get('id')).get_descendants(include_self=True)
                 for node in nodes:
-                    # print(node)
                     # 删除相关的资源
-                    self.delete_source(node)
+                    self.delete_source(node, source_map.get(str(node.id), []))
                     # 删除节点
                     node.delete()
             # 普通用户删除的文件夹内全部都得是自己有权限的资源
             else:
-                nodes = Folder.objects.filter(id=self.data.get('id')).get_descendants(include_self=True)
+                # 一次查询所有资源的授权记录，避免循环内逐个统计（N+1）
+                auth_counter = Counter(self.get_auth_target_list(source_map))
                 for node in nodes:
-                    # 删除相关的资源
-                    source_ids = (Source.objects.filter(folder_id=node.id)
-                                  .annotate(id_str=Cast('id', TextField()))
-                                  .values_list('id_str', flat=True))
+                    source_ids = source_map.get(str(node.id), [])
                     # 检查文件夹是否存在未授权当前用户的资源
-                    auth_list = QuerySet(WorkspaceUserResourcePermission).filter(
-                        Q(workspace_id=self.data.get('workspace_id')) &
-                        Q(user_id=self.data.get('user_id')) &
-                        Q(auth_target_type=self.data.get('source')) &
-                        Q(target__in=source_ids) &
-                        Q(permission_list__overlap=[ResourcePermission.MANAGE, ResourcePermissionRole.ROLE])
-                    ).count()
+                    auth_list = sum(auth_counter.get(source_id, 0) for source_id in source_ids)
                     if auth_list != len(source_ids):
                         raise AppApiException(500, _('This folder contains resources that you dont have permission'))
-                    self.delete_source(node)
+                    self.delete_source(node, source_ids)
                     node.delete()
 
-        def delete_source(self, node):
+        def get_source_map(self, Source, nodes):
+            """批量获取各文件夹下的资源id，按 folder_id 分组"""
+            source_map = {}
+            if not nodes:
+                return source_map
+            for folder_id, source_id in (Source.objects.filter(folder_id__in=[node.id for node in nodes])
+                                         .annotate(id_str=Cast('id', TextField()))
+                                         .values_list('folder_id', 'id_str')):
+                source_map.setdefault(str(folder_id), []).append(source_id)
+            return source_map
+
+        def get_auth_target_list(self, source_map):
+            """批量获取当前用户对资源的授权记录（保留重复行，与逐条 count 语义一致）"""
+            all_source_ids = [source_id for source_ids in source_map.values() for source_id in source_ids]
+            if not all_source_ids:
+                return []
+            return list(QuerySet(WorkspaceUserResourcePermission).filter(
+                Q(workspace_id=self.data.get('workspace_id')) &
+                Q(user_id=self.data.get('user_id')) &
+                Q(auth_target_type=self.data.get('source')) &
+                Q(target__in=all_source_ids) &
+                Q(permission_list__overlap=[ResourcePermission.MANAGE, ResourcePermissionRole.ROLE])
+            ).values_list('target', flat=True))
+
+        def delete_source(self, node, source_ids=None):
             Source = get_source_type(self.data.get('source'))  # noqa
-            source_ids = Source.objects.filter(folder_id=node.id).values_list('id', flat=True)
+            if source_ids is None:
+                source_ids = Source.objects.filter(folder_id=node.id).values_list('id', flat=True)
             source = self.data.get('source')
 
             for source_id in source_ids:

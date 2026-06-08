@@ -702,16 +702,23 @@ class HomePageSerializer(serializers.Serializer):
             return self.merge_customer_chat_record(chat_record_aggregate_trend, customer_count_trend)
 
         def merge_customer_chat_record(self, chat_record_aggregate_trend: List[Dict], customer_count_trend: List[Dict]):
-
-            return [{**self.find(chat_record_aggregate_trend, lambda c: c.get('day').strftime('%Y-%m-%d') == day,
-                                 {'star_num': 0, 'trample_num': 0, 'tokens_num': 0, 'chat_record_count': 0,
-                                  'customer_num': 0,
-                                  'day': day}),
-                     **self.find(customer_count_trend, lambda c: c.get('day').strftime('%Y-%m-%d') == day,
-                                 {'customer_added_count': 0})}
-                    for
-                    day in
-                    self.get_days_between_dates(self.data.get('start_time'), self.data.get('end_time'))]
+            # 预构建日期->数据的映射，将 O(D*(N+M)) 优化为 O(D+N+M)
+            chat_record_map = {
+                item.get('day').strftime('%Y-%m-%d'): item
+                for item in chat_record_aggregate_trend
+            }
+            customer_count_map = {
+                item.get('day').strftime('%Y-%m-%d'): item
+                for item in customer_count_trend
+            }
+            default_chat = {'star_num': 0, 'trample_num': 0, 'tokens_num': 0, 'chat_record_count': 0,
+                            'customer_num': 0}
+            default_customer = {'customer_added_count': 0}
+            return [
+                {**chat_record_map.get(day, {**default_chat, 'day': day}),
+                 **customer_count_map.get(day, {**default_customer, 'day': day})}
+                for day in self.get_days_between_dates(self.data.get('start_time'), self.data.get('end_time'))
+            ]
 
         @staticmethod
         def find(source_list, condition, default):
