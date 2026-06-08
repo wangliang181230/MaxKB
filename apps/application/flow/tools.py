@@ -8,6 +8,7 @@
 """
 
 import asyncio
+import concurrent.futures
 import io
 import json
 import os
@@ -37,6 +38,7 @@ import langchain_core.messages.ai as _lc_ai_module
 import uuid_utils.compat as uuid
 from asgiref.sync import sync_to_async
 from common.result import result
+from common.utils.common import get_env_int, normalize_uuid
 from common.utils.logger import maxkb_logger
 from deepagents import create_deep_agent
 from django.db.models import OuterRef, QuerySet, Subquery
@@ -364,6 +366,12 @@ def get_global_loop():
     with _loop_lock:
         if _global_loop is None:
             _global_loop = asyncio.new_event_loop()
+            # 设置较大的默认线程池，避免同步I/O阻塞事件循环
+            _default_executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=get_env_int('ASYNC_LOOP_MAX_WORKERS', 20, 50),
+                thread_name_prefix="AsyncLoopWorker"
+            )
+            _global_loop.set_default_executor(_default_executor)
 
             def run_forever():
                 asyncio.set_event_loop(_global_loop)
@@ -405,9 +413,16 @@ async def _initialize_skills(mcp_servers, temp_dir) -> SandboxMCPBackend:
     mcp_config = dict(mcp_servers)  # Preserve server-generated InternalMCPConfig objects.
     if "skills" in mcp_config:
         skill_file_items = mcp_config.pop("skills")
+        # 批量查询技能文件，避免循环内逐个查询（N+1）
+        skill_file_ids = [file_id for file_id in
+                          {normalize_uuid(skill_file.get("file_id")) for skill_file in skill_file_items} if file_id]
+        skill_file_map = {}
+        if skill_file_ids:
+            skill_file_map = await sync_to_async(
+                lambda: {str(f.id): f for f in QuerySet(File).filter(id__in=skill_file_ids)}
+            )()
         for skill_file in skill_file_items:
-            # 使用 sync_to_async 包装 ORM 查询
-            file = await sync_to_async(lambda: QuerySet(File).filter(id=skill_file["file_id"]).first())()
+            file = skill_file_map.get(normalize_uuid(skill_file.get("file_id")))
             if not file:
                 continue
             # get_bytes 可能也涉及 IO，也用 sync_to_async 包装

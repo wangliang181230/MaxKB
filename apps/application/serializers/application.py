@@ -1223,9 +1223,9 @@ class ApplicationOperateSerializer(serializers.Serializer):
             .distinct()
         )
         QuerySet(TriggerTask).filter(source_type="APPLICATION", source_id=application_id).delete()
-        for trigger_id in trigger_ids:
-            trigger = Trigger.objects.filter(id=trigger_id["trigger_id"]).first()
-            if trigger and trigger.is_active:
+        # 批量查询触发器，避免循环内逐个查询（N+1）
+        for trigger in Trigger.objects.filter(id__in=[t["trigger_id"] for t in trigger_ids]):
+            if trigger.is_active:
                 deploy(TriggerModelSerializer(trigger).data, **{})
         #
         schedule_extract_long_term_memory(self.data.get("workspace_id"), application_id, False, None, None)
@@ -1255,11 +1255,16 @@ class ApplicationOperateSerializer(serializers.Serializer):
                 )
             }
             # 如果是技能工具，则需要将code字段转换为文件内容的base64字符串
-            for tool in tool_list:
-                if tool.tool_type == ToolType.SKILL:
-                    skill_file = QuerySet(File).filter(id=tool.code).first()
-                    if skill_file:
-                        tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
+            skill_file_id_list = [tool.code for tool in tool_list if tool.tool_type == ToolType.SKILL]
+            if skill_file_id_list:
+                skill_file_map = {
+                    str(f.id): f for f in QuerySet(File).filter(id__in=skill_file_id_list)
+                }
+                for tool in tool_list:
+                    if tool.tool_type == ToolType.SKILL:
+                        skill_file = skill_file_map.get(str(tool.code))
+                        if skill_file:
+                            tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
             application_dict = ApplicationSerializerModel(application).data
 
             mk_instance = MKInstance(
@@ -1878,9 +1883,9 @@ class ApplicationBatchOperateSerializer(serializers.Serializer):
         )
         QuerySet(TriggerTask).filter(source_type="APPLICATION", source_id__in=id_list).delete()
 
-        for trigger_id in trigger_ids:
-            trigger = Trigger.objects.filter(id=trigger_id["trigger_id"]).first()
-            if trigger and trigger.is_active:
+        # 批量查询触发器，避免循环内逐个查询（N+1）
+        for trigger in Trigger.objects.filter(id__in=[t["trigger_id"] for t in trigger_ids]):
+            if trigger.is_active:
                 deploy(TriggerModelSerializer(trigger).data, **{})
 
         for app_id in id_list:
