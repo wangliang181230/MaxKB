@@ -83,9 +83,12 @@ def clean_method(query_conditions, clean_log=True):
 
                 count_map = {item['chat_id']: item['count'] for item in updated_counts}
 
-                for chat_id in chat_ids:
-                    count = count_map.get(chat_id, 0)  # 如果没有记录则为0
-                    Chat.objects.filter(id=chat_id).update(chat_record_count=count)
+                chat_updates = [
+                    Chat(id=chat_id, chat_record_count=count_map.get(chat_id, 0))
+                    for chat_id in chat_ids
+                ]
+                if chat_updates:
+                    Chat.objects.bulk_update(chat_updates, ['chat_record_count'], batch_size=batch_size)
 
                 # 删除没有关联 ChatRecord 的 Chat
                 chats = Chat.objects.filter(
