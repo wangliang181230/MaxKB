@@ -571,11 +571,16 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                 }
 
                 # 如果是技能工具，则需要将code字段转换为文件内容的base64字符串
-                for tool in tool_list:
-                    if tool.tool_type == ToolType.SKILL:
-                        skill_file = QuerySet(File).filter(id=tool.code).first()
-                        if skill_file:
-                            tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
+                skill_file_id_list = [tool.code for tool in tool_list if tool.tool_type == ToolType.SKILL]
+                if skill_file_id_list:
+                    skill_file_map = {
+                        str(f.id): f for f in QuerySet(File).filter(id__in=skill_file_id_list)
+                    }
+                    for tool in tool_list:
+                        if tool.tool_type == ToolType.SKILL:
+                            skill_file = skill_file_map.get(str(tool.code))
+                            if skill_file:
+                                tool.code = base64.b64encode(skill_file.get_bytes()).decode("utf-8")
 
                 knowledge_workflow_dict = KnowledgeWorkflowModelSerializer(knowledge_workflow).data
 
