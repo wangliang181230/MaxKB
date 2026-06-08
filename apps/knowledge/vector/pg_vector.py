@@ -79,32 +79,33 @@ class PGVector(BaseVectorStore):
     def _batch_save(self, text_list: List[Dict], embedding: Embeddings, is_the_task_interrupted):
         texts = [normalize_for_embedding(row.get("text")) for row in text_list]
         embeddings = embedding.embed_documents(texts)
-        embedding_list = [
-            Embedding(
+        # 批量查询所有knowledge_id对应的术语库，避免N+1查询
+        knowledge_id_set = set(row.get("knowledge_id") for row in text_list if row.get("knowledge_id"))
+        termbase_map = {}
+        if knowledge_id_set:
+            termbase_qs = QuerySet(Termbase).filter(knowledge_id__in=knowledge_id_set).values('knowledge_id', 'content')
+            for tb in termbase_qs:
+                knowledge_id = tb['knowledge_id']
+                termbase_map.setdefault(knowledge_id, []).append(tb['content'])
+        embedding_list = []
+        for text_row, text_content, embed_vec in zip(text_list, texts, embeddings):
+            kid = text_row.get("knowledge_id")
+            words = termbase_map.get(kid, [])
+            emb_item = Embedding(
                 id=uuid.uuid7(),
-                document_id=text_list[index].get("document_id"),
-                paragraph_id=text_list[index].get("paragraph_id"),
-                knowledge_id=text_list[index].get("knowledge_id"),
-                is_active=text_list[index].get("is_active", True),
-                source_id=text_list[index].get("source_id"),
-                source_type=text_list[index].get("source_type"),
-                embedding=[float(x) for x in embeddings[index]],
+                document_id=text_row.get("document_id"),
+                paragraph_id=text_row.get("paragraph_id"),
+                knowledge_id=kid,
+                is_active=text_row.get("is_active", True),
+                source_id=text_row.get("source_id"),
+                source_type=text_row.get("source_type"),
+                embedding=[float(x) for x in embed_vec],
                 search_vector=SearchVector(
-                    Value(
-                        to_ts_vector(
-                            texts[index],
-                            user_words=list(
-                                QuerySet(Termbase)
-                                .filter(knowledge_id=text_list[index]["knowledge_id"])
-                                .values_list("content", flat=True)
-                            ),
-                        )
-                    ),
+                    Value(to_ts_vector(text_content, user_words=words)),
                     config='simple',
                 ),
             )
-            for index in range(0, len(texts))
-        ]
+            embedding_list.append(emb_item)
         if not is_the_task_interrupted():
             QuerySet(Embedding).bulk_create(embedding_list) if len(embedding_list) > 0 else None
         return True

@@ -62,7 +62,7 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                                            label=_("Minimum number of clicks"))
     comparer = serializers.CharField(required=False, label=_("Comparator"), validators=[
         validators.RegexValidator(regex=re.compile("^and|or$"),
-                                  message=_("Only supports and|or"), code=500)
+                                  message=_("Only supports and|or"), code="500")
     ])
 
     def is_valid(self, *, raise_exception=False):
@@ -320,22 +320,22 @@ class ChatCountSerializer(serializers.Serializer):
         return True
 
 
+# 模块级常量，避免每次调用都重建字典
+_SOURCE_DISPLAY_MAP = {
+    ChatSourceChoices.ONLINE.value: gettext('Online Usage'),
+    ChatSourceChoices.API_CALL.value: gettext('API Call'),
+    ChatSourceChoices.ENTERPRISE_WECHAT.value: gettext('Enterprise WeChat'),
+    ChatSourceChoices.WECHAT_PUBLIC_ACCOUNT.value: gettext('WeChat Public Account'),
+    ChatSourceChoices.LARK.value: gettext('Lark'),
+    ChatSourceChoices.DINGTALK.value: gettext('DingTalk'),
+    ChatSourceChoices.ENTERPRISE_WECHAT_ROBOT.value: gettext('Enterprise WeChat Robot'),
+    ChatSourceChoices.TRIGGER.value: gettext('Trigger'),
+    ChatSourceChoices.SLACK.value: gettext('Slack'),
+}
+
+
 def get_source_display(source):
     if not source or not isinstance(source, dict) or 'type' not in source:
         return '-'
     source_type = source.get('type')
-
-    # 定义映射关系
-    source_mapping = {
-        ChatSourceChoices.ONLINE.value: gettext('Online Usage'),
-        ChatSourceChoices.API_CALL.value: gettext('API Call'),
-        ChatSourceChoices.ENTERPRISE_WECHAT.value: gettext('Enterprise WeChat'),
-        ChatSourceChoices.WECHAT_PUBLIC_ACCOUNT.value: gettext('WeChat Public Account'),
-        ChatSourceChoices.LARK.value: gettext('Lark'),
-        ChatSourceChoices.DINGTALK.value: gettext('DingTalk'),
-        ChatSourceChoices.ENTERPRISE_WECHAT_ROBOT.value: gettext('Enterprise WeChat Robot'),
-        ChatSourceChoices.TRIGGER.value: gettext('Trigger'),
-        ChatSourceChoices.SLACK.value: gettext('Slack'),
-    }
-
-    return source_mapping.get(source_type, str(source_type))
+    return _SOURCE_DISPLAY_MAP.get(source_type, str(source_type))
