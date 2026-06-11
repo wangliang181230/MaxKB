@@ -401,6 +401,18 @@ export const replyNode = {
     },
   },
 }
+export const emptyNode = {
+  type: WorkflowType.EmptyNode,
+  text: t('workflow.nodes.emptyNode.text'),
+  label: t('workflow.nodes.emptyNode.label'),
+  height: 150,
+  properties: {
+    stepName: t('workflow.nodes.emptyNode.label'),
+    config: {
+      fields: [],
+    },
+  },
+}
 export const rerankerNode = {
   type: WorkflowType.RerankerNode,
   text: t('workflow.nodes.rerankerNode.text'),
@@ -833,10 +845,9 @@ export const knowledgeMenuNodes = [
       questionNode,
     ],
   },
-
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopNode],
+    list: [conditionNode, replyNode, loopNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -875,7 +886,7 @@ export const menuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode],
+    list: [conditionNode, formNode, replyNode, loopNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -913,7 +924,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -955,7 +966,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -997,7 +1008,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1041,7 +1052,7 @@ const toolMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode],
+    list: [conditionNode, formNode, replyNode, loopNode, emptyNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1206,6 +1217,7 @@ export const nodeDict: any = {
   [WorkflowType.Base]: baseNode,
   [WorkflowType.Start]: startNode,
   [WorkflowType.Reply]: replyNode,
+  [WorkflowType.EmptyNode]: emptyNode,
   [WorkflowType.ToolLib]: toolNode,
   [WorkflowType.ToolWorkflowLib]: toolWorkflowLibNode,
   [WorkflowType.ToolLibCustom]: toolNode,
@@ -1337,6 +1349,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
   ],
   [conditionNode, 'workflow.nodes.conditionNode.text', 'workflow.nodes.conditionNode.label'],
   [replyNode, 'workflow.nodes.replyNode.text', 'workflow.nodes.replyNode.label'],
+  [emptyNode, 'workflow.nodes.emptyNode.text', 'workflow.nodes.emptyNode.label'],
   [rerankerNode, 'workflow.nodes.rerankerNode.text', 'workflow.nodes.rerankerNode.label'],
   [formNode, 'workflow.nodes.formNode.text', 'workflow.nodes.formNode.label'],
   [
