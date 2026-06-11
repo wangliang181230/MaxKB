@@ -246,6 +246,12 @@ export default {
       text: '指定回覆內容，引用變量會轉換為字符串進行輸出',
       replyContent: '回覆內容',
     },
+    emptyNode: {
+      label: '空節點',
+      text: '不執行任何操作，僅作爲流程佔位節點使用',
+      description: '這是一個空節點',
+      hint: '當不需要執行任何操作時使用',
+    },
     rerankerNode: {
       label: '多路召回',
       text: '使用重排模型對多個知識庫的檢索結果進行二次召回',
