@@ -847,7 +847,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopNode, emptyNode],
+    list: [conditionNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -860,7 +860,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 
@@ -886,7 +886,7 @@ export const menuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode, emptyNode],
+    list: [conditionNode, formNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -899,7 +899,7 @@ export const menuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 export const applicationLoopMenuNodes = [
@@ -924,7 +924,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
+    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -937,7 +937,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 export const knowledgeLoopMenuNodes = [
@@ -966,7 +966,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
+    list: [conditionNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -979,7 +979,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 export const toolLoopMenuNodes = [
@@ -1008,7 +1008,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode, emptyNode],
+    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1021,7 +1021,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 const toolMenuNodes = [
@@ -1052,7 +1052,7 @@ const toolMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode, emptyNode],
+    list: [conditionNode, formNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1065,7 +1065,7 @@ const toolMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode],
+    list: [mcpNode, toolNode, emptyNode],
   },
 ]
 export const getMenuNodes = (workflowMode: WorkflowMode) => {
