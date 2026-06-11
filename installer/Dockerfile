@@ -1,12 +1,7 @@
 FROM node:24-alpine AS web-build
 COPY ui ui
-
-RUN npm config set script-shell /bin/sh
-RUN npm config set ignore-scripts true
-
 RUN cd ui && ls -la && if [ -d "dist" ]; then exit 0; fi && \
-    npm cache clean --force && \
-    npm install --no-audit && \
+    npm install --prefer-offline --no-audit && \
     npm install -D concurrently && \
     NODE_OPTIONS="--max-old-space-size=4096" npx concurrently "npm run build" "npm run build-chat" && \
     find . -maxdepth 1 ! -name '.' ! -name 'dist' ! -name 'public' -exec rm -rf {} +
