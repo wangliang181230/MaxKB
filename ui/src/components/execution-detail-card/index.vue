@@ -417,9 +417,10 @@
           <!-- 空节点 -->
           <template v-if="data.type === WorkflowType.EmptyNode">
             <div class="card-never border-r-6">
-              <div class="p-8-12 border-t-dashed lighter">
+              <div class="p-8-12 lighter">
                 <div class="empty-node-info">
-                  <p class="p-8">{{ $t('workflow.nodes.emptyNode.text') }}</p>
+                  <p class="mb-8">{{ $t('workflow.nodes.emptyNode.description') }}</p>
+                  <p class="lighter">{{ $t('workflow.nodes.emptyNode.text') }}</p>
                 </div>
               </div>
             </div>
