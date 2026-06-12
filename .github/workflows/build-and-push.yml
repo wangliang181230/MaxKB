@@ -3,7 +3,7 @@ name: build-and-push
 on:
   push:
     branches:
-      - v2.10
+      - v2.10*
       - test
     paths-ignore:
       - "**/*.md"
