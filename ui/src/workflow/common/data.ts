@@ -1595,27 +1595,12 @@ ${t('workflow.nodes.formNode.form_content_format2')}`,
     ],
   ],
 ].forEach(([nodes, keys]) => bindFieldLabels(nodes as Array<any>, keys as string[]))
-;[
-  'workflow.compare.is_null',
-  'workflow.compare.is_not_null',
-  'workflow.compare.contain',
-  'workflow.compare.not_contain',
-  'workflow.compare.eq',
-  'workflow.compare.not_eq',
-  'workflow.compare.ge',
-  'workflow.compare.gt',
-  'workflow.compare.le',
-  'workflow.compare.lt',
-  'workflow.compare.len_eq',
-  'workflow.compare.len_ge',
-  'workflow.compare.len_gt',
-  'workflow.compare.len_le',
-  'workflow.compare.len_lt',
-  'workflow.compare.is_true',
-  'workflow.compare.is_not_true',
-].forEach((key, index) => defineLocaleGetter(compareList[index], 'label', key))
-defineLocaleGetter(compareList[19], 'label', 'workflow.compare.regex')
-defineLocaleGetter(compareList[20], 'label', 'workflow.compare.wildcard')
+
+compareList.forEach((compare, index) => {
+  if (compare.value !== 'start_with' && compare.value !== 'end_with') {
+    defineLocaleGetter(compare, 'label', compare.label)
+  }
+})
 
 export function isWorkFlow(type: string | undefined) {
   return type === 'WORK_FLOW'
