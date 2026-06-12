@@ -198,7 +198,43 @@
                 {{ $t('aiChat.executionDetails.conditionResult') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                {{ data.branch_name || '-' }}
+                <el-tag type="success" size="small">
+                  {{ data.branch_name || '-' }}
+                </el-tag>
+              </div>
+            </div>
+            <!-- 判断器执行细节 -->
+            <div class="card-never border-r-6 mt-8" v-if="data.branch_details && data.branch_details.length > 0" v-for="(branch, bIndex) in data.branch_details" :key="bIndex">
+              <h5 class="p-8-12">
+                <span class="min-w-25">
+                  <el-tag :type="branch.is_matched ? 'success' : 'error'" size="small">
+                    {{ branch.type || '-' }}
+                  </el-tag>
+                  <span class="ml-4">{{ $t('aiChat.executionDetails.branchEvaluationDetails') }}</span>
+                </span>
+                <span class="min-w-25" v-if="branch.type !== 'ELSE'">
+                  <span class="color-secondary">{{ $t('aiChat.executionDetails.conditionLogic') }}:</span>
+                  <el-tag type="warning" size="small" class="ml-4">
+                    {{ branch.condition_logic === 'and' ? $t('aiChat.executionDetails.and') : $t('aiChat.executionDetails.or') }}
+                  </el-tag>
+                </span>
+              </h5>
+              <div class="border-t-dashed lighter clean" style="padding: 0 12px 8px 12px">
+                <div v-if="branch.conditions && branch.conditions.length > 0" v-for="(cond, cIndex) in branch.conditions" :key="cIndex" class="mt-8">
+                  <el-tag type="warn" size="small" class="f_val" :title="formatValue(cond.field_value, cond.field_type)">
+                    {{ formatValue(cond.field_value, cond.field_type) }}
+                  </el-tag>
+                  <el-tag type="primary" size="small" class="ml-8">{{ getCompareLabel(cond.compare) }}</el-tag>
+                  <el-tag type="warn" size="small" class="f_val"
+                    v-if="!['is_null', 'is_not_null', 'is_true', 'is_not_true', 'is_false', 'is_not_false'].includes(cond.compare)"
+                  >
+                    {{ formatValue(cond.target_value, cond.target_type) }}
+                  </el-tag>
+                  <span class="ml-8">=</span>
+                  <el-tag :type="cond.result ? 'success' : 'danger'" size="small" class="ml-8">
+                    {{ cond.result ? 'True' : 'False' }}
+                  </el-tag>
+                </div>
               </div>
             </div>
           </template>
@@ -1499,6 +1535,7 @@
 import { ref, computed, type PropType } from 'vue'
 import ParagraphCard from '@/components/ai-chat/component/knowledge-source-component/ParagraphCard.vue'
 import DynamicsForm from '@/components/dynamics-form/index.vue'
+import { compareList } from '@/workflow/common/data'
 import { iconComponent } from '@/workflow/icons/utils'
 import { WorkflowType } from '@/enums/application'
 import { getImgUrl } from '@/utils/common'
@@ -1548,11 +1585,58 @@ const downloadFile = (file: any) => {
     console.error('下载文件失败，原因：链接未知，file =', file)
   }
 }
+
+// 格式化值显示
+const formatValue = (value: any, value_type: any): string => {
+  if (value === null || value === undefined) {
+    return 'null'
+  }
+  if (value === '') {
+    return `${value_type}: ""`
+  }
+  if (typeof value === 'string') {
+    return `${value_type}: "${value}"`
+  }
+  if (Array.isArray(value)) {
+    return `${value_type}: ${JSON.stringify(value)}`
+  }
+  if (typeof value === 'object') {
+    return `${value_type}: ${JSON.stringify(value)}`
+  }
+  return `${value_type}: ${value}`
+}
+
+const compareMap: Record<string, string> = compareList.reduce((acc, cur) => {
+  acc[cur.value] = cur.label
+  return acc
+}, {} as Record<string, string>)
+
+// 获取比较操作符标签
+const getCompareLabel = (compare: string): string => {
+  return compareMap[compare] || compare
+}
 </script>
 <style lang="scss" scoped>
 .execution-detail-card {
   :deep(.md-editor-previewOnly) {
     background: none !important;
+  }
+}
+
+.min-w-25 {
+  min-width: 25%;
+  max-width: 33.33%;
+  display: inline-block;
+}
+
+.f_val {
+  margin-left: 4px;
+  max-width: 30%;
+
+  * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>
