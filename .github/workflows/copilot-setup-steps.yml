@@ -1,0 +1,33 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Pre-fetch refs used by Copilot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
+
+          # Compatibility fallback: older Copilot sessions may still reference this
+          # deleted branch as the base ref, which causes git fetch failures.
+          if ! git show-ref --verify --quiet refs/remotes/origin/copilot/check-for-bugs; then
+            if git show-ref --verify --quiet refs/remotes/origin/v2.10; then
+              git update-ref refs/remotes/origin/copilot/check-for-bugs refs/remotes/origin/v2.10
+            fi
+          fi
