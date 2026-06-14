@@ -123,6 +123,8 @@ def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wor
 
 def get_default_model_params_setting(model_id):
     model = QuerySet(Model).filter(id=model_id).first()
+    if model is None:
+        raise Exception(f"{_('Model does not exist')}，model_id = {model_id}")
     credential = get_model_credential(model.provider, model.model_type, model.model_name)
     model_params_setting = credential.get_model_params_setting_form(
         model.model_name).get_default_form_data()
