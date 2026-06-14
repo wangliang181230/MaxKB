@@ -1203,10 +1203,10 @@ export const compareList = [
   { value: 'is_not_true', label: t('workflow.compare.is_not_true') },
   { value: 'is_false', label: t('workflow.compare.is_false') },
   { value: 'is_not_false', label: t('workflow.compare.is_not_false') },
-  { value: 'start_with', label: 'startWith' },
-  { value: 'end_with', label: 'endWith' },
   { value: 'type_is', label: t('workflow.compare.type_is') },
   { value: 'type_not', label: t('workflow.compare.type_not') },
+  { value: 'start_with', label: 'startWith' },
+  { value: 'end_with', label: 'endWith' },
 ]
 export const nodeDict: any = {
   [WorkflowType.AiChat]: aiChatNode,
@@ -1595,12 +1595,32 @@ ${t('workflow.nodes.formNode.form_content_format2')}`,
     ],
   ],
 ].forEach(([nodes, keys]) => bindFieldLabels(nodes as Array<any>, keys as string[]))
-
-compareList.forEach((compare, index) => {
-  if (compare.value !== 'start_with' && compare.value !== 'end_with') {
-    defineLocaleGetter(compare, 'label', compare.label)
-  }
-})
+;[
+  'workflow.compare.is_null',
+  'workflow.compare.is_not_null',
+  'workflow.compare.contain',
+  'workflow.compare.not_contain',
+  'workflow.compare.regex',
+  'workflow.compare.wildcard',
+  'workflow.compare.eq',
+  'workflow.compare.not_eq',
+  'workflow.compare.ge',
+  'workflow.compare.gt',
+  'workflow.compare.le',
+  'workflow.compare.lt',
+  'workflow.compare.len_eq',
+  'workflow.compare.len_not_eq',
+  'workflow.compare.len_ge',
+  'workflow.compare.len_gt',
+  'workflow.compare.len_le',
+  'workflow.compare.len_lt',
+  'workflow.compare.is_true',
+  'workflow.compare.is_not_true',
+  'workflow.compare.is_false',
+  'workflow.compare.is_not_false',
+  'workflow.compare.type_is',
+  'workflow.compare.type_not',
+].forEach((key, index) => defineLocaleGetter(compareList[index], 'label', key))
 
 export function isWorkFlow(type: string | undefined) {
   return type === 'WORK_FLOW'

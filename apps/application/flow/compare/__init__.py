@@ -58,10 +58,10 @@ _compare_handler_dict = {
     'is_not_true': IsNotTrueCompare(),
     'is_false': IsFalseCompare(),
     'is_not_false': IsNotFalseCompare(),
-    'start_with': StartWithCompare(),
-    'end_with': EndWithCompare(),
     'type_is': TypeIsCompare(),
     'type_not': TypeNotCompare(),
+    'start_with': StartWithCompare(),
+    'end_with': EndWithCompare(),
 }
 
 
