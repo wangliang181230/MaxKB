@@ -785,15 +785,13 @@ class WorkflowManage:
             return None
         if prompt == '':
             return ''
-        if "{{" not in prompt or "}}" not in prompt:
+        if "." not in prompt:
             return prompt
 
         context = self.get_workflow_content()
         prompt = self.reset_prompt(prompt)
         prompt_template = PromptTemplate.from_template(prompt, template_format='jinja2')
         value = prompt_template.format(context=context)
-        if value == "None":
-            value = None
         return value
 
     def get_start_node(self):
