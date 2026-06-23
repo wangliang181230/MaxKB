@@ -222,12 +222,12 @@
               </h5>
               <div v-if="branch.conditions && branch.conditions.length > 0" class="border-t-dashed lighter clean" style="padding: 0 12px 8px 12px">
                 <div v-for="(cond, cIndex) in branch.conditions" :key="cIndex" class="mt-8">
-                  <el-tag type="warn" size="small" class="f_val" :title="formatValue(cond.field_value, cond.field_type)">
+                  <el-tag type="warn" size="small" class="f_val" :title="formatTitle(cond.origin_field_value, cond.field_value)">
                     {{ formatValue(cond.field_value, cond.field_type) }}
                   </el-tag>
                   <el-tag type="primary" size="small" class="ml-8">{{ getCompareLabel(cond.compare) }}</el-tag>
                   <el-tag type="warn" size="small" class="f_val"
-                    :title="cond.origin_target_value"
+                    :title="formatTitle(cond.origin_target_value, cond.target_value)"
                     v-if="!['is_null', 'is_not_null', 'is_true', 'is_not_true', 'is_false', 'is_not_false'].includes(cond.compare)"
                   >
                     {{ formatValue(cond.target_value, cond.target_type) }}
@@ -1599,19 +1599,30 @@ const formatValue = (value: any, value_type: any): string => {
   if (value === null || value === undefined) {
     return 'null'
   }
-  if (value === '') {
-    return `${value_type}: ""`
-  }
   if (typeof value === 'string') {
-    return `${value_type}: "${value}"`
+    return `${value_type || 'str'}: "${value}"`
   }
   if (Array.isArray(value)) {
-    return `${value_type}: ${JSON.stringify(value)}`
+    return `${value_type || 'list'}: ${JSON.stringify(value)}`
   }
   if (typeof value === 'object') {
-    return `${value_type}: ${JSON.stringify(value)}`
+    return `${value_type || 'dict'}: ${JSON.stringify(value)}`
   }
-  return `${value_type}: ${value}`
+  return `${value_type || 'unknown_type'}: ${value}`
+}
+
+// 格式化title显示
+const formatTitle = (origin_value: any, value: any): string => {
+  let pre_str = ""
+  if (origin_value !== null && origin_value !== undefined && origin_value !== '') {
+    if (Array.isArray(origin_value)) {
+      pre_str = `{{${origin_value.join(".")}}} -> `
+    } else {
+      pre_str = `${origin_value} -> `
+    }
+  }
+
+  return pre_str + value
 }
 
 const compareMap: Record<string, string> = compareList.reduce((acc, cur) => {

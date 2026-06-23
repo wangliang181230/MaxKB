@@ -91,6 +91,7 @@ def _assertion(workflow_manage, field_list: List[str], compare: str, target_valu
         condition_details.append({
             'field': field_list,
             'field_type': type(field_value).__name__ if field_value is not None else None,
+            'origin_field_value': field_list,
             'field_value': field_value,
             'compare': compare,
             'target_type': type(target_value).__name__ if target_value is not None else None,
