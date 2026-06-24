@@ -209,6 +209,34 @@ export const aiChatNode = {
   },
 }
 /**
+ * A2A
+ */
+export const a2aNode = {
+  type: WorkflowType.A2ANode,
+  text: t('workflow.nodes.a2aNode.text'),
+  label: t('workflow.nodes.a2aNode.label'),
+  height: 260,
+  properties: {
+    stepName: t('workflow.nodes.a2aNode.label'),
+    config: {
+      fields: [
+        {
+          label: t('common.result'),
+          value: 'result',
+        },
+        {
+          label: t('workflow.nodes.a2aNode.traceId'),
+          value: 'trace_id',
+        },
+        {
+          label: t('workflow.nodes.a2aNode.responseTime'),
+          value: 'response_time',
+        },
+      ],
+    },
+  },
+}
+/**
  * 知识库检索配置数据
  */
 export const searchKnowledgeNode = {
@@ -782,6 +810,7 @@ export const knowledgeMenuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
 
@@ -818,6 +847,7 @@ export const menuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
   {
@@ -856,6 +886,7 @@ export const applicationLoopMenuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
   {
@@ -902,6 +933,7 @@ export const knowledgeLoopMenuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
   {
@@ -944,6 +976,7 @@ export const toolLoopMenuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
   {
@@ -978,6 +1011,7 @@ const toolMenuNodes = [
       imageToVideoNode,
       videoUnderstandNode,
       questionNode,
+      a2aNode,
     ],
   },
   {
@@ -1144,6 +1178,7 @@ export const compareList = [
   { value: 'wildcard', label: t('workflow.compare.wildcard') },
 ]
 export const nodeDict: any = {
+  [WorkflowType.A2ANode]: a2aNode,
   [WorkflowType.AiChat]: aiChatNode,
   [WorkflowType.SearchKnowledge]: searchKnowledgeNode,
   [WorkflowType.SearchDocument]: searchDocumentNode,
@@ -1259,6 +1294,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
     'workflow.nodes.knowledgeWriteNode.text',
     'workflow.nodes.knowledgeWriteNode.label',
   ],
+  [a2aNode, 'workflow.nodes.a2aNode.text', 'workflow.nodes.a2aNode.label'],
   [aiChatNode, 'workflow.nodes.aiChatNode.text', 'workflow.nodes.aiChatNode.label'],
   [
     searchKnowledgeNode,
@@ -1410,6 +1446,14 @@ ${t('workflow.nodes.formNode.form_content_format2')}`,
       'workflow.nodes.aiChatNode.answer',
       'workflow.nodes.aiChatNode.think',
       'workflow.nodes.aiChatNode.historyMessage',
+    ],
+  ],
+  [
+    a2aNode.properties.config.fields,
+    [
+      'common.result',
+      'workflow.nodes.a2aNode.traceId',
+      'workflow.nodes.a2aNode.responseTime',
     ],
   ],
   [

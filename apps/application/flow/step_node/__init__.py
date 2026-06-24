@@ -6,6 +6,7 @@
     @date：2024/6/7 14:43
     @desc:
 """
+from .a2a_node import BaseA2ANode
 from .ai_chat_step_node import *
 from .application_node import BaseApplicationNode
 from .condition_node import *
@@ -43,7 +44,7 @@ from .video_understand_step_node import BaseVideoUnderstandNode
 from .document_split_node import BaseDocumentSplitNode
 from .tool_start_node import BaseToolStartStepNode
 
-node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearchDocumentNode, BaseQuestionNode,
+node_list = [BaseStartStepNode, BaseA2ANode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearchDocumentNode, BaseQuestionNode,
              BaseConditionNode, BaseReplyNode,
              BaseToolNodeNode, BaseToolLibNodeNode, BaseRerankerNode, BaseApplicationNode,
              BaseDocumentExtractNode,

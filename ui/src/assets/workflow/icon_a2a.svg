@@ -1,0 +1,24 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆角矩形 -->
+  <rect x="4" y="4" width="40" height="40" rx="8" fill="#F5F7FA" stroke="#DCDFE6" stroke-width="2"/>
+  
+  <!-- 左侧Agent -->
+  <rect x="8" y="14" width="12" height="12" rx="2" fill="#409EFF" opacity="0.9"/>
+  <circle cx="14" cy="20" r="3" fill="white"/>
+  <path d="M10 24h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- 右侧Agent -->
+  <rect x="28" y="14" width="12" height="12" rx="2" fill="#67C23A" opacity="0.9"/>
+  <circle cx="34" cy="20" r="3" fill="white"/>
+  <path d="M30 24h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- 双向箭头 -->
+  <path d="M21 20H27" stroke="#303133" stroke-width="2" stroke-linecap="round"/>
+  <path d="M25 17L27 20L25 23" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <path d="M27 28H21" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 2"/>
+  <path d="M23 31L21 28L23 25" stroke="#303133" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- A2A标签 -->
+  <text x="24" y="38" text-anchor="middle" font-size="6" fill="#303133" font-weight="bold" font-family="Arial, sans-serif">A2A</text>
+</svg>

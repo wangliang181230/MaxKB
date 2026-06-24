@@ -4,6 +4,7 @@ import { WorkflowType, WorkflowMode } from '@/enums/application'
 import { t } from '@/locales'
 
 const end_nodes: Array<string> = [
+  WorkflowType.A2ANode,
   WorkflowType.AiChat,
   WorkflowType.Reply,
   WorkflowType.ToolLib,

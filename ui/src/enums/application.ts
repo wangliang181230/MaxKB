@@ -8,6 +8,7 @@ export enum WorkflowType {
   Base = 'base-node',
   KnowledgeBase = 'knowledge-base-node',
   Start = 'start-node',
+  A2ANode = 'a2a-node',
   AiChat = 'ai-chat-node',
   SearchKnowledge = 'search-knowledge-node',
   SearchDocument = 'search-document-node',

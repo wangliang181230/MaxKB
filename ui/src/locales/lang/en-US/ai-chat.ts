@@ -127,6 +127,9 @@ export default {
     cancel: 'Cancel Execution',
     errLog: 'Error Log',
     cancelExecutionTip: 'Are you sure you want to cancel the selected task? ',
+    agentConfig: 'Agent Configuration',
+    executionStats: 'Execution Statistics',
+    errorMessage: 'Error Message',
   },
   KnowledgeSource: {
     title: 'Knowledge Source',

@@ -18,6 +18,7 @@
           class="mr-16 color-secondary"
           v-if="
             data.type === WorkflowType.Question ||
+            data.type === WorkflowType.A2ANode ||
             data.type === WorkflowType.AiChat ||
             data.type === WorkflowType.ImageUnderstandNode ||
             data.type === WorkflowType.ImageGenerateNode ||
@@ -272,6 +273,119 @@
                 <MdRenderer v-if="data.answer" :source="data.answer" noImgZoomIn></MdRenderer>
 
                 <template v-else> -</template>
+              </div>
+            </div>
+          </template>
+
+          <!-- A2A 代理调用 -->
+          <template v-if="data.type === WorkflowType.A2ANode">
+            <div class="card-never border-r-6 mb-8">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.agentConfig') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.agentName') }}:</span>
+                  <el-tag type="primary" size="small" class="ml-8">
+                    {{ data.agent_name || '-' }}
+                  </el-tag>
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.collaborationMode') }}:</span>
+                  <el-tag
+                    :type="data.collaboration_mode === 'subagent' ? 'success' : 'warning'"
+                    size="small"
+                    class="ml-8"
+                  >
+                    {{
+                      data.collaboration_mode === 'subagent'
+                        ? $t('workflow.nodes.a2aNode.subagentMode')
+                        : $t('workflow.nodes.a2aNode.teamMode')
+                    }}
+                  </el-tag>
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.protocolType') }}:</span>
+                  <el-tag
+                    :type="data.protocol_type === 'http' ? 'success' : 'info'"
+                    size="small"
+                    class="ml-8"
+                  >
+                    {{ data.protocol_type === 'http' ? 'HTTP+SSE' : 'gRPC' }}
+                  </el-tag>
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary mr-8">{{ $t('workflow.nodes.a2aNode.traceId') }}:</span>
+                  <el-tooltip :content="data.trace_id" placement="top">
+                    {{ data.trace_id ? data.trace_id : '-' }}
+                  </el-tooltip>
+                </div>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mb-8">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.executionStats') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <el-row :gutter="16">
+                  <el-col :span="12">
+                    <div class="mb-8">
+                      <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.responseTime') }}:</span>
+                      <span class="ml-8 color-primary">{{ data.response_time || 0 }} ms</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="mb-8">
+                      <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.maxRetries') }}:</span>
+                      <span class="ml-8">{{ data.retry_count || 0 }}</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="mb-8">
+                      <span class="color-secondary">{{ $t('workflow.nodes.a2aNode.responseStatus') }}:</span>
+                      <el-tag
+                        :type="data.status_code === 200 ? 'success' : 'danger'"
+                        size="small"
+                        class="ml-8"
+                      >
+                        {{ data.status_code || '-' }}
+                      </el-tag>
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </div>
+
+            <div class="card-never border-r-6 mb-8">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.output') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <el-card
+                  shadow="never"
+                  style="--el-card-padding: 12px"
+                  v-if="data.result"
+                >
+                  <pre class="result-pre">{{ JSON.stringify(data.result, null, 2) }}</pre>
+                </el-card>
+                <div v-else class="color-secondary">-</div>
+              </div>
+            </div>
+
+            <div
+              v-if="data.err_message"
+              class="card-never border-r-6"
+            >
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.errorMessage') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <el-alert
+                  :title="data.err_message"
+                  type="error"
+                  :closable="false"
+                  show-icon
+                />
               </div>
             </div>
           </template>
