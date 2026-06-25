@@ -35,7 +35,7 @@ class CrossDomainMiddleware(MiddlewareMixin):
                 response['Access-Control-Allow-Methods'] = 'GET,POST,DELETE,PUT'
                 response[
                     'Access-Control-Allow-Headers'] = "Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
-                if cross_domain_list is None or len(cross_domain_list) == 0:
+                if not cross_domain_list:
                     response['Access-Control-Allow-Origin'] = "*"
                 elif cross_domain_list.__contains__(origin):
                     response['Access-Control-Allow-Origin'] = origin
