@@ -95,7 +95,7 @@ class XlsxParseTableHandle(BaseParseTableHandle):
             for sheetname in workbook.sheetnames:
                 sheet = workbook[sheetname]
                 rows = self.fill_merged_cells(sheet, image_dict)
-                if len(rows) == 0:
+                if not rows:
                     continue
 
                 # 添加 sheet 名称作为标题

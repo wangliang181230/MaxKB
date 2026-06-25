@@ -62,6 +62,6 @@ def select_one(sql: str, params: List):
     :return: 查询结果
     """
     result_list = sql_execute(sql, params)
-    if result_list is None or len(result_list) == 0:
+    if not result_list:
         return None
     return result_list[0]

@@ -20,11 +20,11 @@ class XinferenceEmbeddingModelCredential(BaseForm, BaseModelCredential):
         try:
             model_list = provider.get_base_model_list(model_credential.get('api_base'), model_credential.get('api_key'),
                                                       'embedding')
-        except Exception as e:
+        except Exception:
             raise AppApiException(ValidCode.valid_error.value, _('API domain name is invalid'))
         exist = provider.get_model_info_by_name(model_list, model_name)
         model: LocalEmbedding = provider.get_model(model_type, model_name, model_credential)
-        if len(exist) == 0:
+        if not exist:
             model.start_down_model_thread()
             raise AppApiException(ValidCode.model_not_fount,
                                   _('The model does not exist, please download the model first'))
