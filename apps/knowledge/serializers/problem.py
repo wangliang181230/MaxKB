@@ -154,7 +154,7 @@ class ProblemSerializers(serializers.Serializer):
                 knowledge_id=self.data.get("knowledge_id"),
                 problem_id=self.data.get("problem_id")
             )
-            if problem_paragraph_mapping is None or len(problem_paragraph_mapping) == 0:
+            if not problem_paragraph_mapping:
                 return []
             return native_search(
                 QuerySet(Paragraph).filter(id__in=[row.paragraph_id for row in problem_paragraph_mapping]),

@@ -51,7 +51,7 @@ class BaseGenerateHumanMessageStep(IGenerateHumanMessageStep):
                          max_paragraph_char_number: int,
                          paragraph_list: List[ParagraphPipelineModel],
                          no_references_setting: Dict):
-        if paragraph_list is None or len(paragraph_list) == 0:
+        if not paragraph_list:
             if no_references_setting.get('status') == 'ai_questioning':
                 return HumanMessage(
                     content=no_references_setting.get('value').replace('{question}', problem))

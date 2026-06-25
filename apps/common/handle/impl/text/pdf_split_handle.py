@@ -339,7 +339,7 @@ class PdfSplitHandle(BaseSplitHandle):
     def handle_toc(doc, limit):
         # 找到目录
         toc = PdfSplitHandle.get_toc(doc)
-        if toc is None or len(toc) == 0:
+        if not toc:
             return None
         # Some PDF generators assign the same default position to every bookmark
         # on a page. Such coordinates cannot define chapter boundaries, so preserve
