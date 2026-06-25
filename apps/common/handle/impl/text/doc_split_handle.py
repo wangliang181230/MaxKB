@@ -241,5 +241,5 @@ class DocSplitHandle(BaseSplitHandle):
                 save_image(image_list)
             return content
         except BaseException as e:
-            traceback.print_exception(e)
+            maxkb_logger.error(f'Error processing DOC file: {e}', exc_info=True)
             return f'{e}'

@@ -9,7 +9,6 @@
 
 import json
 import time
-import traceback
 from typing import List
 
 import uuid_utils.compat as uuid
@@ -188,8 +187,8 @@ def event_content(
         if isinstance(e, GeneratorExit):
             maxkb_logger.error(f"Generator was closed (client disconnected)")
         else:
-            maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
-            all_text = "Exception:" + str(e)
+            maxkb_logger.error("Event content stream error", exc_info=True)
+            all_text = "Exception: " + str(e)
         write_context(step, manage, 0, 0, all_text)
         post_response_handler.handler(
             chat_id,
