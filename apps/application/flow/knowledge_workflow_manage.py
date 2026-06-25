@@ -7,7 +7,6 @@
     @desc:
 """
 import time
-import traceback
 from concurrent.futures import ThreadPoolExecutor
 
 from django.db.models import QuerySet
@@ -47,7 +46,8 @@ class KnowledgeWorkflowManage(WorkflowManage):
 
     def run(self):
         self.context['start_time'] = time.time()
-        executor.submit(self._run)
+        future = executor.submit(self._run)
+        return future
 
     def _run(self):
         QuerySet(KnowledgeAction).filter(id=self.params.get('knowledge_action_id')).update(
@@ -81,7 +81,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
             result = self.hand_node_result(current_node, node_result_future)
             return result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
         return None
 
     def hand_node_result(self, current_node, node_result_future):
@@ -106,7 +106,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
                 return None
             return current_result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
             self.answer += str(e)
