@@ -18,8 +18,7 @@ class EmptyNodeParamsSerializer(serializers.Serializer):
     """空节点参数序列化器 - 无需任何参数"""
     
     def is_valid(self, *, raise_exception=False):
-        # 空节点不需要验证任何参数，直接返回 True
-        return True
+        return super().is_valid(raise_exception=raise_exception)
 
 
 class IEmptyNode(INode):
