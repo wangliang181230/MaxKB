@@ -84,10 +84,15 @@ class OpenAIView(APIView):
         if application_id != str(request.auth.application_id):
             raise AppAuthenticationFailed(500, _('Secret key is invalid'))
         return OpenAIChatSerializer(
-            data={'application_id': application_id, 'chat_user_id': request.auth.chat_user_id,
-                  'chat_user_type': request.auth.chat_user_type,
-                  'ip_address': ip_address,
-                  'source': {"type": ChatSourceChoices.API_CALL.value}}).chat(request.data)
+            data={
+                'application_id': application_id,
+                'chat_user_id': request.auth.chat_user_id,
+                'chat_user_type': request.auth.chat_user_type,
+                'ip_address': ip_address,
+                'source': {
+                    "type": ChatSourceChoices.API_CALL.value
+                }
+            }).chat(request.data)
 
 
 class AnonymousAuthentication(APIView):
@@ -179,16 +184,19 @@ class ChatView(APIView):
     )
     def post(self, request: Request, chat_id: str):
         ip_address = _get_ip_address(request)
-        return ChatSerializers(data={'chat_id': chat_id,
-                                     'chat_user_id': request.auth.chat_user_id,
-                                     'chat_user_type': request.auth.chat_user_type,
-                                     'application_id': request.auth.application_id,
-                                     'debug': False,
-                                     'ip_address': ip_address,
-                                     'source': {
-                                         'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value}
-                                     }
-                               ).chat(request.data)
+        return ChatSerializers(
+            data={
+                'chat_id': chat_id,
+                'application_id': request.auth.application_id,
+                'chat_user_id': request.auth.chat_user_id,
+                'chat_user_type': request.auth.chat_user_type,
+                'ip_address': ip_address,
+                'source': {
+                    'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
+                },
+                'debug': False,
+            }
+        ).chat(request.data)
 
 
 class OpenView(APIView):
@@ -205,13 +213,20 @@ class OpenView(APIView):
     )
     def get(self, request: Request):
         ip_address = _get_ip_address(request)
-        return result.success(OpenChatSerializers(
-            data={'application_id': request.auth.application_id,
-                  'chat_user_id': request.auth.chat_user_id, 'chat_user_type': request.auth.chat_user_type,
-                  'ip_address': ip_address,
-                  'source': {
-                      'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value},
-                  'debug': False}).open())
+        return result.success(
+            OpenChatSerializers(
+                data={
+                    'application_id': request.auth.application_id,
+                    'chat_user_id': request.auth.chat_user_id,
+                    'chat_user_type': request.auth.chat_user_type,
+                    'ip_address': ip_address,
+                    'source': {
+                        'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
+                    },
+                    'debug': False,
+                }
+            ).open()
+        )
 
 
 class CaptchaView(APIView):
