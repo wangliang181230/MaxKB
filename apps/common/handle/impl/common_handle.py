@@ -7,8 +7,6 @@
     @desc:
 """
 import io
-import traceback
-from functools import reduce
 from io import BytesIO
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
@@ -110,7 +108,7 @@ def handle_images(deps, archive: ZipFile) -> []:
             image_io = archive.read(dep.target)
             image = openpyxl_Image(BytesIO(image_io))
         except Exception as e:
-            maxkb_logger.error(f"Error reading image {dep.target}: {e}, {traceback.format_exc()}")
+            maxkb_logger.error(f"Error reading image {dep.target}: {e}", exc_info=True)
             continue
         image.embed = dep.id  # 文件rId
         image.target = dep.target  # 文件地址
@@ -156,28 +154,27 @@ def xlsx_embed_cells_images(buffer) -> {}:
             continue
         if len(image_excel_id_list) > 0:
             image_excel_id = image_excel_id_list[-1]
-            f = archive.open(img.target)
-            img_byte = io.BytesIO()
-            try:
-                with PILImage.open(f) as im:
-                    width, height = im.size
-                    pixels = width * height
-                    if pixels > MAX_EMBED_IMAGE_PIXELS:
-                        maxkb_logger.warning(
-                            f"Skip oversized embedded image {img.path}: {width}x{height} pixels exceeds limit"
-                        )
-                        continue
-                    total_pixels += pixels
-                    if total_pixels > MAX_EMBED_IMAGE_AGGREGATE_PIXELS:
-                        maxkb_logger.warning(
-                            f"Skip embedded images in archive: aggregate pixels exceed limit"
-                        )
-                        break
-                    im.convert('RGB').save(img_byte, format='JPEG')
-            except Exception as e:
-                maxkb_logger.error(f"Error decoding image {img.target}: {e}, {traceback.format_exc()}")
-                continue
-            image = File(id=uuid.uuid7(), file_name=img.path, meta={'debug': False, 'content': img_byte.getvalue()})
-            result['=' + image_excel_id] = image
-    archive.close()
+            with archive.open(img.target) as f:
+                img_byte = io.BytesIO()
+                try:
+                    with PILImage.open(f) as im:
+                        width, height = im.size
+                        pixels = width * height
+                        if pixels > MAX_EMBED_IMAGE_PIXELS:
+                            maxkb_logger.warning(
+                                f"Skip oversized embedded image {img.path}: {width}x{height} pixels exceeds limit"
+                            )
+                            continue
+                        total_pixels += pixels
+                        if total_pixels > MAX_EMBED_IMAGE_AGGREGATE_PIXELS:
+                            maxkb_logger.warning(
+                                f"Skip embedded images in archive: aggregate pixels exceed limit"
+                            )
+                            break
+                        im.convert('RGB').save(img_byte, format='JPEG')
+                    image = File(id=uuid.uuid7(), file_name=img.path, meta={'debug': False, 'content': img_byte.getvalue()})
+                    result['=' + image_excel_id] = image
+                except Exception as e:
+                    maxkb_logger.error(f"Error decoding image {img.target}: {e}", exc_info=True)
+                    continue
     return result

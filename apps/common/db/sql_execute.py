@@ -23,7 +23,6 @@ def sql_execute(sql: str, params):
         columns = list(map(lambda d: d.name, cursor.description))
         res = cursor.fetchall()
         result = list(map(lambda row: dict(list(zip(columns, row))), res))
-        cursor.close()
         return result
 
 
@@ -37,7 +36,6 @@ def update_execute(sql: str, params):
     with connection.cursor() as cursor:
         cursor.execute(sql, params)
         affected_rows = cursor.rowcount
-        cursor.close()
         return affected_rows
 
 

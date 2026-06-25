@@ -1,12 +1,12 @@
-import traceback
 from typing import Dict
 
-from django.utils.translation import gettext_lazy as _, gettext
+from django.utils.translation import gettext_lazy as _
 from langchain_core.documents import Document
 
 from common import forms
 from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
+from common.utils.logger import maxkb_logger
 from models_provider.base_model_provider import ValidCode, BaseModelCredential
 
 
@@ -49,7 +49,7 @@ class BedrockRerankerCredential(BaseForm, BaseModelCredential):
             ]
             model.compress_documents(test_docs, str(_('Hello')))
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Bedrock reranker validation failed: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

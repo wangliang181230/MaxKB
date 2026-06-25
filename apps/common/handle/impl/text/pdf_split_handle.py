@@ -655,7 +655,7 @@ class PdfSplitHandle(BaseSplitHandle):
                 pdf_document = PdfReader(pdf_file)
                 return self.handle_pdf_content(file, pdf_document, save_image)
         except BaseException as e:
-            traceback.print_exception(e)
+            maxkb_logger.error(f'Error processing PDF file: {e}', exc_info=True)
             return f"{e}"
         finally:
             os.remove(temp_file_path)

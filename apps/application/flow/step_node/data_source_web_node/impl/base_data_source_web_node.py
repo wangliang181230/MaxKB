@@ -6,8 +6,6 @@
     @date：2025/11/12 13:47
     @desc:
 """
-import traceback
-
 from django.utils.translation import gettext_lazy as _
 
 from application.flow.i_step_node import NodeResult
@@ -80,8 +78,13 @@ class BaseDataSourceWebNode(IDataSourceWebNode):
             if isinstance(e, InterruptedTaskException):
                 return NodeResult({'document_list': document_list, 'source_url': source_url, 'selector': selector},
                                   self.workflow_manage.params.get('knowledge_base') or {})
-            maxkb_logger.error(_('data source web node:{node_id} error{error}{traceback}').format(
-                node_id=node_id, error=str(e), traceback=traceback.format_exc()))
+            maxkb_logger.error(
+                _('data source web node, node_id: {node_id}, error: {error}').format(
+                    node_id=node_id, error=str(e)
+                ),
+                exc_info=True
+            )
+            raise
 
     def get_details(self, index: int, **kwargs):
         return {
