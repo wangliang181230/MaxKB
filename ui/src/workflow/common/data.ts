@@ -2,7 +2,6 @@ import { WorkflowKind } from './../../enums/application'
 import { WorkflowType, WorkflowMode } from '@/enums/application'
 import i18n, { t } from '@/locales'
 import { watch } from 'vue'
-import call$ from 'dingtalk-jsapi/api/biz/telephone/call'
 
 export const startNode = {
   id: WorkflowType.Start,
@@ -820,7 +819,6 @@ export const knowledgeMenuNodes = [
       questionNode,
     ],
   },
-
   {
     label: t('workflow.nodes.classify.businessLogic'),
     list: [conditionNode, switchNode, replyNode, loopNode],

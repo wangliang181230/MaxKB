@@ -8,6 +8,7 @@
 """
 import os
 import uuid_utils.compat as uuid
+from urllib.parse import quote
 
 from django.db.models import QuerySet
 from django.http import HttpResponse
@@ -101,7 +102,7 @@ class ChatEmbedSerializer(serializers.Serializer):
                         if input_field_list is not None:
                             for field in input_field_list:
                                 if field['assignment_method'] == 'api_input' and field['variable'] in params:
-                                    query += f"&{field['variable']}={params[field['variable']]}"
+                                    query += f"&{field['variable']}={quote(str(params[field['variable']]))}"
         if 'asker' in params:
-            query += f"&asker={params.get('asker')}"
+            query += f"&asker={quote(str(params.get('asker', '')))}"
         return query
