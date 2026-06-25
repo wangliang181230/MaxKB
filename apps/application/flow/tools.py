@@ -66,12 +66,12 @@ def _merge_lists_normalize_empty_tool_chunk_ids(left, *others):
     def _norm(lst):
         if lst is None:
             return lst
-        result = []
+        result0 = []
         for item in lst:
             if isinstance(item, dict) and "index" in item and item.get("id") == "":
                 item = {**item, "id": None}
-            result.append(item)
-        return result
+            result0.append(item)
+        return result0
 
     return _original_merge_lists(
         _norm(left),
@@ -203,10 +203,10 @@ class Reasoning:
                 }
             else:
                 # aaa
-                result = {"content": "", "reasoning_content": self.reasoning_content_chunk}
+                result0 = {"content": "", "reasoning_content": self.reasoning_content_chunk}
                 self.reasoning_content += self.reasoning_content_chunk
                 self.reasoning_content_chunk = ""
-                return result
+                return result0
 
 
 def event_content(chat_id, chat_record_id, response, workflow, write_context, post_handler: WorkFlowPostHandler):
@@ -1084,10 +1084,10 @@ def get_workflow_func(source_type, source_id, tool, qv, workspace_id, user_id=No
         res = work_flow_manage.run()
         for r in res:
             pass
-        result = dict(work_flow_manage.out_context)
-        result['tool_id'] = str(tool_id)
-        result['tool_record_id'] = tool_record_id
-        return result
+        result0 = dict(work_flow_manage.out_context)
+        result0['tool_id'] = str(tool_id)
+        result0['tool_record_id'] = tool_record_id
+        return result0
 
     return inner
 

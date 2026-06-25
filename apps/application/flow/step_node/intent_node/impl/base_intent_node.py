@@ -127,12 +127,13 @@ class BaseIntentNode(IIntentNode):
     @staticmethod
     def get_history_message(history_chat_record, dialogue_number):
         """获取历史消息"""
+        if dialogue_number <= 0:
+            return []
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(lambda x, y: [*x, *y], [
             [history_chat_record[index].get_human_message(), history_chat_record[index].get_ai_message()]
             for index in
             range(start_index if start_index > 0 else 0, len(history_chat_record))], [])
-
         for message in history_message:
             if isinstance(message.content, str):
                 message.content = re.sub(r'<form_rander>.*?<\/form_rander>', '', message.content, flags=re.DOTALL)

@@ -594,9 +594,9 @@ class ToolSerializer(serializers.Serializer):
 
         @staticmethod
         def get_field_value(debug_field_list, name, is_required):
-            result = [field for field in debug_field_list if field.get("name") == name]
-            if len(result) > 0:
-                return result[-1].get("value")
+            result0 = [field for field in debug_field_list if field.get("name") == name]
+            if len(result0) > 0:
+                return result0[-1].get("value")
             if is_required:
                 raise AppApiException(500, f"{name}" + _("field has no value set"))
             return None
@@ -859,7 +859,7 @@ class ToolSerializer(serializers.Serializer):
             try:
                 with open(file_name, "w", encoding="utf-8") as file:
                     file.write(code)
-                result = subprocess.run(
+                result0 = subprocess.run(
                     [
                         sys.executable,
                         "-m",
@@ -877,13 +877,13 @@ class ToolSerializer(serializers.Serializer):
                     timeout=10,
                 )
 
-                if result.returncode not in (0, 1):
-                    raise Exception(result.stderr or result.stdout)
+                if result0.returncode not in (0, 1):
+                    raise Exception(result0.stderr or result0.stdout)
 
-                if not result.stdout.strip():
+                if not result0.stdout.strip():
                     return []
 
-                messages = json.loads(result.stdout)
+                messages = json.loads(result0.stdout)
                 base_name = os.path.basename(file_name)
                 return [
                     {
@@ -1808,7 +1808,7 @@ class ToolTreeSerializer(serializers.Serializer):
             workspace_manage = is_workspace_manage_permission_read(self.data.get("user_id"),
                                                                    self.data.get("workspace_id"), 'TOOL:READ')
             is_x_pack_ee = self.is_x_pack_ee()
-            result = native_page_search(
+            result0 = native_page_search(
                 current_page,
                 page_size,
                 self.get_query_set(workspace_manage, is_x_pack_ee),
@@ -1829,7 +1829,7 @@ class ToolTreeSerializer(serializers.Serializer):
                     "init_field_list": json.loads(record.get("init_field_list", "[]")),
                 },
             )
-            return ResourceMappingSerializer().get_resource_count(result)
+            return ResourceMappingSerializer().get_resource_count(result0)
 
         def get_tools(self):
             self.is_valid(raise_exception=True)
