@@ -18,9 +18,9 @@ def handle_sheet(file_name, sheet):
     rows = iter([sheet.row_values(i) for i in range(sheet.nrows)])
     try:
         title_row_list = next(rows)
-    except Exception as e:
+    except Exception:
         return {'name': file_name, 'paragraphs': []}
-    if len(title_row_list) == 0:
+    if not title_row_list:
         return {'name': file_name, 'paragraphs': []}
     title_row_index_dict = get_title_row_index_dict(title_row_list)
     paragraph_list = []

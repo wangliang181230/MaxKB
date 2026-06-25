@@ -38,7 +38,7 @@ def get_embedding_id(knowledge_id_list):
     if len(set([knowledge.embedding_model_id for knowledge in knowledge_list])) > 1:
         raise Exception(
             _("The vector model of the associated knowledge base is inconsistent and the segmentation cannot be recalled."))
-    if len(knowledge_list) == 0:
+    if not knowledge_list:
         raise Exception(_("The knowledge base setting is wrong, please reset the knowledge base"))
     return knowledge_list[0].embedding_model_id
 
@@ -56,7 +56,7 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
         if get_knowledge_list_of_authorized is not None and RoleConstants.CHAT_USER.value.name == chat_user_type:
             knowledge_id_list = get_knowledge_list_of_authorized(manage.context.get('chat_user_id'),
                                                                  knowledge_id_list)
-        if len(knowledge_id_list) == 0:
+        if not knowledge_id_list:
             return []
         exec_problem_text = padding_problem_text if padding_problem_text is not None else problem_text
         model_id = get_embedding_id(knowledge_id_list)
@@ -107,7 +107,7 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
     @staticmethod
     def list_paragraph(embedding_list: List, vector):
         paragraph_id_list = [row.get('paragraph_id') for row in embedding_list]
-        if paragraph_id_list is None or len(paragraph_id_list) == 0:
+        if not paragraph_id_list:
             return []
         paragraph_list = native_search(QuerySet(Paragraph).filter(id__in=paragraph_id_list),
                                        get_file_content(
