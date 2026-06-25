@@ -38,9 +38,9 @@ class CsvParseQAHandle(BaseParseQAHandle):
             reader = csv.reader(io.TextIOWrapper(io.BytesIO(buffer), encoding=detect(buffer)['encoding']))
             try:
                 title_row_list = reader.__next__()
-            except Exception as e:
+            except Exception:
                 return [{'name': file.name, 'paragraphs': []}]
-            if len(title_row_list) == 0:
+            if not title_row_list:
                 return [{'name': file.name, 'paragraphs': []}]
             title_row_index_dict = get_title_row_index_dict(title_row_list)
             paragraph_list = []

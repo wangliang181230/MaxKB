@@ -167,7 +167,7 @@ class BaseVectorStore(ABC):
         is_active: bool,
         embedding: Embeddings,
     ):
-        if knowledge_id_list is None or len(knowledge_id_list) == 0:
+        if not knowledge_id_list:
             return []
         query_text = normalize_for_embedding(query_text)
         query_embedding = embedding.embed_query(query_text)
