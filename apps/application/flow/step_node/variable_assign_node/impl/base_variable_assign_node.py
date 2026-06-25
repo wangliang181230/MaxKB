@@ -63,7 +63,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
                 return val
             return float(val)
         elif target_type == 'boolean':
-            if isinstance(value, str) and value.lower() in ('false', '0', '[]', ''):
+            if isinstance(val, str) and val.lower() in ('false', '0', '[]', ''):
                 return False
             return bool(val)
         else:
