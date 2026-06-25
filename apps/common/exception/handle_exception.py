@@ -6,9 +6,6 @@
     @date：2023/9/5 19:29
     @desc:
 """
-import logging
-import traceback
-
 from rest_framework.exceptions import ValidationError, ErrorDetail, APIException
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.views import exception_handler
@@ -89,7 +86,7 @@ def find_err_detail(exc_detail):
 def get_label(key, exc_detail):
     try:
         return exc_detail.serializer.fields[key].label
-    except Exception as e:
+    except Exception:
         return key
 
 
@@ -105,6 +102,6 @@ def handle_exception(exc, context):
     if issubclass(exception_class, APIException):
         return result.error(exc.detail)
     if response is None:
-        maxkb_logger.error(f'{str(exc)}:{traceback.format_exc()}')
+        maxkb_logger.error(f'{str(exc)}', exc_info=True)
         return result.error(str(exc))
     return response

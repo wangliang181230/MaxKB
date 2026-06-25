@@ -68,5 +68,5 @@ class TextSplitHandle(BaseSplitHandle):
         try:
             return buffer.decode(detect(buffer)['encoding'])
         except BaseException as e:
-            traceback.print_exception(e)
+            maxkb_logger.error(f'Error decoding text file: {e}', exc_info=True)
             return f'{e}'
