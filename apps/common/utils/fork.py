@@ -1,7 +1,6 @@
 import base64
 import copy
 import re
-import traceback
 from functools import reduce
 from typing import List, Set
 from urllib.parse import ParseResult, urljoin, urlparse, urlsplit, urlunparse
@@ -276,7 +275,7 @@ def fetch_url(url, headers):
                 return Fork.Response.error(f"url: {self.base_fork_url} code:{response.status_code}")
             bf = self.get_beautiful_soup(response)
         except Exception as e:
-            maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+            maxkb_logger.error(f'Fork error: {e}', exc_info=True)
             return Fork.Response.error(str(e))
         bf = self.reset_beautiful_soup(bf)
         link_list = self.get_child_link_list(bf)
