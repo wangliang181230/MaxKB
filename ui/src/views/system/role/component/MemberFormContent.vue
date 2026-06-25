@@ -86,13 +86,13 @@ const props = withDefaults(defineProps<{
 const formRef = ref()
 const formItem: Record<string, any> = {}
 const form = defineModel<Record<string, any>[]>('form', {
-  default: [],
+  default: () => [],
 })
 
 const loadingStates = reactive<Record<string, boolean>>({})
 
 const selectedRoles = computed(() => {
-  return form.value.map((item) => item.role_id)
+  return form.value.map((item: Record<string, any>) => item.role_id)
 })
 
 function getOptions(element: any, model: FormItemModel) {
@@ -114,7 +114,7 @@ async function handleRemoteSearch(query: string, element: any, model: FormItemMo
     return
   }
 
-  const key = `${form.value.indexOf(element)}-${model.path}`
+  const key = `${String(form.value.indexOf(element))}-${String(model.path)}`
   loadingStates[key] = true
 
   try {
