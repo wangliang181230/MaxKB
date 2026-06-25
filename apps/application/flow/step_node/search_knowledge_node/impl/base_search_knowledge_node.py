@@ -27,10 +27,10 @@ from models_provider.tools import get_model_instance_by_model_workspace_id
 
 def get_embedding_id(dataset_id_list):
     dataset_list = QuerySet(Knowledge).filter(id__in=dataset_id_list)
+    if not dataset_list:
+        raise Exception("知识库设置错误,请重新设置知识库")
     if len(set([dataset.embedding_model_id for dataset in dataset_list])) > 1:
         raise Exception("关联知识库的向量模型不一致，无法召回分段。")
-    if len(dataset_list) == 0:
-        raise Exception("知识库设置错误,请重新设置知识库")
     return dataset_list[0].embedding_model_id
 
 
@@ -100,7 +100,7 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
                                                                  knowledge_id_list)
         workspace_id = self.workflow_manage.get_body().get('workspace_id')
         knowledge_id_list = filter_authorized_ids('knowledge', knowledge_id_list, workspace_id)
-        if len(knowledge_id_list) == 0:
+        if not knowledge_id_list:
             return get_none_result(question)
         model_id = get_embedding_id(knowledge_id_list)
         embedding_model = get_model_instance_by_model_workspace_id(model_id, workspace_id)
@@ -157,7 +157,7 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
     @staticmethod
     def list_paragraph(embedding_list: List, vector):
         paragraph_id_list = [row.get('paragraph_id') for row in embedding_list]
-        if paragraph_id_list is None or len(paragraph_id_list) == 0:
+        if not paragraph_id_list:
             return []
         paragraph_list = native_search(QuerySet(Paragraph).filter(id__in=paragraph_id_list),
                                        get_file_content(

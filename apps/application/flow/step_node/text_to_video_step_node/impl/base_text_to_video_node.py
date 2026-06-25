@@ -147,7 +147,7 @@ class BaseTextToVideoNode(ITextToVideoNode):
         for data in chat_record.details.values():
             if self.node.id == data['node_id'] and 'image_list' in data:
                 image_list = data['image_list']
-                if len(image_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+                if not image_list or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
                 return HumanMessage(content=data['question'])
         return HumanMessage(content=chat_record.problem_text)

@@ -121,7 +121,7 @@ def get_embedding_model_by_knowledge_id_list(knowledge_id_list: List):
     knowledge_list = QuerySet(Knowledge).filter(id__in=knowledge_id_list)
     if len(set([knowledge.embedding_model_id for knowledge in knowledge_list])) > 1:
         raise Exception(_('The knowledge base is inconsistent with the vector model'))
-    if len(knowledge_list) == 0:
+    if not knowledge_list:
         raise Exception(_('Knowledge base setting error, please reset the knowledge base'))
 
     default_params = get_model_default_params(knowledge_list[0].embedding_model)
@@ -157,7 +157,7 @@ def get_embedding_model_id_by_knowledge_id_list(knowledge_id_list: List):
     knowledge_list = QuerySet(Knowledge).filter(id__in=knowledge_id_list)
     if len(set([knowledge.embedding_model_id for knowledge in knowledge_list])) > 1:
         raise Exception(_('The knowledge base is inconsistent with the vector model'))
-    if len(knowledge_list) == 0:
+    if not knowledge_list:
         raise Exception(_('Knowledge base setting error, please reset the knowledge base'))
     return str(knowledge_list[0].embedding_model_id)
 
@@ -207,7 +207,7 @@ def update_document_char_length(document_id: str):
 
 
 def list_paragraph(paragraph_list: List[str]):
-    if paragraph_list is None or len(paragraph_list) == 0:
+    if not paragraph_list:
         return []
     return native_search(QuerySet(Paragraph).filter(id__in=paragraph_list), get_file_content(
         os.path.join(PROJECT_DIR, "apps", "knowledge", 'sql', 'list_paragraph.sql')))
@@ -254,7 +254,7 @@ def create_knowledge_index(knowledge_id=None, document_id=None):
     if not index:
         sql = f"SELECT vector_dims(embedding) AS dims FROM embedding WHERE knowledge_id = '{k_id}' LIMIT 1"
         result = sql_execute(sql, [])
-        if len(result) == 0:
+        if not result:
             return
         dims = result[0]['dims']
         # 超过2000维度不创建索引，pgvector hnsw索引不支持超过2000维度

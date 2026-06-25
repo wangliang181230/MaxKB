@@ -42,16 +42,16 @@ def handle_sheet(file_name, sheet, image_dict, limit: int):
         title_md_content = row_to_md(title_row_list, image_dict)
         title_md_content += '| ' + ' | '.join(
             ['---' if cell is not None else '' for cell in title_row_list]) + ' |\n'
-    except Exception as e:
+    except Exception:
         return result
-    if len(title_row_list) == 0:
+    if not title_row_list:
         return result
     result_item_content = ''
     for row in rows:
         next_md_content = row_to_md(row, image_dict)
         next_md_content_len = len(next_md_content)
         result_item_content_len = len(result_item_content)
-        if len(result_item_content) == 0:
+        if not result_item_content:
             result_item_content += title_md_content
             result_item_content += next_md_content
         else:
@@ -60,7 +60,7 @@ def handle_sheet(file_name, sheet, image_dict, limit: int):
             else:
                 paragraphs.append({'content': result_item_content, 'title': ''})
                 result_item_content = title_md_content + next_md_content
-    if len(result_item_content) > 0:
+    if result_item_content:
         paragraphs.append({'content': result_item_content, 'title': ''})
     return result
 
@@ -140,7 +140,7 @@ class XlsxSplitHandle(BaseSplitHandle):
             for sheetname in workbook.sheetnames:
                 sheet = workbook[sheetname]
                 rows = self.fill_merged_cells(sheet, image_dict)
-                if len(rows) == 0:
+                if not rows:
                     continue
 
                 # 添加 sheet 名称作为标题

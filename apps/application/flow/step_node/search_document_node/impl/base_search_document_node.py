@@ -128,7 +128,7 @@ class BaseSearchDocumentNode(ISearchDocumentStepNode):
                 field_value = self.workflow_manage.generate_field_value(condition['value'])
                 compare_type = condition['compare']
 
-                if not field_value or field_value == 'None' or len(field_value) == 0:
+                if not field_value:
                     continue
 
                 # 构建查询条件
@@ -167,7 +167,7 @@ class BaseSearchDocumentNode(ISearchDocumentStepNode):
                 field_value = self.workflow_manage.generate_field_value(condition['value'])
                 compare_type = condition['compare']
 
-                if not field_value or field_value == 'None' or len(field_value) == 0:
+                if not field_value:
                     continue
 
                 if compare_type == 'not_contain':

@@ -210,7 +210,7 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
         for data in chat_record.details.values():
             if self.node.id == data['node_id'] and 'image_list' in data:
                 image_list = data['image_list'] or []
-                if len(image_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+                if not image_list or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
 
                 file_id_list = []
@@ -241,7 +241,7 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
         for data in chat_record.details.values():
             if self.node.id == data['node_id'] and 'image_list' in data:
                 image_list = data['image_list'] or []
-                if len(image_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+                if not image_list or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
                 file_id_list = []
                 url_list = []

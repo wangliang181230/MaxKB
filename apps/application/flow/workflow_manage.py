@@ -638,7 +638,7 @@ class WorkflowManage:
                     else:
                         result.insert(0, [current_answer])
                 up_node = current_answer
-        if len(result) == 0:
+        if not result:
             # 如果没有响应 就响应一个空数据
             return [[]]
         return [[item.to_dict() for item in r] for r in result]

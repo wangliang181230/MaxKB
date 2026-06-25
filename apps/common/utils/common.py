@@ -331,7 +331,7 @@ def parse_md_image(content: str):
 
 
 def bulk_create_in_batches(model, data, batch_size=1000):
-    if len(data) == 0:
+    if not data:
         return
     for i in range(0, len(data), batch_size):
         batch = data[i:i + batch_size]

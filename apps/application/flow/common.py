@@ -221,14 +221,14 @@ class Workflow:
             for branch in branch_list:
                 source_anchor_id = f"{node.id}_{branch.get('id')}_right"
                 edge_list = [edge for edge in self.edges if edge.sourceAnchorId == source_anchor_id]
-                if len(edge_list) == 0:
+                if not edge_list:
                     raise AppApiException(500,
                                           _('The branch {branch} of the {node} node needs to be connected').format(
                                               node=node.properties.get("stepName"), branch=branch.get("type")))
 
         else:
             edge_list = [edge for edge in self.edges if edge.sourceNodeId == node.id]
-            if len(edge_list) == 0 and node.type not in END_NODES:
+            if not edge_list and node.type not in END_NODES:
                 raise AppApiException(500, _("{node} Nodes cannot be considered as end nodes").format(
                     node=node.properties.get("stepName")))
 
@@ -242,7 +242,7 @@ class Workflow:
 
     def is_valid_start_node(self):
         start_node_list = [node for node in self.nodes if node.id == 'start-node']
-        if len(start_node_list) == 0:
+        if not start_node_list:
             raise AppApiException(500, _('The starting node is required'))
         if len(start_node_list) > 1:
             raise AppApiException(500, _('There can only be one starting node'))
@@ -280,7 +280,7 @@ class Workflow:
 
     def is_valid_base_node(self):
         base_node_list = [node for node in self.nodes if node.id == 'base-node']
-        if len(base_node_list) == 0:
+        if not base_node_list:
             raise AppApiException(500, _('Basic information node is required'))
         if len(base_node_list) > 1:
             raise AppApiException(500, _('There can only be one basic information node'))
