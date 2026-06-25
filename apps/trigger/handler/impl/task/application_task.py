@@ -144,7 +144,7 @@ def get_application_parameters_setting(application):
         return application_parameter_setting
     else:
         base_node_list = [n for n in application.work_flow.get('nodes') if n.get('type') == "base-node"]
-        if len(base_node_list) == 0:
+        if not base_node_list:
             raise Exception('Incorrect application workflow information')
         base_node = base_node_list[0]
         api_input_field_list = base_node.get('properties').get('api_input_field_list') or []

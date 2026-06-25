@@ -39,10 +39,10 @@ class VLLMWhisperModelCredential(BaseForm, BaseModelCredential):
                                   gettext('{model_type} Model type is not supported').format(model_type=model_type))
         try:
             model_list = provider.get_base_model_list(model_credential.get('api_url'), model_credential.get('api_key'))
-        except Exception as e:
+        except Exception:
             raise AppApiException(ValidCode.valid_error.value, gettext('API domain name is invalid'))
         exist = provider.get_model_info_by_name(model_list, model_name)
-        if len(exist) == 0:
+        if not exist:
             raise AppApiException(ValidCode.valid_error.value,
                                   gettext('The model does not exist, please download the model first'))
         model = provider.get_model(model_type, model_name, model_credential, **model_params)
