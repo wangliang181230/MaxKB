@@ -152,7 +152,7 @@ def parse_title_level(text, content_level_pattern: List, index):
     if index >= len(content_level_pattern):
         return []
     result = parse_level(text, content_level_pattern[index])
-    if len(result) == 0 and len(content_level_pattern) > index:
+    if not result and len(content_level_pattern) > index:
         return parse_title_level(text, content_level_pattern, index + 1)
     return result
 
@@ -385,7 +385,7 @@ class SplitModel:
         :return: 解析后的树形结果数据
         """
         level_content_list = parse_title_level(text, self.content_level_pattern, index)
-        if len(level_content_list) == 0:
+        if not level_content_list:
             return [to_tree_obj(row, 'block') for row in smart_split_paragraph(text, limit=self.limit)]
         if index == 0 and text.lstrip().index(level_content_list[0]["content"].lstrip()) != 0:
             level_content_list.insert(0, to_tree_obj(""))
@@ -399,7 +399,7 @@ class SplitModel:
                     level_content_list.insert(0, to_tree_obj(row, 'block'))
 
             block, cursor = get_level_block(text, level_title_content_list, i, cursor)
-            if len(block) == 0:
+            if not block:
                 continue
             children = self.parse_to_tree(text=block, index=index + 1)
             level_title_content_list[i]['children'] = children

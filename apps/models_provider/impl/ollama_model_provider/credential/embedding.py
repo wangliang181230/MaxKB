@@ -26,11 +26,11 @@ class OllamaEmbeddingModelCredential(BaseForm, BaseModelCredential):
                                   _('{model_type} Model type is not supported').format(model_type=model_type))
         try:
             model_list = provider.get_base_model_list(model_credential.get('api_base'))
-        except Exception as e:
+        except Exception:
             raise AppApiException(ValidCode.valid_error.value, _('API domain name is invalid'))
         exist = [model for model in (model_list.get('models') if model_list.get('models') is not None else []) if
                  model.get('model') == model_name or model.get('model').replace(":latest", "") == model_name]
-        if len(exist) == 0:
+        if not exist:
             raise AppApiException(ValidCode.model_not_fount,
                                   _('The model does not exist, please download the model first'))
         model: LocalEmbedding = provider.get_model(model_type, model_name, model_credential)
