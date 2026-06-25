@@ -21,9 +21,9 @@ def handle_sheet(file_name, sheet, image_dict):
     try:
         title_row_list = next(rows)
         title_row_list = [row.value for row in title_row_list]
-    except Exception as e:
+    except Exception:
         return {'name': file_name, 'paragraphs': []}
-    if len(title_row_list) == 0:
+    if not title_row_list:
         return {'name': file_name, 'paragraphs': []}
     title_row_index_dict = get_title_row_index_dict(title_row_list)
     paragraph_list = []
