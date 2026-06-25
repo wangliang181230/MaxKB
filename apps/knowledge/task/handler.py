@@ -118,7 +118,7 @@ def save_problem(knowledge_id, document_id, paragraph_id, problem):
     problem = re.sub(r"^\d+\.\s*", "", problem)
     match = re.search(r"<question>(.*?)<\/question>", problem, flags=re.DOTALL)
     problem = match.group(1) if match else None
-    if problem is None or len(problem) == 0:
+    if not problem:
         return
     try:
         workspace_id = QuerySet(Knowledge).filter(id=knowledge_id).first().workspace_id

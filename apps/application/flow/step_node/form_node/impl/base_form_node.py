@@ -29,7 +29,7 @@ def get_default_option(option_list, _type, value_field):
     try:
         if option_list is not None and isinstance(option_list, list) and len(option_list) > 0:
             default_value_list = [o.get(value_field) for o in option_list if o.get('default')]
-            if len(default_value_list) == 0:
+            if not default_value_list:
                 return [option_list[0].get(
                     value_field)] if multi_select_list.__contains__(_type) else option_list[0].get(
                     value_field)
