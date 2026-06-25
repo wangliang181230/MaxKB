@@ -376,7 +376,8 @@ exec({dedent(code)!a})
             )
             return subprocess_result
         except subprocess.TimeoutExpired:
-            raise Exception(_(f"Process execution timed out after {_process_limit_timeout_seconds} seconds."))
+            raise Exception(_("Process execution timed out after {timeout_seconds} seconds.").format(
+                timeout_seconds=_process_limit_timeout_seconds))
 
     def validate_mcp_transport(self, code_str):
         servers = json.loads(code_str)
