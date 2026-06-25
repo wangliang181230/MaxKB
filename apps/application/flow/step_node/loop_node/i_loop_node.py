@@ -29,7 +29,7 @@ class ILoopNodeSerializer(serializers.Serializer):
         loop_type = self.data.get('loop_type')
         if loop_type == 'ARRAY':
             array = self.data.get('array')
-            if array is None or len(array) == 0:
+            if not array:
                 message = _('{field}, this field is required.').format(field='array')
                 raise AppApiException(500, message)
         elif loop_type == 'NUMBER':
