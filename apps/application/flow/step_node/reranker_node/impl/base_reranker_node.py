@@ -25,7 +25,7 @@ def merge_reranker_list(reranker_list, result=None):
             content = document.get('title', '') + document.get('content', '')
             title = document.get("title")
             result.append(
-                Document(page_content=str(document) if len(content) == 0 else content,
+                Document(page_content=str(document) if not content else content,
                          metadata={'title': title, **document}))
         else:
             result.append(Document(page_content=str(document), metadata={}))
@@ -89,7 +89,7 @@ class BaseRerankerNode(IRerankerNode):
         self.context['show_knowledge'] = show_knowledge
         documents = merge_reranker_list(reranker_list)
         documents = [d for d in documents if d.page_content and len(d.page_content) > 0]
-        if len(documents) == 0:
+        if not documents:
             return get_none_result(question)
         top_n = reranker_setting.get('top_n', 3)
         self.context['document_list'] = [
