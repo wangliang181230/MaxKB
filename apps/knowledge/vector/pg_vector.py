@@ -28,7 +28,7 @@ from maxkb.conf import PROJECT_DIR
 
 class PGVector(BaseVectorStore):
     def delete_by_source_ids(self, source_ids: List[str], source_type: str):
-        if len(source_ids) == 0:
+        if not source_ids:
             return
         QuerySet(Embedding).filter(source_id__in=source_ids, source_type=source_type).delete()
 
@@ -120,7 +120,7 @@ class PGVector(BaseVectorStore):
         search_mode: SearchMode,
         embedding: Embeddings,
     ):
-        if knowledge_id_list is None or len(knowledge_id_list) == 0:
+        if not knowledge_id_list:
             return []
         exclude_dict = {}
         query_text = normalize_for_embedding(query_text)
@@ -161,7 +161,7 @@ class PGVector(BaseVectorStore):
         search_mode: SearchMode,
     ):
         exclude_dict = {}
-        if knowledge_id_list is None or len(knowledge_id_list) == 0:
+        if not knowledge_id_list:
             return []
         for search_handle in search_handle_list:
             if search_handle.support(search_mode):
@@ -213,7 +213,7 @@ class PGVector(BaseVectorStore):
         return True
 
     def delete_by_document_id_list(self, document_id_list: List[str]):
-        if len(document_id_list) == 0:
+        if not document_id_list:
             return True
         return QuerySet(Embedding).filter(document_id__in=document_id_list).delete()
 

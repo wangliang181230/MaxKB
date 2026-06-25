@@ -1402,7 +1402,7 @@ class DocumentSerializers(serializers.Serializer):
             bulk_create_in_batches(ProblemParagraphMapping, problem_paragraph_mapping_list, batch_size=1000)
             # 查询文档
             query_set = QuerySet(model=Document)
-            if len(document_model_list) == 0:
+            if not document_model_list:
                 return [], knowledge_id, workspace_id
             query_set = query_set.filter(**{"id__in": [d.id for d in document_model_list]})
             return (

@@ -42,16 +42,16 @@ class CsvSplitHandle(BaseSplitHandle):
                 title_md_content = row_to_md(title_row_list)
                 title_md_content += '| ' + ' | '.join(
                     ['---' if cell is not None else '' for cell in title_row_list]) + ' |\n'
-            except Exception as e:
+            except Exception:
                 return result
-            if len(title_row_list) == 0:
+            if not title_row_list:
                 return result
             result_item_content = ''
             for row in reader:
                 next_md_content = row_to_md(row)
                 next_md_content_len = len(next_md_content)
                 result_item_content_len = len(result_item_content)
-                if len(result_item_content) == 0:
+                if not result_item_content:
                     result_item_content += title_md_content
                     result_item_content += next_md_content
                 else:
