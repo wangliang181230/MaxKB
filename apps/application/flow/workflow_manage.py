@@ -502,18 +502,25 @@ class WorkflowManage:
                 current_node.status = 201
                 return None
             if not enableException:
-                chunk = self.base_to_response.to_stream_chunk_response(self.params.get('chat_id'),
-                                                                       self.params.get('chat_record_id'),
-                                                                       current_node.id,
-                                                                       current_node.up_node_id_list,
-                                                                       'Exception:' + str(e), False, 0, 0,
-                                                                       {'node_is_end': True,
-                                                                        'runtime_node_id': current_node.runtime_node_id,
-                                                                        'node_type': current_node.type,
-                                                                        'view_type': current_node.view_type,
-                                                                        'child_node': {},
-                                                                        'real_node_id': real_node_id,
-                                                                        'node_status': 'ERROR'})
+                chunk = self.base_to_response.to_stream_chunk_response(
+                    self.params.get('chat_id'),
+                    self.params.get('chat_record_id'),
+                    current_node.id,
+                    current_node.up_node_id_list,
+                    'Exception:' + str(e),
+                    False,
+                    0,
+                    0,
+                    {
+                        'node_is_end': True,
+                        'runtime_node_id': current_node.runtime_node_id,
+                        'node_type': current_node.type,
+                        'view_type': current_node.view_type,
+                        'child_node': {},
+                        'real_node_id': real_node_id,
+                        'node_status': 'ERROR',
+                    }
+                )
                 current_node.node_chunk.add_chunk(chunk)
                 return None
             else:
