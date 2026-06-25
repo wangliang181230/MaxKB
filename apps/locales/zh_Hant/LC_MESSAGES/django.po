@@ -2050,8 +2050,8 @@ msgstr "下載過程被中斷，請重試"
 
 #: apps/common/event/listener_manage.py:90
 #, python-brace-format
-msgid "Query vector data: {paragraph_id_list} error {error} {traceback}"
-msgstr "查詢向量數據：{paragraph_id_list} 錯誤：{error} {traceback}"
+msgid "Query vector data: {paragraph_id_list}, error: {error}"
+msgstr "查詢向量數據：{paragraph_id_list}，錯誤：{error}"
 
 #: apps/common/event/listener_manage.py:95
 #, python-brace-format
@@ -2060,8 +2060,8 @@ msgstr "開始--->向量段落: {paragraph_id_list}"
 
 #: apps/common/event/listener_manage.py:107
 #, python-brace-format
-msgid "Vectorized paragraph: {paragraph_id_list} error {error} {traceback}"
-msgstr "向量段落: {paragraph_id_list} 錯誤：{error} {traceback}"
+msgid "Vectorized paragraph: {paragraph_id_list}, error: {error}"
+msgstr "向量段落: {paragraph_id_list}，錯誤：{error}"
 
 #: apps/common/event/listener_manage.py:113
 #, python-brace-format
@@ -2075,8 +2075,8 @@ msgstr "開始--->向量段落: {paragraph_id}"
 
 #: apps/common/event/listener_manage.py:147
 #, python-brace-format
-msgid "Vectorized paragraph: {paragraph_id} error {error} {traceback}"
-msgstr "向量段落: {paragraph_id} 錯誤：{error} {traceback}"
+msgid "Vectorized paragraph: {paragraph_id}, error: {error}"
+msgstr "向量段落: {paragraph_id}，錯誤：{error}"
 
 #: apps/common/event/listener_manage.py:152
 #, python-brace-format
@@ -2090,8 +2090,8 @@ msgstr "開始--->向量文檔: {document_id}"
 
 #: apps/common/event/listener_manage.py:288
 #, python-brace-format
-msgid "Vectorized document: {document_id} error {error} {traceback}"
-msgstr "向量文檔: {document_id} 錯誤：{error} {traceback}"
+msgid "Vectorized document: {document_id}, error: {error}"
+msgstr "向量文檔: {document_id}，錯誤：{error}"
 
 #: apps/common/event/listener_manage.py:293
 #, python-brace-format

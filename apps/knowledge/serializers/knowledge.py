@@ -4,7 +4,6 @@ import os
 import pickle
 import re
 import tempfile
-import traceback
 import zipfile
 from collections import defaultdict
 from functools import reduce
@@ -853,20 +852,24 @@ class KnowledgeSerializer(serializers.Serializer):
         def merge_problem(paragraph_list: List[Dict], problem_mapping_list: List[Dict]):
             result = {}
             document_dict = {}
-
+        
+            # 预构建 paragraph_id -> problem_list 的映射，避免 O(N*M) 的列表遍历
+            problem_map = {}
+            for problem_mapping in problem_mapping_list:
+                pid = problem_mapping.get("paragraph_id")
+                if pid not in problem_map:
+                    problem_map[pid] = []
+                problem_map[pid].append(problem_mapping.get("content"))
+        
             for paragraph in paragraph_list:
-                problem_list = [
-                    problem_mapping.get("content")
-                    for problem_mapping in problem_mapping_list
-                    if problem_mapping.get("paragraph_id") == paragraph.get("id")
-                ]
+                problem_list = problem_map.get(paragraph.get("id"), [])
                 document_sheet = result.get(paragraph.get("document_id"))
                 d = document_dict.get(paragraph.get("document_name"))
                 if d is None:
                     document_dict[paragraph.get("document_name")] = {paragraph.get("document_id")}
                 else:
                     d.add(paragraph.get("document_id"))
-
+        
                 if document_sheet is None:
                     result[paragraph.get("document_id")] = [
                         [paragraph.get("title"), paragraph.get("content"), "\n".join(problem_list)]
@@ -1325,7 +1328,7 @@ class KnowledgeSerializer(serializers.Serializer):
                                 with_valid=True,
                             )
                     except Exception as e:
-                        maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                        maxkb_logger.error(f"Sync web knowledge document error: {e}", exc_info=True)
 
             return handler
 
