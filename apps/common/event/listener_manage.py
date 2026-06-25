@@ -9,7 +9,6 @@
 
 import os
 import threading
-import traceback
 from typing import List
 
 import django.db.models
@@ -111,9 +110,10 @@ class ListenerManagement:
             )
         except Exception as e:
             maxkb_logger.error(
-                _("Query vector data: {paragraph_id_list} error {error} {traceback}").format(
-                    paragraph_id_list=paragraph_id_list, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Query vector data: {paragraph_id_list}, error: {error}").format(
+                    paragraph_id_list=paragraph_id_list, error=str(e)
+                ),
+                exc_info=True
             )
 
     @staticmethod
@@ -135,9 +135,10 @@ class ListenerManagement:
             )
         except Exception as e:
             maxkb_logger.error(
-                _("Vectorized paragraph: {paragraph_id_list} error {error} {traceback}").format(
-                    paragraph_id_list=paragraph_id_list, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Vectorized paragraph: {paragraph_id_list}, error: {error}").format(
+                    paragraph_id_list=paragraph_id_list, error=str(e)
+                ),
+                exc_info=True
             )
             ListenerManagement.update_status(
                 QuerySet(Paragraph).filter(id__in=paragraph_id_list), TaskType.EMBEDDING, State.FAILURE
@@ -186,9 +187,10 @@ class ListenerManagement:
             )
         except Exception as e:
             maxkb_logger.error(
-                _("Vectorized paragraph: {paragraph_id} error {error} {traceback}").format(
-                    paragraph_id=paragraph_id, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Vectorized paragraph: {paragraph_id}, error: {error}").format(
+                    paragraph_id=paragraph_id, error=str(e)
+                ),
+                exc_info=True
             )
             ListenerManagement.update_status(
                 QuerySet(Paragraph).filter(id=paragraph_id), TaskType.EMBEDDING, State.FAILURE
@@ -239,9 +241,10 @@ class ListenerManagement:
             )
         except Exception as e:
             maxkb_logger.error(
-                _("Tokenize paragraph: {paragraph_id} error {error} {traceback}").format(
-                    paragraph_id=paragraph_id, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Tokenize paragraph: {paragraph_id}, error: {error}").format(
+                    paragraph_id=paragraph_id, error=str(e)
+                ),
+                exc_info=True
             )
             ListenerManagement.update_status(
                 QuerySet(Paragraph).filter(id=paragraph_id), TaskType.TOKENIZE, State.FAILURE
@@ -401,9 +404,10 @@ class ListenerManagement:
             create_knowledge_index(document_id=document_id)
         except Exception as e:
             maxkb_logger.error(
-                _("Vectorized document: {document_id} error {error} {traceback}").format(
-                    document_id=document_id, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Vectorized document: {document_id}, error: {error}").format(
+                    document_id=document_id, error=str(e)
+                ),
+                exc_info=True
             )
         finally:
             ListenerManagement.post_update_document_status(document_id, TaskType.EMBEDDING)
@@ -428,9 +432,10 @@ class ListenerManagement:
                 ListenerManagement.embedding_by_document(document.id, embedding_model=embedding_model)
         except Exception as e:
             maxkb_logger.error(
-                _("Vectorized knowledge: {knowledge_id} error {error} {traceback}").format(
-                    knowledge_id=knowledge_id, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Vectorized knowledge: {knowledge_id} error {error}").format(
+                    knowledge_id=knowledge_id, error=str(e)
+                ),
+                exc_info=True
             )
         finally:
             maxkb_logger.info(_("End--->Embedding knowledge: {knowledge_id}").format(knowledge_id=knowledge_id))
@@ -559,9 +564,10 @@ class ListenerManagement:
             )
         except Exception as e:
             maxkb_logger.error(
-                _("Tokenize document: {document_id} error {error} {traceback}").format(
-                    document_id=document_id, error=str(e), traceback=traceback.format_exc()
-                )
+                _("Tokenize document: {document_id} error {error}").format(
+                    document_id=document_id, error=str(e)
+                ),
+                exc_info=True
             )
         finally:
             ListenerManagement.post_update_document_status(document_id, TaskType.TOKENIZE)
