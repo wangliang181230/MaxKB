@@ -818,7 +818,6 @@ export const knowledgeMenuNodes = [
       questionNode,
     ],
   },
-
   {
     label: t('workflow.nodes.classify.businessLogic'),
     list: [conditionNode, switchNode, replyNode, loopNode],

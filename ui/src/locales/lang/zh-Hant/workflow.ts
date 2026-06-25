@@ -194,7 +194,7 @@ export default {
       custom: '手動',
       customTooltip: '手動設置標籤過濾條件',
       auto: '自動',
-      autoTooltip: '根據檢索問題自動匹配文檔標簽',
+      autoTooltip: '根據檢索問題自動匹配文檔標籤',
       documentList: '文檔列表',
       knowledgeList: '知識庫列表',
       result: '檢索結果',

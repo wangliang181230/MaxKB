@@ -190,6 +190,9 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
             self.context['image_list'] = image
 
     def get_history_message_for_details(self, history_chat_record, dialogue_number):
+        """获取历史消息"""
+        if dialogue_number <= 0:
+            return []
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(lambda x, y: [*x, *y], [
             [self.generate_history_human_message_for_details(history_chat_record[index]),
@@ -228,6 +231,9 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
         return HumanMessage(content=chat_record.problem_text)
 
     def get_history_message(self, history_chat_record, dialogue_number):
+        """获取历史消息"""
+        if dialogue_number <= 0:
+            return []
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(lambda x, y: [*x, *y], [
             [self.generate_history_human_message(history_chat_record[index]),

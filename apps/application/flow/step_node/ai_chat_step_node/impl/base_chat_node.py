@@ -480,6 +480,9 @@ class BaseChatNode(IChatNode):
 
     @staticmethod
     def get_history_message(history_chat_record, dialogue_number, dialogue_type, runtime_node_id):
+        """获取历史消息"""
+        if dialogue_number <= 0:
+            return []
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(
             lambda x, y: [*x, *y],
