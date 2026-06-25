@@ -45,7 +45,8 @@ class KnowledgeWorkflowManage(WorkflowManage):
 
     def run(self):
         self.context['start_time'] = time.time()
-        executor.submit(self._run)
+        future = executor.submit(self._run)
+        return future
 
     def _run(self):
         QuerySet(KnowledgeAction).filter(id=self.params.get('knowledge_action_id')).update(
