@@ -43,7 +43,7 @@ class LocalReranker(MaxKBBaseModel, BaseDocumentCompressor):
 
     def compress_documents(self, documents: Sequence[Document], query: str, callbacks: Optional[Callbacks] = None) -> \
             Sequence[Document]:
-        if documents is None or len(documents) == 0:
+        if not documents:
             return []
         import torch
         with torch.no_grad():
