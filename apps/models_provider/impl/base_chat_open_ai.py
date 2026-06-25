@@ -158,7 +158,7 @@ class BaseChatOpenAI(ChatOpenAI):
             if token_usage
             else None
         )
-        if len(choices) == 0:
+        if not choices:
             # logprobs is implicitly None
             generation_chunk = ChatGenerationChunk(
                 message=default_chunk_class(content="", usage_metadata=usage_metadata),

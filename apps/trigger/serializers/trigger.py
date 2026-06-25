@@ -130,7 +130,7 @@ class TriggerValidationMixin:
         if not isinstance(value, list):
             raise serializers.ValidationError({
                 'trigger_setting': _('%s must be an array') % field_name})
-        if len(value) == 0:
+        if not value:
             raise serializers.ValidationError({
                 'trigger_setting': _('%s must not be empty') % field_name})
 
