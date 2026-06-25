@@ -236,7 +236,7 @@ def _run_extract(workspace_id, application_id, chat_user_id, config, history_lim
         history_chat_record = list(qs.filter(create_time__gte=since_time))
     else:
         history_chat_record = list(qs[:history_limit])
-    if len(history_chat_record) == 0:
+    if not history_chat_record:
         return
 
     chat_model = get_model_instance_by_model_workspace_id(
