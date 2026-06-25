@@ -229,7 +229,7 @@ class ChatHunyuan(BaseChatModel):
         default_chunk_class = AIMessageChunk
         for chunk in res:
             chunk = chunk.get("data", "")
-            if len(chunk) == 0:
+            if not chunk:
                 continue
             response = json.loads(chunk)
             if "error" in response:
