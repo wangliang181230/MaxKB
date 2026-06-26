@@ -214,7 +214,7 @@
                 </span>
                 <span v-if="branch.type !== 'ELSE'">
                   <span class="color-secondary">{{ $t('workflow.nodes.conditionNode.conditions.info') }}</span>
-                  <el-tag type="warn" size="small" class="ml-4">
+                  <el-tag type="warn" size="small" class="ml-4 mr-4">
                     {{ branch.condition_logic === 'and' ? $t('workflow.condition.AND') : $t('workflow.condition.OR') }}
                   </el-tag>
                   <span class="color-secondary">{{ $t('workflow.nodes.conditionNode.conditions.label') }}</span>
