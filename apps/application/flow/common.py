@@ -261,7 +261,7 @@ class Workflow:
                 model_ids.append(model_id)
                 nodes_requiring_validation.append((node, model_id))
         if model_ids:
-            models_map = {model.id: model for model in QuerySet(Model).filter(id__in=model_ids)}
+            models_map = {str(model.id): model for model in QuerySet(Model).filter(id__in=model_ids)}
             for node, model_id in nodes_requiring_validation:
                 model = models_map.get(model_id)
                 if model is None:
@@ -290,7 +290,7 @@ class Workflow:
             function_lib_ids.append(function_lib_id)
             nodes_requiring_tool_validation.append((node, function_lib_id))
         if function_lib_ids:
-            tools_map = {tool.id: tool for tool in QuerySet(Tool).filter(id__in=function_lib_ids)}
+            tools_map = {str(tool.id): tool for tool in QuerySet(Tool).filter(id__in=function_lib_ids)}
             for node, function_lib_id in nodes_requiring_tool_validation:
                 f_lib = tools_map.get(function_lib_id)
                 if f_lib is None:
