@@ -261,9 +261,11 @@ class Workflow:
                 model_ids.append(model_id)
                 nodes_requiring_validation.append((node, model_id))
         if model_ids:
+            # 先批量获取数据
             models_map = {str(model.id): model for model in QuerySet(Model).filter(id__in=model_ids)}
+            # 再循环从map中取数据进行处理
             for node, model_id in nodes_requiring_validation:
-                model = models_map.get(model_id)
+                model = models_map.get(str(model_id))
                 if model is None:
                     raise ValidationError(ErrorDetail(
                         _('The node {node} model does not exist').format(node=node.properties.get("stepName"))))
@@ -290,9 +292,11 @@ class Workflow:
             function_lib_ids.append(function_lib_id)
             nodes_requiring_tool_validation.append((node, function_lib_id))
         if function_lib_ids:
+            # 先批量获取数据
             tools_map = {str(tool.id): tool for tool in QuerySet(Tool).filter(id__in=function_lib_ids)}
+            # 再循环从map中取数据进行处理
             for node, function_lib_id in nodes_requiring_tool_validation:
-                f_lib = tools_map.get(function_lib_id)
+                f_lib = tools_map.get(str(function_lib_id))
                 if f_lib is None:
                     raise ValidationError(ErrorDetail(_("The function library for node {node} is not available").format(
                         node=node.properties.get("stepName"))))
