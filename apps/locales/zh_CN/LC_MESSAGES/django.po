@@ -5548,7 +5548,7 @@ msgid "Only shared tools can be deleted"
 msgstr "仅限共享工具可以被删除"
 
 #: apps/application/serializers/application.py:929
-#: apps/common/utils/tool_code.py:386
+#: apps/common/utils/tool_code.py:385
 #: apps/knowledge/serializers/knowledge_workflow.py:668
 #: apps/tools/serializers/tool_workflow.py:397
 msgid "Only support transport=sse or transport=streamable_http"
@@ -5865,7 +5865,7 @@ msgid "Problem id does not exist"
 msgstr "问题 ID 不存在"
 
 #: apps/common/utils/tool_code.py:379
-msgid "Process execution timed out after {timeout_seconds} seconds."
+msgid "Process execution timed out after {} seconds."
 msgstr ""
 
 #: apps/tools/serializers/tool.py:1571
