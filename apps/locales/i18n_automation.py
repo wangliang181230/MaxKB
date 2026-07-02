@@ -19,7 +19,7 @@ LANGUAGES = ['en_US', 'zh_CN', 'zh_Hant']
 
 # 配置2：是否保留无代码来源(遗留)的项？
 # 说明：如果想从 django.po 文件中清除它们，请将此属性设置为 False
-KEEP_NO_SOURCE = False
+KEEP_NO_SOURCE = True
 
 # 配置3：是否保留翻译与原文一样的翻译内容？
 # 说明：默认：不保留，因为与原文一样没必要保留。
@@ -44,10 +44,10 @@ SCAN_NOT_INTERNATIONALIZED = True
 
 # 配置6：忽略 `未国际化的代码` 数组
 NOT_INTERNATIONALIZED_IGNORE_ARRAYS = frozenset([
-    "\n**********\n",
-    "\n│",
-    "***************",
-    "<%s %s>",
+    "Error: ",
+    "data: ",
+    "date: ",
+    "v: ",
 ])
 
 
@@ -295,19 +295,19 @@ class I18nAutomation:
         patterns = [
             # 1. 匹配括号内多个字符串拼接 _("str1" "str2") 或 _("str1" 'str2') 等混合形式
             re.compile(
-                r'\b_\(\s*'
+                r'\b(?:_|gettext_lazy|gettext)\(\s*'
                 r'(?:r?(?:"(?:[^"\\]|\\.)+"|\'(?:[^\'\\]|\\.)+\')\s*){2,}'
                 r'\)',
                 re.MULTILINE | re.DOTALL
             ),
             # 2. 匹配三引号双引号 _("""...""")
-            re.compile(r'\b_\(\s*r?"""((?:[^"\\]|\\.|"(?!"")|\n)*?)"""\s*\)', re.MULTILINE | re.DOTALL),
+            re.compile(r'\b(?:_|gettext_lazy|gettext)\(\s*r?"""((?:[^"\\]|\\.|"(?!"")|\n)*?)"""\s*\)', re.MULTILINE | re.DOTALL),
             # 2. 匹配三引号单引号 _('''...''')
-            re.compile(r"\b_\(\s*r?'''((?:[^'\\]|\\.|'(?!'')|\n)*?)'''\s*\)", re.MULTILINE | re.DOTALL),
+            re.compile(r"\b(?:_|gettext_lazy|gettext)\(\s*r?'''((?:[^'\\]|\\.|'(?!'')|\n)*?)'''\s*\)", re.MULTILINE | re.DOTALL),
             # 3. 匹配单行双引号 _("...")
-            re.compile(r'\b_\(\s*r?"((?:[^"\\]|\\.)+?)"\s*\)', re.MULTILINE | re.DOTALL),
+            re.compile(r'\b(?:_|gettext_lazy|gettext)\(\s*r?"((?:[^"\\]|\\.)+?)"\s*\)', re.MULTILINE | re.DOTALL),
             # 3. 匹配单行单引号 _('...')
-            re.compile(r"\b_\(\s*r?'((?:[^'\\]|\\.)+?)'\s*\)", re.MULTILINE | re.DOTALL),
+            re.compile(r"\b(?:_|gettext_lazy|gettext)\(\s*r?'((?:[^'\\]|\\.)+?)'\s*\)", re.MULTILINE | re.DOTALL),
         ]
 
         # 递归查找所有 .py 文件
@@ -584,7 +584,7 @@ msgstr ""
 
             # 统计信息
             translated_count = sum(1 for v in self.merged_translations.values()
-                                 if v.get(lang, ''))
+                                   if v.get(lang, ''))
             total_count = len(self.merged_translations)
 
             print(f"{lang}:{'  ' if len(lang) < 7 else ''} 共 {total_count} 条，已翻译 {translated_count} 条")
@@ -622,7 +622,7 @@ msgstr ""
         exclude_patterns = [
             re.compile(r'^[a-zA-Z0-9_\-\.\/\:\{\}]+$', re.MULTILINE),  # 纯技术标识符、路径、JSON等
             re.compile(r'^\s*$'),  # 空字符串
-            re.compile(r'^[{}[\]:,.\-\s]+$'),  # 纯标点符号
+            re.compile(r'^(?:[{}[\]:,.\-\s*\n<>|│├─]|%s)+$'),  # 纯标点符号
         ]
 
         # 递归查找所有 .py 文件
