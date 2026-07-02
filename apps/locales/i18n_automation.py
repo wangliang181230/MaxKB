@@ -19,7 +19,7 @@ LANGUAGES = ['en_US', 'zh_CN', 'zh_Hant']
 
 # 配置2：是否保留无代码来源(遗留)的项？
 # 说明：如果想从 django.po 文件中清除它们，请将此属性设置为 False
-KEEP_NO_SOURCE = True
+KEEP_NO_SOURCE = False
 
 # 配置3：是否保留翻译与原文一样的翻译内容？
 # 说明：默认：不保留，因为与原文一样没必要保留。
