@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 
-#: no source
-msgid "\n ------------\n[To be continued, reply \"Continue to answer the question]"
-msgstr ""
-
 #: apps/models_provider/impl/docker_ai_model_provider/credential/tti.py:28
 #: apps/models_provider/impl/openai_model_provider/credential/tti.py:28
 #: apps/models_provider/impl/siliconCloud_model_provider/credential/tti.py:28
@@ -102,20 +98,12 @@ msgstr ""
 msgid "ADMIN"
 msgstr "System Administrator"
 
-#: no source
-msgid "AI reply: "
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/stt/default_stt.py:21
 msgid "API"
 msgstr ""
 
 #: apps/application/serializers/application_chat.py:289
 msgid "API Call"
-msgstr ""
-
-#: no source
-msgid "API Details"
 msgstr ""
 
 #: apps/application/flow/step_node/application_node/i_application_node.py:18
@@ -211,10 +199,6 @@ msgstr ""
 msgid "Active tool count"
 msgstr ""
 
-#: no source
-msgid "Add ApiKey"
-msgstr ""
-
 #: apps/tools/views/tool.py:547
 #: apps/tools/views/tool.py:548
 #: apps/tools/views/tool.py:549
@@ -243,59 +227,11 @@ msgstr ""
 msgid "Add internal tool"
 msgstr ""
 
-#: no source
-msgid "Add member to chat user group"
-msgstr ""
-
-#: no source
-msgid "Add member to system role"
-msgstr ""
-
-#: no source
-msgid "Add member to system workspace"
-msgstr ""
-
-#: no source
-msgid "Add member to user group"
-msgstr ""
-
-#: no source
-msgid "Add member to workspace"
-msgstr ""
-
-#: no source
-msgid "Add member to workspace role"
-msgstr ""
-
-#: no source
-msgid "Add or modify Chat/Authentication Configuration"
-msgstr ""
-
-#: no source
-msgid "Add or modify authentication configuration"
-msgstr ""
-
-#: no source
-msgid "Add personal system API_KEY"
-msgstr ""
-
-#: no source
-msgid "Add shared associated questions"
-msgstr ""
-
-#: no source
-msgid "Add system associated questions"
-msgstr ""
-
 #: apps/application/views/application_chat_record.py:116
 #: apps/application/views/application_chat_record.py:117
 #: apps/application/views/application_chat_record.py:118
 #: apps/common/constants/permission_constants.py:379
 msgid "Add to Knowledge Base"
-msgstr ""
-
-#: no source
-msgid "Add user"
 msgstr ""
 
 #: apps/knowledge/views/paragraph.py:446
@@ -313,10 +249,6 @@ msgstr ""
 msgid "Affiliation user"
 msgstr ""
 
-#: no source
-msgid "Agent ID is required"
-msgstr ""
-
 #: apps/application/chat_pipeline/step/chat_step/impl/base_chat_step.py:416
 #: apps/application/flow/step_node/ai_chat_step_node/impl/base_chat_node.py:321
 msgid "Agent Key is required for agent tool 【{name}】"
@@ -329,10 +261,6 @@ msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/aliyun_bai_lian_model_provider.py:240
 msgid "Alibaba Cloud Bailian"
-msgstr ""
-
-#: no source
-msgid "Allow cross domain"
 msgstr ""
 
 #: apps/knowledge/serializers/paragraph.py:163
@@ -351,20 +279,8 @@ msgstr ""
 msgid "Amazon Titan Text Lite is a lightweight, efficient model ideal for fine-tuning English-language tasks, including summarization and copywriting, where customers require smaller, more cost-effective, and highly customizable models."
 msgstr ""
 
-#: no source
-msgid "An error occurred while processing the GET request {e}"
-msgstr ""
-
 #: apps/models_provider/impl/aws_bedrock_model_provider/aws_bedrock_model_provider.py:41
 msgid "An update to Claude 2 that doubles the context window and improves reliability, hallucination rates, and evidence-based accuracy in long documents and RAG contexts."
-msgstr ""
-
-#: no source
-msgid "Animation 1.3.0-Vincent Picture"
-msgstr ""
-
-#: no source
-msgid "Animation 1.3.1-Vincent Picture"
 msgstr ""
 
 #: apps/application/serializers/application_chat.py:220
@@ -383,20 +299,8 @@ msgstr ""
 msgid "ApiKeyId"
 msgstr ""
 
-#: no source
-msgid "App ID is required"
-msgstr ""
-
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:47
 msgid "App IDs"
-msgstr ""
-
-#: no source
-msgid "App Key is required"
-msgstr ""
-
-#: no source
-msgid "App Secret is required"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:401
@@ -614,10 +518,6 @@ msgstr "Agent/Version"
 msgid "Application/application access"
 msgstr "Agent/agent access"
 
-#: no source
-msgid "Applications Resource"
-msgstr ""
-
 #: apps/models_provider/impl/tencent_model_provider/credential/stt.py:32
 msgid "Arabic"
 msgstr ""
@@ -639,20 +539,8 @@ msgstr ""
 msgid "Audio file recognition - Tongyi Qwen"
 msgstr ""
 
-#: no source
-msgid "Auth Type"
-msgstr ""
-
-#: no source
-msgid "Authentication Configuration"
-msgstr ""
-
 #: apps/models_provider/impl/xf_model_provider/model/tts/super_humanoid_tts.py:114
 msgid "Authentication failed (HTTP 401). Please check: 1) API URL is correct for TTS service; 2) APP ID, API Key, and API Secret are correct; 3) Your iFlytek account has TTS service enabled."
-msgstr ""
-
-#: no source
-msgid "Authentication failed. Please verify that the parameters are correct"
 msgstr ""
 
 #: apps/chat/serializers/chat.py:67
@@ -684,38 +572,6 @@ msgstr ""
 msgid "Authentication information is incorrect! illegal user"
 msgstr ""
 
-#: no source
-msgid "Authorization address cannot be empty"
-msgstr ""
-
-#: no source
-msgid "Authorization knowledge workspace"
-msgstr ""
-
-#: no source
-msgid "Authorization knowledge workspace "
-msgstr ""
-
-#: no source
-msgid "Authorization model workspace"
-msgstr ""
-
-#: no source
-msgid "Authorization model workspace "
-msgstr ""
-
-#: no source
-msgid "Authorization tool workspace"
-msgstr ""
-
-#: no source
-msgid "Authorization tool workspace "
-msgstr ""
-
-#: no source
-msgid "Authorized pagination list for obtaining resources"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:202
 msgid "Auto Clean"
 msgstr ""
@@ -739,14 +595,6 @@ msgstr ""
 
 #: apps/models_provider/impl/vllm_model_provider/vllm_model_provider.py:33
 msgid "BAAI’s 7B parameter model"
-msgstr ""
-
-#: no source
-msgid "BLOOMZ-7B is a well-known large language model in the industry. It was developed and open sourced by BigScience and can output text in 46 languages and 13 programming languages."
-msgstr ""
-
-#: no source
-msgid "Base DN cannot be empty"
 msgstr ""
 
 #: apps/models_provider/impl/aws_bedrock_model_provider/credential/reranker.py:27
@@ -787,35 +635,15 @@ msgstr ""
 msgid "Batch Paragraph"
 msgstr ""
 
-#: no source
-msgid "Batch Remove Documents from Tag"
-msgstr ""
-
-#: no source
-msgid "Batch add chat user to group"
-msgstr ""
-
 #: apps/knowledge/views/document.py:711
 #: apps/knowledge/views/document.py:712
 msgid "Batch add tags to documents"
-msgstr ""
-
-#: no source
-msgid "Batch add user to group"
 msgstr ""
 
 #: apps/knowledge/views/problem.py:107
 #: apps/knowledge/views/problem.py:108
 #: apps/knowledge/views/problem.py:109
 msgid "Batch associated paragraphs"
-msgstr ""
-
-#: no source
-msgid "Batch associated shared paragraphs"
-msgstr ""
-
-#: no source
-msgid "Batch associated system paragraphs"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:389
@@ -826,10 +654,6 @@ msgstr ""
 #: apps/application/views/application.py:317
 #: apps/application/views/application.py:318
 msgid "Batch delete applications"
-msgstr ""
-
-#: no source
-msgid "Batch delete chat user"
 msgstr ""
 
 #: apps/chat/views/chat_record.py:107
@@ -865,44 +689,16 @@ msgstr ""
 msgid "Batch deletion issues"
 msgstr ""
 
-#: no source
-msgid "Batch deletion shared issues"
-msgstr ""
-
-#: no source
-msgid "Batch deletion system issues"
-msgstr ""
-
 #: apps/knowledge/views/termbase.py:128
 #: apps/knowledge/views/termbase.py:129
 #: apps/knowledge/views/termbase.py:130
 msgid "Batch export termbase"
 msgstr ""
 
-#: no source
-msgid "Batch generate related"
-msgstr ""
-
 #: apps/knowledge/views/document.py:748
 #: apps/knowledge/views/document.py:749
 #: apps/knowledge/views/document.py:750
 msgid "Batch generate related problems"
-msgstr ""
-
-#: no source
-msgid "Batch generate related shared problems"
-msgstr ""
-
-#: no source
-msgid "Batch generate related system problems"
-msgstr ""
-
-#: no source
-msgid "Batch generate shared related"
-msgstr ""
-
-#: no source
-msgid "Batch generate system related"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:390
@@ -932,42 +728,10 @@ msgstr ""
 msgid "Batch refresh document vector library"
 msgstr ""
 
-#: no source
-msgid "Batch refresh shared document vector library"
-msgstr ""
-
-#: no source
-msgid "Batch refresh system document vector library"
-msgstr ""
-
-#: no source
-msgid "Batch set user roles"
-msgstr ""
-
-#: no source
-msgid "Batch shared paragraph"
-msgstr ""
-
 #: apps/knowledge/views/document.py:553
 #: apps/knowledge/views/document.py:554
 #: apps/knowledge/views/document.py:555
 msgid "Batch sync documents"
-msgstr ""
-
-#: no source
-msgid "Batch sync shared documents"
-msgstr ""
-
-#: no source
-msgid "Batch sync system knowledges"
-msgstr ""
-
-#: no source
-msgid "Batch synchronize lark document"
-msgstr ""
-
-#: no source
-msgid "Batch system paragraph"
 msgstr ""
 
 #: apps/knowledge/views/document.py:672
@@ -987,10 +751,6 @@ msgstr ""
 msgid "Blocked unsafe redirect to internal host"
 msgstr ""
 
-#: no source
-msgid "Bot User Token is required"
-msgstr ""
-
 #: apps/application/flow/step_node/condition_node/i_condition_node.py:26
 #: apps/application/flow/step_node/intent_node/i_intent_node.py:15
 msgid "Branch Type"
@@ -1005,38 +765,10 @@ msgstr ""
 msgid "By default, images are generated in standard quality, you can set quality: \"hd\" to enhance detail. Square, standard quality images are generated fastest."
 msgstr ""
 
-#: no source
-msgid "CAS Log in"
-msgstr ""
-
-#: no source
-msgid "CAS authentication failed"
-msgstr ""
-
-#: no source
-msgid "Callback URL is required"
-msgstr ""
-
 #: apps/knowledge/views/knowledge_workflow.py:199
 #: apps/knowledge/views/knowledge_workflow.py:200
 #: apps/knowledge/views/knowledge_workflow.py:201
 msgid "Cancel knowledge workflow action"
-msgstr ""
-
-#: no source
-msgid "Cancel shared task"
-msgstr ""
-
-#: no source
-msgid "Cancel shared tasks in batches"
-msgstr ""
-
-#: no source
-msgid "Cancel system task"
-msgstr ""
-
-#: no source
-msgid "Cancel system tasks in batches"
 msgstr ""
 
 #: apps/knowledge/views/document.py:438
@@ -1065,14 +797,6 @@ msgstr ""
 msgid "Cannot modify administrator status"
 msgstr ""
 
-#: no source
-msgid "Cannot modify built-in role"
-msgstr ""
-
-#: no source
-msgid "Cannot remove member from built-in role"
-msgstr ""
-
 #: apps/models_provider/impl/tencent_model_provider/credential/stt.py:22
 msgid "Cantonese"
 msgstr ""
@@ -1091,10 +815,6 @@ msgstr ""
 
 #: apps/common/constants/permission_constants.py:1298
 msgid "Change Password"
-msgstr ""
-
-#: no source
-msgid "Change chat user password"
 msgstr ""
 
 #: apps/users/serializers/user.py:1145
@@ -1171,26 +891,6 @@ msgstr ""
 msgid "Chat User Type"
 msgstr ""
 
-#: no source
-msgid "Chat User/Authentication Configuration"
-msgstr ""
-
-#: no source
-msgid "Chat User/Three-party login"
-msgstr ""
-
-#: no source
-msgid "Chat User/login"
-msgstr ""
-
-#: no source
-msgid "Chat User/login authentication"
-msgstr ""
-
-#: no source
-msgid "Chat User/logout"
-msgstr ""
-
 #: apps/chat/serializers/chat.py:55
 msgid "Chat context"
 msgstr ""
@@ -1232,10 +932,6 @@ msgstr ""
 msgid "Chat record link"
 msgstr ""
 
-#: no source
-msgid "Chat user"
-msgstr ""
-
 #: apps/homepage/api/home_page_api.py:217
 msgid "Chat user ID"
 msgstr ""
@@ -1258,35 +954,15 @@ msgstr ""
 msgid "Check code"
 msgstr ""
 
-#: no source
-msgid "Check if the fields are correct"
-msgstr ""
-
-#: no source
-msgid "Check shared code"
-msgstr ""
-
-#: no source
-msgid "Check system code"
-msgstr ""
-
 #: apps/users/views/user.py:339
 #: apps/users/views/user.py:340
 #: apps/users/views/user.py:341
 msgid "Check whether the verification code is correct"
 msgstr ""
 
-#: no source
-msgid "Check workspace can it be deleted"
-msgstr ""
-
 #: apps/application/flow/step_node/application_node/i_application_node.py:26
 #: apps/chat/serializers/chat.py:98
 msgid "Child Nodes"
-msgstr ""
-
-#: no source
-msgid "Children"
 msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/aliyun_bai_lian_model_provider.py:80
@@ -1332,18 +1008,6 @@ msgstr ""
 msgid "Clear Policy"
 msgstr ""
 
-#: no source
-msgid "Client ID cannot be empty"
-msgstr ""
-
-#: no source
-msgid "Client ID is required"
-msgstr ""
-
-#: no source
-msgid "Client Secret is required"
-msgstr ""
-
 #: apps/chat/serializers/chat.py:221
 #: apps/chat/serializers/chat.py:289
 #: apps/chat/serializers/chat.py:536
@@ -1354,10 +1018,6 @@ msgstr ""
 #: apps/chat/serializers/chat.py:288
 #: apps/chat/serializers/chat.py:535
 msgid "Client id"
-msgstr ""
-
-#: no source
-msgid "Client secret cannot be empty"
 msgstr ""
 
 #: apps/users/serializers/user.py:974
@@ -1438,22 +1098,6 @@ msgstr ""
 msgid "Condition or|and"
 msgstr ""
 
-#: no source
-msgid "Config"
-msgstr ""
-
-#: no source
-msgid "Configuration information is wrong and failed to save"
-msgstr ""
-
-#: no source
-msgid "Confirm Password"
-msgstr ""
-
-#: no source
-msgid "Connection failed"
-msgstr ""
-
 #: apps/application/serializers/application_chat.py:220
 msgid "Consuming tokens"
 msgstr ""
@@ -1464,10 +1108,6 @@ msgstr ""
 
 #: apps/application/flow/step_node/direct_reply_node/i_reply_node.py:37
 msgid "Content cannot be empty"
-msgstr ""
-
-#: no source
-msgid "Content generated by AI"
 msgstr ""
 
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:37
@@ -1537,10 +1177,6 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: no source
-msgid "Corp ID is required"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/aliyun_bai_lian_model_provider.py:89
 msgid "CosyVoice is based on a new generation of large generative speech models, which can predict emotions, intonation, rhythm, etc. based on context, and has better anthropomorphic effects."
 msgstr ""
@@ -1558,10 +1194,6 @@ msgstr ""
 msgid "Create Paragraph"
 msgstr ""
 
-#: no source
-msgid "Create SystemAPIKey"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:385
 msgid "Create Trigger"
 msgstr ""
@@ -1572,20 +1204,8 @@ msgstr ""
 msgid "Create Web site documents"
 msgstr ""
 
-#: no source
-msgid "Create Web site shared documents"
-msgstr ""
-
-#: no source
-msgid "Create a lark knowledge base"
-msgstr ""
-
 #: apps/knowledge/views/tag.py:21
 msgid "Create a new knowledge tag"
-msgstr ""
-
-#: no source
-msgid "Create a web site knowledge base"
 msgstr ""
 
 #: apps/application/views/application.py:55
@@ -1609,10 +1229,6 @@ msgstr "Create agent ApiKey List"
 #: apps/knowledge/views/knowledge.py:595
 #: apps/knowledge/views/knowledge.py:596
 msgid "Create base knowledge"
-msgstr ""
-
-#: no source
-msgid "Create chat user"
 msgstr ""
 
 #: apps/knowledge/views/document.py:53
@@ -1645,80 +1261,16 @@ msgstr ""
 msgid "Create model"
 msgstr ""
 
-#: no source
-msgid "Create or update Chat User Group"
-msgstr ""
-
 #: apps/system_manage/views/email_setting.py:50
 #: apps/system_manage/views/email_setting.py:51
 #: apps/system_manage/views/email_setting.py:52
 msgid "Create or update email settings"
 msgstr ""
 
-#: no source
-msgid "Create or update role"
-msgstr ""
-
-#: no source
-msgid "Create or update role permission"
-msgstr ""
-
-#: no source
-msgid "Create or update user group"
-msgstr ""
-
-#: no source
-msgid "Create or update workspace"
-msgstr ""
-
 #: apps/knowledge/views/problem.py:50
 #: apps/knowledge/views/problem.py:51
 #: apps/knowledge/views/problem.py:52
 msgid "Create question"
-msgstr ""
-
-#: no source
-msgid "Create shared base knowledge"
-msgstr ""
-
-#: no source
-msgid "Create shared document"
-msgstr ""
-
-#: no source
-msgid "Create shared documents in batches"
-msgstr ""
-
-#: no source
-msgid "Create shared paragraph"
-msgstr ""
-
-#: no source
-msgid "Create shared question"
-msgstr ""
-
-#: no source
-msgid "Create shared tool"
-msgstr ""
-
-#: no source
-msgid "Create shared web knowledge"
-msgstr ""
-
-#: no source
-msgid "Create system knowledge"
-msgstr ""
-
-#: no source
-msgid "Create system knowledges in batches"
-msgstr ""
-
-#: no source
-msgid "Create system paragraph"
-msgstr ""
-
-#: no source
-msgid "Create system question"
 msgstr ""
 
 #: apps/knowledge/views/termbase.py:58
@@ -1763,10 +1315,6 @@ msgstr ""
 msgid "Creation time"
 msgstr ""
 
-#: no source
-msgid "Cross domain list"
-msgstr ""
-
 #: apps/application/serializers/application_api_key.py:30
 msgid "Cross-domain address"
 msgstr ""
@@ -1791,18 +1339,6 @@ msgstr ""
 msgid "Current page"
 msgstr ""
 
-#: no source
-msgid "Currently only text messages are supported"
-msgstr ""
-
-#: no source
-msgid "Custom role"
-msgstr ""
-
-#: no source
-msgid "Custom theme field type error"
-msgstr ""
-
 #: apps/application/chat_pipeline/step/search_dataset_step/i_search_dataset_step.py:30
 #: apps/application/flow/step_node/search_knowledge_node/i_search_knowledge_node.py:39
 msgid "Dataset id list"
@@ -1823,28 +1359,12 @@ msgstr ""
 msgid "Debug Tool"
 msgstr ""
 
-#: no source
-msgid "Debug shared Tool"
-msgstr ""
-
-#: no source
-msgid "Debug system tool"
-msgstr ""
-
 #: apps/models_provider/impl/xinference_model_provider/xinference_model_provider.py:74
 msgid "Deepseek is a large-scale language model with 13 billion parameters."
 msgstr ""
 
-#: no source
-msgid "Default user group cannot be deleted"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tti.py:49
 msgid "Default value, the image style is randomly output by the model"
-msgstr ""
-
-#: no source
-msgid "Default workspace cannot be deleted"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:348
@@ -1859,10 +1379,6 @@ msgstr "Delete Agent API_KEY"
 
 #: apps/knowledge/views/tag.py:100
 msgid "Delete Knowledge Tag"
-msgstr ""
-
-#: no source
-msgid "Delete SystemAPIKey"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:387
@@ -1882,14 +1398,6 @@ msgstr ""
 #: no source
 msgid "Delete application API_KEY"
 msgstr "Delete agent API_KEY"
-
-#: no source
-msgid "Delete chat user"
-msgstr ""
-
-#: no source
-msgid "Delete chat user group"
-msgstr ""
 
 #: apps/knowledge/views/document.py:186
 #: apps/knowledge/views/document.py:187
@@ -1933,10 +1441,6 @@ msgstr ""
 msgid "Delete knowledge"
 msgstr ""
 
-#: no source
-msgid "Delete knowledge base"
-msgstr ""
-
 #: apps/models_provider/views/model.py:138
 #: apps/models_provider/views/model.py:139
 #: apps/models_provider/views/model.py:140
@@ -1949,80 +1453,16 @@ msgstr ""
 msgid "Delete paragraph"
 msgstr ""
 
-#: no source
-msgid "Delete personal system API_KEY"
-msgstr ""
-
 #: apps/knowledge/views/problem.py:167
 #: apps/knowledge/views/problem.py:168
 #: apps/knowledge/views/problem.py:169
 msgid "Delete question"
 msgstr ""
 
-#: no source
-msgid "Delete role"
-msgstr ""
-
-#: no source
-msgid "Delete shared document"
-msgstr ""
-
-#: no source
-msgid "Delete shared documents in batches"
-msgstr ""
-
-#: no source
-msgid "Delete shared knowledge"
-msgstr ""
-
-#: no source
-msgid "Delete shared paragraph"
-msgstr ""
-
-#: no source
-msgid "Delete shared question"
-msgstr ""
-
-#: no source
-msgid "Delete shared tool"
-msgstr ""
-
-#: no source
-msgid "Delete system document"
-msgstr ""
-
-#: no source
-msgid "Delete system document in batches"
-msgstr ""
-
-#: no source
-msgid "Delete system knowledge"
-msgstr ""
-
-#: no source
-msgid "Delete system knowledge in batches"
-msgstr ""
-
-#: no source
-msgid "Delete system paragraph"
-msgstr ""
-
-#: no source
-msgid "Delete system question"
-msgstr ""
-
-#: no source
-msgid "Delete system tool"
-msgstr ""
-
 #: apps/knowledge/views/termbase.py:163
 #: apps/knowledge/views/termbase.py:164
 #: apps/knowledge/views/termbase.py:165
 msgid "Delete termbase"
-msgstr ""
-
-#: no source
-msgid "Delete the System task source trigger"
 msgstr ""
 
 #: apps/trigger/views/trigger.py:375
@@ -2055,22 +1495,10 @@ msgstr ""
 msgid "Delete user"
 msgstr ""
 
-#: no source
-msgid "Delete user group"
-msgstr ""
-
-#: no source
-msgid "Delete workspace"
-msgstr ""
-
 #: apps/application/views/application.py:170
 #: apps/application/views/application.py:171
 #: apps/application/views/application.py:172
 msgid "Deleting application"
-msgstr ""
-
-#: no source
-msgid "Dialogue log"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:394
@@ -2099,18 +1527,6 @@ msgstr ""
 msgid "DingTalk"
 msgstr "DingTalk App"
 
-#: no source
-msgid "DingTalk OAuth2 callback"
-msgstr ""
-
-#: no source
-msgid "DingTalk application: {user}"
-msgstr ""
-
-#: no source
-msgid "DingTalk callback"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:377
 msgid "Dingding"
 msgstr ""
@@ -2129,14 +1545,6 @@ msgstr ""
 msgid "Disassociation issue"
 msgstr ""
 
-#: no source
-msgid "Disassociation shared issue"
-msgstr ""
-
-#: no source
-msgid "Disassociation system issue"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:372
 #: apps/common/constants/permission_constants.py:399
 msgid "Display Settings"
@@ -2144,14 +1552,6 @@ msgstr ""
 
 #: apps/application/serializers/application_access_token.py:38
 msgid "Display execution details"
-msgstr ""
-
-#: no source
-msgid "Display settings"
-msgstr ""
-
-#: no source
-msgid "Displaying knowledge sources is not enabled"
 msgstr ""
 
 #: apps/users/serializers/user.py:1104
@@ -2170,10 +1570,6 @@ msgstr ""
 
 #: apps/application/api/application_chat_record.py:136
 msgid "Document ID"
-msgstr ""
-
-#: no source
-msgid "Document does not belong to current knowledge"
 msgstr ""
 
 #: apps/application/serializers/application_chat_record.py:250
@@ -2201,25 +1597,13 @@ msgstr ""
 msgid "Document type"
 msgstr ""
 
-#: no source
-msgid "Download"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:369
 msgid "Download Original Document"
-msgstr ""
-
-#: no source
-msgid "Download shared source file"
 msgstr ""
 
 #: apps/knowledge/views/document.py:952
 #: apps/knowledge/views/document.py:953
 msgid "Download source file"
-msgstr ""
-
-#: no source
-msgid "Download system source file"
 msgstr ""
 
 #: apps/models_provider/impl/volcanic_engine_model_provider/credential/ttv.py:43
@@ -2244,20 +1628,8 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: no source
-msgid "Edit Resource chat user List"
-msgstr ""
-
-#: no source
-msgid "Edit Resource chat user group List"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:386
 msgid "Edit Trigger"
-msgstr ""
-
-#: no source
-msgid "Edit folder"
 msgstr ""
 
 #: apps/knowledge/views/knowledge.py:65
@@ -2270,14 +1642,6 @@ msgstr ""
 #: apps/knowledge/views/knowledge_workflow.py:367
 #: apps/knowledge/views/knowledge_workflow.py:368
 msgid "Edit knowledge workflow"
-msgstr ""
-
-#: no source
-msgid "Edit shared tool icon"
-msgstr ""
-
-#: no source
-msgid "Edit system tool icon"
 msgstr ""
 
 #: apps/tools/views/tool.py:428
@@ -2330,17 +1694,9 @@ msgstr ""
 msgid "Email or Username"
 msgstr ""
 
-#: no source
-msgid "Email or username"
-msgstr ""
-
 #: apps/common/constants/exception_code_constants.py:33
 #: apps/common/constants/exception_code_constants.py:45
 msgid "Email sending failed"
-msgstr ""
-
-#: no source
-msgid "Email settings"
 msgstr ""
 
 #: apps/system_manage/serializers/email_setting.py:52
@@ -2357,10 +1713,6 @@ msgstr ""
 
 #: apps/models_provider/impl/wenxin_model_provider/wenxin_model_provider.py:46
 msgid "Embedding-V1 is a text representation model based on Baidu Wenxin large model technology. It can convert text into a vector form represented by numerical values and can be used in text retrieval, information recommendation, knowledge mining and other scenarios. Embedding-V1 provides the Embeddings interface, which can generate corresponding vector representations based on input content. You can call this interface to input text into the model and obtain the corresponding vector representation for subsequent text processing and analysis."
-msgstr ""
-
-#: no source
-msgid "Enable"
 msgstr ""
 
 #: apps/application/serializers/application.py:208
@@ -2443,14 +1795,6 @@ msgstr ""
 msgid "Enterprise WeChat Robot"
 msgstr ""
 
-#: no source
-msgid "Enterprise WeChat customer service: "
-msgstr ""
-
-#: no source
-msgid "Enterprise WeChat user: "
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:375
 msgid "Enterprise WeiXin"
 msgstr ""
@@ -2488,21 +1832,9 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: no source
-msgid "Export Application"
-msgstr ""
-
 #: apps/knowledge/views/document.py:919
 #: apps/knowledge/views/document.py:920
 msgid "Export Zip document"
-msgstr ""
-
-#: no source
-msgid "Export Zip shared document"
-msgstr ""
-
-#: no source
-msgid "Export Zip system knowledge"
 msgstr ""
 
 #: apps/application/views/application.py:142
@@ -2543,50 +1875,6 @@ msgstr ""
 msgid "Export knowledge workflow"
 msgstr ""
 
-#: no source
-msgid "Export operate log"
-msgstr ""
-
-#: no source
-msgid "Export shared document"
-msgstr ""
-
-#: no source
-msgid "Export shared knowledge base"
-msgstr ""
-
-#: no source
-msgid "Export shared knowledge base containing images"
-msgstr ""
-
-#: no source
-msgid "Export shared knowledge bundle"
-msgstr ""
-
-#: no source
-msgid "Export shared tool"
-msgstr ""
-
-#: no source
-msgid "Export system knowledge"
-msgstr ""
-
-#: no source
-msgid "Export system knowledge base"
-msgstr ""
-
-#: no source
-msgid "Export system knowledge base containing images"
-msgstr ""
-
-#: no source
-msgid "Export system knowledge bundle"
-msgstr ""
-
-#: no source
-msgid "Export system tool"
-msgstr ""
-
 #: apps/tools/views/tool.py:374
 #: apps/tools/views/tool.py:375
 #: apps/tools/views/tool.py:376
@@ -2596,10 +1884,6 @@ msgstr ""
 #: apps/models_provider/impl/vllm_model_provider/vllm_model_provider.py:31
 #: apps/models_provider/impl/vllm_model_provider/vllm_model_provider.py:64
 msgid "Facebook’s 125M parameter model"
-msgstr ""
-
-#: no source
-msgid "Fail"
 msgstr ""
 
 #: apps/homepage/api/home_page_api.py:312
@@ -2615,40 +1899,8 @@ msgstr ""
 msgid "Failed to generate video"
 msgstr ""
 
-#: no source
-msgid "Failed to get Lark collaborators"
-msgstr ""
-
-#: no source
-msgid "Failed to get Lark user details"
-msgstr ""
-
-#: no source
-msgid "Failed to get WeCom access token"
-msgstr ""
-
-#: no source
-msgid "Failed to get WeCom agent info"
-msgstr ""
-
-#: no source
-msgid "Failed to get WeCom department users"
-msgstr ""
-
-#: no source
-msgid "Failed to get WeCom user info"
-msgstr ""
-
-#: no source
-msgid "Failed to get lark document list!"
-msgstr ""
-
 #: apps/application/flow/step_node/image_to_video_step_node/impl/base_image_to_video_node.py:94
 msgid "Failed to obtain the image"
-msgstr ""
-
-#: no source
-msgid "Failed to obtain user information"
 msgstr ""
 
 #: apps/knowledge/task/embedding.py:28
@@ -2677,16 +1929,8 @@ msgstr ""
 msgid "Feishu"
 msgstr ""
 
-#: no source
-msgid "Field mapping cannot be empty"
-msgstr ""
-
 #: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:56
 msgid "Field: {name} No value set"
-msgstr ""
-
-#: no source
-msgid "Field: {name} Type: {_type} Value: {value} Type conversion error"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:81
@@ -2752,10 +1996,6 @@ msgstr ""
 msgid "First frame url cannot be empty"
 msgstr ""
 
-#: no source
-msgid "Float location field type error"
-msgstr ""
-
 #: apps/models_provider/impl/zhipu_model_provider/zhipu_model_provider.py:37
 msgid "Focus on single picture understanding. Suitable for scenarios requiring efficient image analysis"
 msgstr ""
@@ -2783,10 +2023,6 @@ msgstr ""
 msgid "Folder depth cannot exceed 10000 levels"
 msgstr ""
 
-#: no source
-msgid "Folder depth cannot exceed 5 levels"
-msgstr ""
-
 #: apps/folders/serializers/folder.py:188
 #: apps/folders/serializers/folder.py:245
 msgid "Folder does not exist"
@@ -2802,10 +2038,6 @@ msgstr ""
 #: apps/knowledge/serializers/knowledge.py:292
 #: apps/tools/serializers/tool.py:1703
 msgid "Folder not found"
-msgstr ""
-
-#: no source
-msgid "Folder token"
 msgstr ""
 
 #: apps/application/flow/step_node/form_node/i_form_node.py:20
@@ -2827,10 +2059,6 @@ msgstr ""
 
 #: apps/tools/serializers/tool.py:1167
 msgid "Function does not exist"
-msgstr ""
-
-#: no source
-msgid "Function {name} is unavailable"
 msgstr ""
 
 #: apps/application/views/application_api_key.py:59
@@ -2867,10 +2095,6 @@ msgstr ""
 msgid "Generate related"
 msgstr ""
 
-#: no source
-msgid "Generate related documents"
-msgstr ""
-
 #: apps/application/views/application_chat_link.py:24
 #: apps/application/views/application_chat_link.py:25
 #: apps/application/views/application_chat_link.py:26
@@ -2903,22 +2127,6 @@ msgstr ""
 msgid "Get Appstore tools"
 msgstr ""
 
-#: no source
-msgid "Get Authentication Configuration"
-msgstr ""
-
-#: no source
-msgid "Get Authorization knowledge workspace"
-msgstr ""
-
-#: no source
-msgid "Get Authorization model workspace"
-msgstr ""
-
-#: no source
-msgid "Get Authorization tool workspace"
-msgstr ""
-
 #: apps/chat/views/chat.py:205
 #: apps/chat/views/chat.py:206
 #: apps/chat/views/chat.py:207
@@ -2939,46 +2147,10 @@ msgstr ""
 msgid "Get QA template"
 msgstr ""
 
-#: no source
-msgid "Get Resource chat user List"
-msgstr ""
-
-#: no source
-msgid "Get Resource chat user group List"
-msgstr ""
-
-#: no source
-msgid "Get Resource chat user group page List"
-msgstr ""
-
-#: no source
-msgid "Get Resource chat user page List"
-msgstr ""
-
-#: no source
-msgid "Get Resource chat user page group List"
-msgstr ""
-
-#: no source
-msgid "Get Share model"
-msgstr ""
-
 #: apps/models_provider/views/model.py:273
 #: apps/models_provider/views/model.py:274
 #: apps/models_provider/views/model.py:275
 msgid "Get Share model by workspace id"
-msgstr ""
-
-#: no source
-msgid "Get Share model by workspace id with pagination"
-msgstr ""
-
-#: no source
-msgid "Get System Task source trigger details"
-msgstr ""
-
-#: no source
-msgid "Get SystemAPIKey List"
 msgstr ""
 
 #: apps/trigger/views/trigger.py:318
@@ -2987,22 +2159,10 @@ msgstr ""
 msgid "Get Task source trigger details"
 msgstr ""
 
-#: no source
-msgid "Get Workspace role list"
-msgstr ""
-
 #: apps/knowledge/views/problem.py:79
 #: apps/knowledge/views/problem.py:80
 #: apps/knowledge/views/problem.py:81
 msgid "Get a list of associated paragraphs"
-msgstr ""
-
-#: no source
-msgid "Get a list of associated shared paragraphs"
-msgstr ""
-
-#: no source
-msgid "Get a list of associated system paragraphs"
 msgstr ""
 
 #: apps/models_provider/views/provide.py:21
@@ -3027,22 +2187,6 @@ msgstr ""
 #: apps/knowledge/views/document.py:269
 #: apps/knowledge/views/document.py:270
 msgid "Get a list of segment IDs"
-msgstr ""
-
-#: no source
-msgid "Get a list of shared paragraph questions"
-msgstr ""
-
-#: no source
-msgid "Get a list of shared segment IDs"
-msgstr ""
-
-#: no source
-msgid "Get a list of system paragraph questions"
-msgstr ""
-
-#: no source
-msgid "Get a list of system segment IDs"
 msgstr ""
 
 #: apps/trigger/views/trigger_task.py:78
@@ -3099,14 +2243,6 @@ msgstr "Get agent related information"
 msgid "Get application version details"
 msgstr "Get agent version details"
 
-#: no source
-msgid "Get authentication configuration"
-msgstr ""
-
-#: no source
-msgid "Get authentication types"
-msgstr ""
-
 #: apps/users/views/login.py:70
 #: apps/users/views/login.py:71
 #: apps/users/views/login.py:72
@@ -3117,14 +2253,6 @@ msgstr ""
 #: apps/application/views/application_chat_link.py:46
 #: apps/application/views/application_chat_link.py:47
 msgid "Get chat record by share link"
-msgstr ""
-
-#: no source
-msgid "Get chat user information"
-msgstr ""
-
-#: no source
-msgid "Get chat user list"
 msgstr ""
 
 #: apps/chat/views/chat_record.py:186
@@ -3145,10 +2273,6 @@ msgstr ""
 #: apps/users/views/user.py:82
 #: apps/users/views/user.py:83
 msgid "Get current user information"
-msgstr ""
-
-#: no source
-msgid "Get current user role list"
 msgstr ""
 
 #: apps/users/views/user.py:191
@@ -3175,10 +2299,6 @@ msgstr ""
 msgid "Get document details"
 msgstr ""
 
-#: no source
-msgid "Get document list from lark"
-msgstr ""
-
 #: apps/knowledge/views/document.py:1009
 #: apps/knowledge/views/document.py:1010
 #: apps/knowledge/views/document.py:1011
@@ -3195,18 +2315,6 @@ msgstr ""
 #: apps/chat/views/chat_embed.py:23
 #: apps/chat/views/chat_embed.py:24
 msgid "Get embedded js"
-msgstr ""
-
-#: no source
-msgid "Get embedding model for knowledge base"
-msgstr ""
-
-#: no source
-msgid "Get embedding model for shared knowledge base"
-msgstr ""
-
-#: no source
-msgid "Get embedding model for system knowledge base"
 msgstr ""
 
 #: apps/oss/views/file.py:18
@@ -3305,14 +2413,6 @@ msgstr ""
 msgid "Get knowledge workflow version list"
 msgstr ""
 
-#: no source
-msgid "Get license information"
-msgstr ""
-
-#: no source
-msgid "Get menu operate log"
-msgstr ""
-
 #: apps/models_provider/views/provide.py:75
 #: apps/models_provider/views/provide.py:76
 #: apps/models_provider/views/provide.py:77
@@ -3325,22 +2425,10 @@ msgstr ""
 msgid "Get model for knowledge base"
 msgstr ""
 
-#: no source
-msgid "Get model for shared knowledge base"
-msgstr ""
-
-#: no source
-msgid "Get model for system knowledge base"
-msgstr ""
-
 #: apps/models_provider/views/model.py:181
 #: apps/models_provider/views/model.py:182
 #: apps/models_provider/views/model.py:183
 msgid "Get model parameter form"
-msgstr ""
-
-#: no source
-msgid "Get paginated operate log"
 msgstr ""
 
 #: apps/knowledge/views/paragraph.py:211
@@ -3353,170 +2441,6 @@ msgstr ""
 #: apps/knowledge/views/paragraph.py:416
 #: apps/knowledge/views/paragraph.py:417
 msgid "Get paragraph list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get platform configuration"
-msgstr ""
-
-#: no source
-msgid "Get platform information"
-msgstr ""
-
-#: no source
-msgid "Get platform status"
-msgstr ""
-
-#: no source
-msgid "Get resource model list"
-msgstr ""
-
-#: no source
-msgid "Get role list"
-msgstr ""
-
-#: no source
-msgid "Get role permission"
-msgstr ""
-
-#: no source
-msgid "Get role permission template"
-msgstr ""
-
-#: no source
-msgid "Get share resource knowledge"
-msgstr ""
-
-#: no source
-msgid "Get share resource tool"
-msgstr ""
-
-#: no source
-msgid "Get shared QA template"
-msgstr ""
-
-#: no source
-msgid "Get shared document"
-msgstr ""
-
-#: no source
-msgid "Get shared document by pagination"
-msgstr ""
-
-#: no source
-msgid "Get shared document details"
-msgstr ""
-
-#: no source
-msgid "Get shared form template"
-msgstr ""
-
-#: no source
-msgid "Get shared knowledge"
-msgstr ""
-
-#: no source
-msgid "Get shared knowledge list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get shared paragraph details"
-msgstr ""
-
-#: no source
-msgid "Get shared paragraph list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get shared tool"
-msgstr ""
-
-#: no source
-msgid "Get shared tool list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get shared workspace knowledge"
-msgstr ""
-
-#: no source
-msgid "Get shared workspace knowledge list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get shared workspace tool"
-msgstr ""
-
-#: no source
-msgid "Get shared workspace tool list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get system QA template"
-msgstr ""
-
-#: no source
-msgid "Get system document"
-msgstr ""
-
-#: no source
-msgid "Get system document by pagination"
-msgstr ""
-
-#: no source
-msgid "Get system document details"
-msgstr ""
-
-#: no source
-msgid "Get system form template"
-msgstr ""
-
-#: no source
-msgid "Get system knowledge"
-msgstr ""
-
-#: no source
-msgid "Get system knowledge list"
-msgstr ""
-
-#: no source
-msgid "Get system knowledge list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get system paragraph details"
-msgstr ""
-
-#: no source
-msgid "Get system paragraph list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get system role member list"
-msgstr ""
-
-#: no source
-msgid "Get system tool"
-msgstr ""
-
-#: no source
-msgid "Get system tool by id"
-msgstr ""
-
-#: no source
-msgid "Get system tool list by pagination"
-msgstr ""
-
-#: no source
-msgid "Get system workspace list"
-msgstr ""
-
-#: no source
-msgid "Get system workspace member list"
-msgstr ""
-
-#: no source
-msgid "Get the System trigger list of source"
 msgstr ""
 
 #: apps/application/views/application.py:75
@@ -3601,14 +2525,6 @@ msgstr ""
 #: apps/knowledge/views/problem.py:233
 #: apps/knowledge/views/problem.py:234
 msgid "Get the list of questions by page"
-msgstr ""
-
-#: no source
-msgid "Get the list of shared questions by page"
-msgstr ""
-
-#: no source
-msgid "Get the list of system questions by page"
 msgstr ""
 
 #: apps/knowledge/views/termbase.py:238
@@ -3740,18 +2656,10 @@ msgstr ""
 msgid "Get user authorization status of resource by page"
 msgstr ""
 
-#: no source
-msgid "Get user group list"
-msgstr ""
-
 #: apps/users/views/user.py:219
 #: apps/users/views/user.py:220
 #: apps/users/views/user.py:221
 msgid "Get user information"
-msgstr ""
-
-#: no source
-msgid "Get user list by group"
 msgstr ""
 
 #: apps/users/views/user.py:146
@@ -3778,40 +2686,8 @@ msgstr ""
 msgid "Get verification results"
 msgstr ""
 
-#: no source
-msgid "Get workspace list"
-msgstr ""
-
-#: no source
-msgid "Get workspace list by current user"
-msgstr ""
-
-#: no source
-msgid "Get workspace list by user"
-msgstr ""
-
-#: no source
-msgid "Get workspace member list"
-msgstr ""
-
-#: no source
-msgid "Get workspace role member list"
-msgstr ""
-
 #: apps/chat/serializers/chat.py:92
 msgid "Global variables"
-msgstr ""
-
-#: no source
-msgid "Good at common conversational tasks, supports 32K contexts"
-msgstr ""
-
-#: no source
-msgid "Good at handling programming tasks, supports 16K contexts"
-msgstr ""
-
-#: no source
-msgid "Group ID"
 msgstr ""
 
 #: apps/application/flow/step_node/variable_aggregation_node/i_variable_aggregation_node.py:19
@@ -4006,10 +2882,6 @@ msgstr ""
 msgid "Host"
 msgstr ""
 
-#: no source
-msgid "HttpClient query failed: "
-msgstr ""
-
 #: apps/models_provider/impl/tencent_model_provider/tencent_model_provider.py:102
 msgid "Hunyuan graph model"
 msgstr ""
@@ -4121,10 +2993,6 @@ msgstr ""
 msgid "Image Generation"
 msgstr ""
 
-#: no source
-msgid "Image download failed, check network"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tti.py:20
 #: apps/models_provider/impl/azure_model_provider/credential/tti.py:14
 #: apps/models_provider/impl/docker_ai_model_provider/credential/tti.py:14
@@ -4161,14 +3029,6 @@ msgstr ""
 msgid "Import QA and create documentation"
 msgstr ""
 
-#: no source
-msgid "Import QA and create shared documentation"
-msgstr ""
-
-#: no source
-msgid "Import documents to the lark knowledge base"
-msgstr ""
-
 #: apps/knowledge/views/knowledge.py:448
 #: apps/knowledge/views/knowledge.py:449
 #: apps/knowledge/views/knowledge.py:450
@@ -4181,18 +3041,10 @@ msgstr ""
 msgid "Import knowledge workflow"
 msgstr ""
 
-#: no source
-msgid "Import shared tool"
-msgstr ""
-
 #: apps/knowledge/views/document.py:1281
 #: apps/knowledge/views/document.py:1282
 #: apps/knowledge/views/document.py:1283
 msgid "Import tables and create documents"
-msgstr ""
-
-#: no source
-msgid "Import tables and create shared documents"
 msgstr ""
 
 #: apps/tools/views/tool.py:345
@@ -4238,14 +3090,6 @@ msgstr ""
 msgid "Intelligent customer service platform"
 msgstr ""
 
-#: no source
-msgid "Internal role"
-msgstr ""
-
-#: no source
-msgid "Invalid Slack request"
-msgstr ""
-
 #: apps/users/serializers/login.py:291
 msgid "Invalid access token"
 msgstr ""
@@ -4270,22 +3114,6 @@ msgstr ""
 msgid "Invalid encrypted data"
 msgstr ""
 
-#: no source
-msgid "Invalid json format."
-msgstr ""
-
-#: no source
-msgid "Invalid license file format"
-msgstr ""
-
-#: no source
-msgid "Invalid role type"
-msgstr ""
-
-#: no source
-msgid "Invalid source type"
-msgstr ""
-
 #: apps/trigger/serializers/trigger.py:162
 msgid "Invalid time format: %s, must be HH:MM (e.g., 09:00)"
 msgstr ""
@@ -4298,16 +3126,8 @@ msgstr ""
 msgid "Is Active"
 msgstr ""
 
-#: no source
-msgid "Is Append"
-msgstr ""
-
 #: apps/users/serializers/user.py:56
 msgid "Is Edit Password"
-msgstr ""
-
-#: no source
-msgid "Is Exist"
 msgstr ""
 
 #: apps/application/flow/step_node/knowledge_write_node/impl/base_knowledge_write_node.py:43
@@ -4321,10 +3141,6 @@ msgstr ""
 #: apps/trigger/serializers/trigger.py:641
 #: apps/users/serializers/user.py:253
 msgid "Is active"
-msgstr ""
-
-#: no source
-msgid "Is auth"
 msgstr ""
 
 #: apps/application/serializers/application_api_key.py:26
@@ -4519,23 +3335,11 @@ msgstr ""
 msgid "Knowledge ID or Document ID must be provided"
 msgstr ""
 
-#: no source
-msgid "Knowledge Resource"
-msgstr ""
-
 #: apps/application/serializers/application.py:161
 #: apps/application/serializers/application_chat_record.py:249
 #: apps/application/serializers/application_chat_record.py:375
 #: apps/application/serializers/application_chat_record.py:475
 msgid "Knowledge base id"
-msgstr ""
-
-#: no source
-msgid "Knowledge base name duplicate!"
-msgstr ""
-
-#: no source
-msgid "Knowledge base not found!"
 msgstr ""
 
 #: apps/knowledge/serializers/common.py:125
@@ -4550,14 +3354,6 @@ msgstr ""
 
 #: apps/knowledge/task/embedding.py:121
 msgid "Knowledge documentation: {document_names}"
-msgstr ""
-
-#: no source
-msgid "Knowledge does not exist"
-msgstr ""
-
-#: no source
-msgid "Knowledge id"
 msgstr ""
 
 #: apps/application/serializers/application_chat_record.py:395
@@ -4639,22 +3435,6 @@ msgstr ""
 msgid "Korean female"
 msgstr ""
 
-#: no source
-msgid "LDAP configuration not found or not active"
-msgstr ""
-
-#: no source
-msgid "LDAP filter cannot be empty"
-msgstr ""
-
-#: no source
-msgid "LDAP mapping cannot be empty"
-msgstr ""
-
-#: no source
-msgid "LDAP server cannot be empty"
-msgstr ""
-
 #: apps/models_provider/base_model_provider.py:147
 msgid "LLM"
 msgstr ""
@@ -4670,22 +3450,6 @@ msgstr ""
 #: apps/application/serializers/application_chat.py:292
 msgid "Lark"
 msgstr "Lark App"
-
-#: no source
-msgid "Lark OAuth2 callback"
-msgstr ""
-
-#: no source
-msgid "Lark application: "
-msgstr ""
-
-#: no source
-msgid "Lark callback"
-msgstr ""
-
-#: no source
-msgid "Lark configuration not found or not active"
-msgstr ""
 
 #: apps/application/flow/step_node/image_to_video_step_node/i_image_to_video_node.py:36
 msgid "Last frame url"
@@ -4714,21 +3478,9 @@ msgstr ""
 msgid "Latest gpt-4, updated with OpenAI adjustments"
 msgstr ""
 
-#: no source
-msgid "Ldap Log in"
-msgstr ""
-
 #: apps/application/flow/step_node/tool_lib_node/i_tool_lib_node.py:28
 #: apps/application/flow/step_node/tool_workflow_lib_node/i_tool_workflow_lib_node.py:31
 msgid "Library ID"
-msgstr ""
-
-#: no source
-msgid "License file is required"
-msgstr ""
-
-#: no source
-msgid "License usage limit exceeded."
 msgstr ""
 
 #: apps/chat/views/chat_record.py:29
@@ -4765,14 +3517,6 @@ msgstr ""
 msgid "Llama 2 is a set of pretrained and fine-tuned generative text models ranging in size from 7 billion to 70 billion. This is a repository of 7B pretrained models. Links to other models can be found in the index at the bottom."
 msgstr ""
 
-#: no source
-msgid "Llama-2-13b-chat was developed by Meta AI and is open source. It performs well in scenarios such as coding, reasoning and knowledge application. Llama-2-13b-chat is a native open source version with balanced performance and effect, suitable for conversation scenarios."
-msgstr ""
-
-#: no source
-msgid "Llama-2-70b-chat was developed by Meta AI and is open source. It performs well in scenarios such as coding, reasoning, and knowledge application. Llama-2-70b-chat is a native open source version with high-precision effects."
-msgstr ""
-
 #: apps/users/views/login.py:38
 #: apps/users/views/login.py:39
 #: apps/users/views/login.py:40
@@ -4791,40 +3535,12 @@ msgstr ""
 msgid "Login failed %s times, account will be locked, you have %s more chances !"
 msgstr ""
 
-#: no source
-msgid "Long Fei"
-msgstr ""
-
-#: no source
-msgid "Long Jielidou"
-msgstr ""
-
-#: no source
-msgid "Long Jing"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tts.py:31
 msgid "Long Laotie"
 msgstr ""
 
-#: no source
-msgid "Long Miao"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tts.py:32
 msgid "Long Shu"
-msgstr ""
-
-#: no source
-msgid "Long Shuo"
-msgstr ""
-
-#: no source
-msgid "Long Tong"
-msgstr ""
-
-#: no source
-msgid "Long Xiang"
 msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tts.py:30
@@ -4841,14 +3557,6 @@ msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tts.py:28
 msgid "Long Xiaoxia"
-msgstr ""
-
-#: no source
-msgid "Long Yuan"
-msgstr ""
-
-#: no source
-msgid "Long Yue"
 msgstr ""
 
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:38
@@ -4909,22 +3617,10 @@ msgstr ""
 msgid "Mcp tool"
 msgstr ""
 
-#: no source
-msgid "Members"
-msgstr ""
-
-#: no source
-msgid "Menu"
-msgstr ""
-
 #: apps/application/chat_pipeline/step/chat_step/i_chat_step.py:36
 #: apps/common/field/common.py:24
 #: apps/common/field/common.py:37
 msgid "Message type error"
-msgstr ""
-
-#: no source
-msgid "Message types not supported yet"
 msgstr ""
 
 #: apps/tools/serializers/tool.py:1572
@@ -4951,22 +3647,6 @@ msgstr ""
 #: apps/knowledge/views/paragraph.py:105
 #: apps/knowledge/views/paragraph.py:106
 msgid "Migrate paragraphs in batches"
-msgstr ""
-
-#: no source
-msgid "Migrate shared documents in batches"
-msgstr ""
-
-#: no source
-msgid "Migrate shared paragraphs in batches"
-msgstr ""
-
-#: no source
-msgid "Migrate system knowledges in batches"
-msgstr ""
-
-#: no source
-msgid "Migrate system paragraphs in batches"
 msgstr ""
 
 #: apps/application/api/application_chat.py:82
@@ -5146,10 +3826,6 @@ msgstr ""
 msgid "Model type is not supported"
 msgstr ""
 
-#: no source
-msgid "Models Resource"
-msgstr ""
-
 #: apps/application/serializers/application.py:400
 #: apps/application/serializers/application.py:400
 msgid "Modification time"
@@ -5205,10 +3881,6 @@ msgstr ""
 msgid "Modify document hit processing methods in batches"
 msgstr ""
 
-#: no source
-msgid "Modify knowledge base information"
-msgstr ""
-
 #: apps/knowledge/views/knowledge_workflow_version.py:110
 #: apps/knowledge/views/knowledge_workflow_version.py:111
 #: apps/knowledge/views/knowledge_workflow_version.py:112
@@ -5221,56 +3893,16 @@ msgstr ""
 msgid "Modify paragraph data"
 msgstr ""
 
-#: no source
-msgid "Modify platform information"
-msgstr ""
-
 #: apps/knowledge/views/problem.py:198
 #: apps/knowledge/views/problem.py:199
 #: apps/knowledge/views/problem.py:200
 msgid "Modify question"
 msgstr ""
 
-#: no source
-msgid "Modify shared document"
-msgstr ""
-
-#: no source
-msgid "Modify shared document hit processing methods in batches"
-msgstr ""
-
-#: no source
-msgid "Modify shared paragraph data"
-msgstr ""
-
-#: no source
-msgid "Modify shared question"
-msgstr ""
-
-#: no source
-msgid "Modify system document"
-msgstr ""
-
-#: no source
-msgid "Modify system document hit processing methods in batches"
-msgstr ""
-
-#: no source
-msgid "Modify system paragraph data"
-msgstr ""
-
-#: no source
-msgid "Modify system question"
-msgstr ""
-
 #: apps/knowledge/views/termbase.py:199
 #: apps/knowledge/views/termbase.py:200
 #: apps/knowledge/views/termbase.py:201
 msgid "Modify termbase"
-msgstr ""
-
-#: no source
-msgid "Modify the System task source trigger"
 msgstr ""
 
 #: apps/application/views/application.py:195
@@ -5319,10 +3951,6 @@ msgid "Name"
 msgstr ""
 
 #: no source
-msgid "Network error or folder token error!"
-msgstr ""
-
-#: no source
 msgid "New chat"
 msgstr "A new conversation has been generated. Please ask your question again！"
 
@@ -5333,10 +3961,6 @@ msgstr ""
 #: apps/users/serializers/user.py:68
 #: apps/users/serializers/user.py:199
 msgid "Nick name"
-msgstr ""
-
-#: no source
-msgid "Nickname"
 msgstr ""
 
 #: apps/users/serializers/user.py:419
@@ -5362,14 +3986,6 @@ msgstr ""
 msgid "No permission to access"
 msgstr ""
 
-#: no source
-msgid "No permission to use this function {name}"
-msgstr ""
-
-#: no source
-msgid "No permission to use this model {model_name}"
-msgstr ""
-
 #: apps/application/chat_pipeline/step/chat_step/i_chat_step.py:77
 #: apps/application/chat_pipeline/step/generate_human_message_step/i_generate_human_message_step.py:47
 msgid "No reference segment settings"
@@ -5389,10 +4005,6 @@ msgstr ""
 
 #: apps/application/flow/common.py:281
 msgid "Node {node} is unavailable"
-msgstr ""
-
-#: no source
-msgid "Non-existent application|knowledge base id["
 msgstr ""
 
 #: apps/chat/serializers/chat_record.py:178
@@ -5495,18 +4107,6 @@ msgstr ""
 msgid "Number of visits"
 msgstr ""
 
-#: no source
-msgid "OAuth2 Log in"
-msgstr ""
-
-#: no source
-msgid "OIDC Log in"
-msgstr ""
-
-#: no source
-msgid "OU cannot be empty"
-msgstr ""
-
 #: apps/system_manage/views/user_resource_permission.py:43
 #: apps/system_manage/views/user_resource_permission.py:44
 msgid "Obtain resource authorization list"
@@ -5535,18 +4135,6 @@ msgstr ""
 msgid "Online Usage"
 msgstr ""
 
-#: no source
-msgid "Only shared knowledge can be authorized"
-msgstr ""
-
-#: no source
-msgid "Only shared tools can be authorized"
-msgstr ""
-
-#: no source
-msgid "Only shared tools can be deleted"
-msgstr ""
-
 #: apps/application/serializers/application.py:929
 #: apps/common/utils/tool_code.py:386
 #: apps/knowledge/serializers/knowledge_workflow.py:668
@@ -5556,10 +4144,6 @@ msgstr ""
 
 #: apps/application/serializers/application_chat.py:65
 msgid "Only supports and|or"
-msgstr ""
-
-#: no source
-msgid "Only update members to normal users"
 msgstr ""
 
 #: apps/chat/views/chat.py:75
@@ -5572,18 +4156,6 @@ msgstr ""
 #: apps/application/serializers/application.py:283
 #: apps/application/serializers/application.py:530
 msgid "Opening remarks"
-msgstr ""
-
-#: no source
-msgid "Operate"
-msgstr ""
-
-#: no source
-msgid "Operate Time"
-msgstr ""
-
-#: no source
-msgid "Operate user"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:334
@@ -5673,10 +4245,6 @@ msgstr ""
 msgid "Page size"
 msgstr ""
 
-#: no source
-msgid "Paragraph"
-msgstr ""
-
 #: apps/application/api/application_chat_record.py:148
 msgid "Paragraph ID"
 msgstr ""
@@ -5749,10 +4317,6 @@ msgstr ""
 msgid "Password and confirmation password are inconsistent"
 msgstr ""
 
-#: no source
-msgid "Password cannot be empty"
-msgstr ""
-
 #: apps/models_provider/views/model.py:250
 #: apps/models_provider/views/model.py:251
 #: apps/models_provider/views/model.py:252
@@ -5765,10 +4329,6 @@ msgstr ""
 
 #: apps/models_provider/impl/minimax_model_provider/minimax_model_provider.py:72
 msgid "Perfecting tonal nuances with maximized timbre similarity"
-msgstr ""
-
-#: no source
-msgid "Permission"
 msgstr ""
 
 #: apps/models_provider/impl/ollama_model_provider/ollama_model_provider.py:153
@@ -5791,26 +4351,10 @@ msgstr ""
 msgid "Picture quality"
 msgstr ""
 
-#: no source
-msgid "Platform configuration"
-msgstr ""
-
-#: no source
-msgid "Platform does not exist"
-msgstr ""
-
-#: no source
-msgid "Platform type"
-msgstr ""
-
 #: apps/application/views/application.py:471
 #: apps/application/views/application.py:472
 #: apps/application/views/application.py:473
 msgid "PlayDemo"
-msgstr ""
-
-#: no source
-msgid "Please analyze the content of the image."
 msgstr ""
 
 #: apps/application/flow/step_node/data_source_web_node/impl/base_data_source_web_node.py:23
@@ -5902,10 +4446,6 @@ msgstr ""
 
 #: apps/common/constants/permission_constants.py:374
 msgid "Public access link"
-msgstr ""
-
-#: no source
-msgid "Public settings"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:346
@@ -6042,10 +4582,6 @@ msgstr ""
 msgid "Real-time speech recognition - Fun-ASR/Paraformer"
 msgstr ""
 
-#: no source
-msgid "Redirect address cannot be empty"
-msgstr ""
-
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:22
 #: apps/application/flow/step_node/direct_reply_node/i_reply_node.py:22
 #: apps/application/flow/step_node/image_generate_step_node/i_image_generate_node.py:16
@@ -6085,14 +4621,6 @@ msgstr ""
 msgid "Refresh document vector library"
 msgstr ""
 
-#: no source
-msgid "Refresh shared document vector library"
-msgstr ""
-
-#: no source
-msgid "Refresh system knowledge vector library"
-msgstr ""
-
 #: apps/chat/serializers/chat.py:214
 msgid "Regenerate"
 msgstr ""
@@ -6116,40 +4644,8 @@ msgstr ""
 msgid "Related questions"
 msgstr ""
 
-#: no source
-msgid "Related shared questions"
-msgstr ""
-
-#: no source
-msgid "Related system questions"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:363
 msgid "Remove Member"
-msgstr ""
-
-#: no source
-msgid "Remove member from chat user group"
-msgstr ""
-
-#: no source
-msgid "Remove member from system role"
-msgstr ""
-
-#: no source
-msgid "Remove member from system workspace"
-msgstr ""
-
-#: no source
-msgid "Remove member from user group"
-msgstr ""
-
-#: no source
-msgid "Remove member from workspace"
-msgstr ""
-
-#: no source
-msgid "Remove member from workspace role"
 msgstr ""
 
 #: apps/models_provider/views/model_apply.py:49
@@ -6203,10 +4699,6 @@ msgstr ""
 
 #: apps/common/constants/permission_constants.py:328
 msgid "Resource Tool"
-msgstr ""
-
-#: no source
-msgid "Resource id"
 msgstr ""
 
 #: apps/application/serializers/application.py:397
@@ -6281,18 +4773,6 @@ msgstr ""
 msgid "Role ID"
 msgstr ""
 
-#: no source
-msgid "Role IDs"
-msgstr ""
-
-#: no source
-msgid "Role IDs cannot be empty"
-msgstr ""
-
-#: no source
-msgid "Role Name"
-msgstr ""
-
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:24
 #: apps/application/flow/step_node/image_understand_step_node/i_image_understand_node.py:19
 #: apps/application/flow/step_node/question_node/i_question_node.py:24
@@ -6302,48 +4782,12 @@ msgstr ""
 msgid "Role Setting"
 msgstr ""
 
-#: no source
-msgid "Role Setting cannot be empty"
-msgstr ""
-
-#: no source
-msgid "Role does not exist"
-msgstr ""
-
-#: no source
-msgid "Role name"
-msgstr ""
-
-#: no source
-msgid "Role name already exists"
-msgstr ""
-
 #: apps/application/serializers/application.py:186
 msgid "Role prompts"
 msgstr ""
 
-#: no source
-msgid "Role type"
-msgstr ""
-
-#: no source
-msgid "Root Directory"
-msgstr ""
-
 #: apps/chat/serializers/chat.py:87
 msgid "Runtime node id"
-msgstr ""
-
-#: no source
-msgid "SAML2 Log in"
-msgstr ""
-
-#: no source
-msgid "SAML2 Metadata"
-msgstr ""
-
-#: no source
-msgid "SAML2 SSO"
 msgstr ""
 
 #: apps/system_manage/serializers/email_setting.py:31
@@ -6368,20 +4812,8 @@ msgstr ""
 msgid "Save model parameter form"
 msgstr ""
 
-#: no source
-msgid "Scan code login type"
-msgstr ""
-
-#: no source
-msgid "Scope cannot be empty"
-msgstr ""
-
 #: apps/models_provider/impl/aws_bedrock_model_provider/credential/reranker.py:25
 msgid "Secret Access Key"
-msgstr ""
-
-#: no source
-msgid "Secret is required"
 msgstr ""
 
 #: apps/common/auth/handle/impl/application_key.py:27
@@ -6422,14 +4854,6 @@ msgstr ""
 msgid "Segmented document"
 msgstr ""
 
-#: no source
-msgid "Segmented shared document"
-msgstr ""
-
-#: no source
-msgid "Segmented system document"
-msgstr ""
-
 #: apps/users/views/user.py:321
 #: apps/users/views/user.py:322
 #: apps/users/views/user.py:323
@@ -6452,36 +4876,12 @@ msgstr ""
 msgid "Set up user groups"
 msgstr ""
 
-#: no source
-msgid "Setting"
-msgstr ""
-
 #: apps/application/serializers/application_chat_link.py:138
 msgid "Share link does not exist"
 msgstr ""
 
-#: no source
-msgid "Shared Hit test list"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:331
 msgid "Shared Knowledge"
-msgstr ""
-
-#: no source
-msgid "Shared Knowledge/Document"
-msgstr ""
-
-#: no source
-msgid "Shared Knowledge/Documentation"
-msgstr ""
-
-#: no source
-msgid "Shared Knowledge/Documentation/Paragraph"
-msgstr ""
-
-#: no source
-msgid "Shared Knowledge/Documentation/Paragraph/Question"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:332
@@ -6489,46 +4889,18 @@ msgstr ""
 msgid "Shared Model"
 msgstr ""
 
-#: no source
-msgid "Shared Re-vectorize"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:333
 msgid "Shared Tool"
-msgstr ""
-
-#: no source
-msgid "Shared generate related"
 msgstr ""
 
 #: apps/models_provider/serializers/model_serializer.py:137
 msgid "Shared models cannot be deleted or modified"
 msgstr ""
 
-#: no source
-msgid "Shared paragraph list"
-msgstr ""
-
-#: no source
-msgid "Shared question list"
-msgstr ""
-
-#: no source
-msgid "Shared tool is not supported"
-msgstr ""
-
 #: apps/users/views/login.py:55
 #: apps/users/views/login.py:56
 #: apps/users/views/login.py:57
 msgid "Sign out"
-msgstr ""
-
-#: no source
-msgid "Signature missing"
-msgstr ""
-
-#: no source
-msgid "Signing Secret is required"
 msgstr ""
 
 #: apps/application/chat_pipeline/step/search_dataset_step/i_search_dataset_step.py:42
@@ -6550,22 +4922,6 @@ msgstr ""
 #: apps/application/serializers/application_chat.py:296
 msgid "Slack"
 msgstr "Slack App"
-
-#: no source
-msgid "Slack application: {user}"
-msgstr ""
-
-#: no source
-msgid "Some roles do not exist"
-msgstr ""
-
-#: no source
-msgid "Some user groups do not exist"
-msgstr ""
-
-#: no source
-msgid "Some users do not exist"
-msgstr ""
 
 #: apps/application/models/application_chat.py:120
 msgid "Sorry, no relevant content was found. Please re-describe your problem or provide more information. "
@@ -6746,10 +5102,6 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: no source
-msgid "Stop"
-msgstr ""
-
 #: apps/application/flow/step_node/variable_aggregation_node/i_variable_aggregation_node.py:26
 msgid "Strategy"
 msgstr ""
@@ -6851,59 +5203,15 @@ msgstr ""
 msgid "Sync"
 msgstr ""
 
-#: no source
-msgid "Sync Type"
-msgstr ""
-
-#: no source
-msgid "Sync Type: LOCAL or LDAP"
-msgstr ""
-
-#: no source
-msgid "Sync chat users"
-msgstr ""
-
-#: no source
-msgid "Sync chat users from external source"
-msgstr ""
-
-#: no source
-msgid "Sync users"
-msgstr ""
-
-#: no source
-msgid "Synchronization is only supported for lark documents"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:603
 #: apps/knowledge/serializers/knowledge.py:1280
 msgid "Synchronization is only supported for web site types"
-msgstr ""
-
-#: no source
-msgid "Synchronize lark document"
-msgstr ""
-
-#: no source
-msgid "Synchronize shared web site types"
-msgstr ""
-
-#: no source
-msgid "Synchronize system web site types"
 msgstr ""
 
 #: apps/knowledge/views/knowledge.py:249
 #: apps/knowledge/views/knowledge.py:250
 #: apps/knowledge/views/knowledge.py:251
 msgid "Synchronize the knowledge base of the website"
-msgstr ""
-
-#: no source
-msgid "Synchronize the shared knowledge base of the website"
-msgstr ""
-
-#: no source
-msgid "Synchronize the system knowledge base of the website"
 msgstr ""
 
 #: apps/knowledge/task/sync.py:37
@@ -6917,77 +5225,21 @@ msgstr ""
 msgid "Synchronize web site types"
 msgstr ""
 
-#: no source
-msgid "System"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:400
 #: apps/common/constants/permission_constants.py:1304
 msgid "System API Key"
-msgstr ""
-
-#: no source
-msgid "System Application"
-msgstr ""
-
-#: no source
-msgid "System Hit test list"
-msgstr ""
-
-#: no source
-msgid "System Knowledge"
-msgstr ""
-
-#: no source
-msgid "System Knowledge/Documentation"
-msgstr ""
-
-#: no source
-msgid "System Knowledge/Documentation/Paragraph"
-msgstr ""
-
-#: no source
-msgid "System Knowledge/Documentation/Paragraph/Question"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:336
 msgid "System Management"
 msgstr ""
 
-#: no source
-msgid "System Model"
-msgstr ""
-
-#: no source
-msgid "System Re-vectorize"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:322
 msgid "System Setting"
 msgstr ""
 
-#: no source
-msgid "System Tool"
-msgstr ""
-
-#: no source
-msgid "System Trigger"
-msgstr ""
-
 #: apps/application/chat_pipeline/step/search_dataset_step/i_search_dataset_step.py:27
 msgid "System completes question text"
-msgstr ""
-
-#: no source
-msgid "System generate related"
-msgstr ""
-
-#: no source
-msgid "System operate log"
-msgstr ""
-
-#: no source
-msgid "System paragraph list"
 msgstr ""
 
 #: apps/system_manage/views/system_profile.py:25
@@ -6996,26 +5248,6 @@ msgstr ""
 
 #: apps/application/chat_pipeline/step/generate_human_message_step/i_generate_human_message_step.py:41
 msgid "System prompt words (role)"
-msgstr ""
-
-#: no source
-msgid "System question list"
-msgstr ""
-
-#: no source
-msgid "System resources authorization"
-msgstr ""
-
-#: no source
-msgid "System tools cannot be deleted"
-msgstr ""
-
-#: no source
-msgid "System/Chat user"
-msgstr ""
-
-#: no source
-msgid "System/User Group"
 msgstr ""
 
 #: apps/models_provider/base_model_provider.py:150
@@ -7144,17 +5376,9 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-#: no source
-msgid "Test LDAP connection"
-msgstr ""
-
 #: apps/system_manage/views/email_setting.py:66
 #: apps/system_manage/views/email_setting.py:67
 msgid "Test email settings"
-msgstr ""
-
-#: no source
-msgid "Test platform connection"
 msgstr ""
 
 #: apps/tools/views/tool.py:457
@@ -7192,10 +5416,6 @@ msgstr ""
 msgid "Thai"
 msgstr ""
 
-#: no source
-msgid "The Chinese enhanced version developed by the Qianfan team based on Llama-2-7b has performed well on Chinese knowledge bases such as CMMLU and C-EVAL."
-msgstr ""
-
 #: apps/models_provider/impl/aws_bedrock_model_provider/aws_bedrock_model_provider.py:55
 msgid "The Claude 3 Haiku is Anthropic's fastest and most compact model, with near-instant responsiveness. The model can answer simple queries and requests quickly. Customers will be able to build seamless AI experiences that mimic human interactions. Claude 3 Haiku can process images and return text output, and provides 200K context windows."
 msgstr ""
@@ -7215,10 +5435,6 @@ msgstr ""
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/aliyun_bai_lian_model_provider.py:149
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/aliyun_bai_lian_model_provider.py:158
 msgid "The Qwen Omni series model supports inputting multiple modalities of data, including video, audio, images, and text, and outputting audio and text."
-msgstr ""
-
-#: no source
-msgid "The app does not enable the speech-to-text function or the speech-to-text function fails."
 msgstr ""
 
 #: apps/application/serializers/common.py:148
@@ -7260,14 +5476,6 @@ msgstr ""
 #: apps/users/serializers/user.py:995
 #: apps/users/serializers/user.py:1053
 msgid "The confirmation password must be 6-20 characters long and must be a combination of letters, numbers, and special characters."
-msgstr ""
-
-#: no source
-msgid "The corresponding platform configuration for Slack was not found"
-msgstr ""
-
-#: no source
-msgid "The corresponding platform configuration was not found"
 msgstr ""
 
 #: apps/chat/serializers/chat.py:333
@@ -7429,10 +5637,6 @@ msgstr ""
 msgid "The library ID of node {node} cannot be empty"
 msgstr ""
 
-#: no source
-msgid "The license is invalid"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:1222
 msgid "The maximum size of the uploaded file cannot exceed {}MB"
 msgstr ""
@@ -7460,10 +5664,6 @@ msgstr ""
 msgid "The most effective version of the current hybrid model, the trillion-level parameter scale MOE-32K long article model. Reaching the absolute leading level on various benchmarks, with complex instructions and reasoning, complex mathematical capabilities, support for function call, and application focus optimization in fields such as multi-language translation, finance, law, and medical care"
 msgstr "The most effective version of the current hybrid model, the trillion-level parameter scale MOE-32K long article model. Reaching the absolute leading level on various benchmarks, with complex instructions and reasoning, complex mathematical capabilities, support for function call, and agent focus optimization in fields such as multi-language translation, finance, law, and medical care"
 
-#: no source
-msgid "The network is busy, try again later."
-msgstr ""
-
 #: apps/common/constants/exception_code_constants.py:44
 msgid "The nickname is already registered"
 msgstr ""
@@ -7480,19 +5680,11 @@ msgstr ""
 msgid "The paragraph id is wrong. The current conversation record does not exist. [{paragraph_id}] paragraph id"
 msgstr ""
 
-#: no source
-msgid "The password is incorrect"
-msgstr ""
-
 #: apps/users/serializers/user.py:191
 #: apps/users/serializers/user.py:435
 #: apps/users/serializers/user.py:983
 #: apps/users/serializers/user.py:1041
 msgid "The password must be 6-20 characters long and must be a combination of letters, numbers, and special characters."
-msgstr ""
-
-#: no source
-msgid "The platform configuration corresponding to {type} was not found"
 msgstr ""
 
 #: apps/application/flow/step_node/reranker_node/i_reranker_node.py:39
@@ -7555,10 +5747,6 @@ msgstr ""
 msgid "The type only supports register|reset_password"
 msgstr ""
 
-#: no source
-msgid "The user does not have permission to access the application"
-msgstr ""
-
 #: apps/models_provider/impl/volcanic_engine_model_provider/volcanic_engine_model_provider.py:46
 #: apps/models_provider/impl/volcanic_engine_model_provider/volcanic_engine_model_provider.py:51
 #: apps/models_provider/impl/volcanic_engine_model_provider/volcanic_engine_model_provider.py:80
@@ -7614,24 +5802,8 @@ msgstr ""
 msgid "There is a circular dependency in the tool workflow"
 msgstr ""
 
-#: no source
-msgid "Think: "
-msgstr ""
-
-#: no source
-msgid "Thinking about 【{question}】...If you want me to continue answering, please reply {trigger_message}"
-msgstr ""
-
 #: apps/application/serializers/application.py:191
 msgid "Thinking process switch"
-msgstr ""
-
-#: no source
-msgid "Thinking, please wait a moment!"
-msgstr ""
-
-#: no source
-msgid "Thinking..."
 msgstr ""
 
 #: apps/users/serializers/login.py:138
@@ -7651,20 +5823,8 @@ msgstr ""
 msgid "This interface is used to recognize short audio files within 60 seconds. Supports Mandarin Chinese, English, Cantonese, Japanese, Vietnamese, Malay, Indonesian, Filipino, Thai, Portuguese, Turkish, Arabic, Hindi, French, German, and 23 Chinese dialects."
 msgstr ""
 
-#: no source
-msgid "This type of message is not supported yet"
-msgstr ""
-
-#: no source
-msgid "This workspace contains %s, cannot be deleted."
-msgstr ""
-
 #: apps/models_provider/impl/wenxin_model_provider/wenxin_model_provider.py:74
 msgid "Thousand sails large model"
-msgstr ""
-
-#: no source
-msgid "Three-party login"
 msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tts.py:21
@@ -7684,25 +5844,9 @@ msgstr ""
 msgid "Titan Text Premier is the most powerful and advanced model in the Titan Text series, designed to deliver exceptional performance for a variety of enterprise applications. With its cutting-edge features, it delivers greater accuracy and outstanding results, making it an excellent choice for organizations looking for a top-notch text processing solution."
 msgstr ""
 
-#: no source
-msgid "To be continued, reply \"{trigger_message}\" to continue answering the question"
-msgstr ""
-
-#: no source
-msgid "Token"
-msgstr ""
-
-#: no source
-msgid "Token address cannot be empty"
-msgstr ""
-
 #: apps/homepage/serializers/homepage.py:303
 #: apps/homepage/serializers/homepage.py:626
 msgid "Token consumption"
-msgstr ""
-
-#: no source
-msgid "Token is required"
 msgstr ""
 
 #: apps/knowledge/views/document.py:401
@@ -7836,10 +5980,6 @@ msgstr ""
 #: apps/tools/views/tool_workflow_version.py:95
 #: apps/tools/views/tool_workflow_version.py:117
 msgid "Tool/Version"
-msgstr ""
-
-#: no source
-msgid "Tools Resource"
 msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/reranker.py:17
@@ -8034,18 +6174,6 @@ msgstr "Regular User"
 msgid "Unable to delete administrator"
 msgstr ""
 
-#: no source
-msgid "Universal 1.4-Vincent Chart"
-msgstr ""
-
-#: no source
-msgid "Universal 2.0-Vincent Diagram"
-msgstr ""
-
-#: no source
-msgid "Universal 2.0Pro-Vincent Chart"
-msgstr ""
-
 #: apps/models_provider/impl/tencent_model_provider/credential/tti.py:42
 msgid "Universal realistic style"
 msgstr ""
@@ -8089,14 +6217,6 @@ msgstr ""
 msgid "Unsupported file format"
 msgstr ""
 
-#: no source
-msgid "Unsupported platform type"
-msgstr ""
-
-#: no source
-msgid "Unsupported sync type"
-msgstr ""
-
 #: apps/tools/views/tool.py:577
 #: apps/tools/views/tool.py:578
 #: apps/tools/views/tool.py:579
@@ -8111,28 +6231,8 @@ msgstr ""
 msgid "Update License"
 msgstr ""
 
-#: no source
-msgid "Update SystemAPIKey"
-msgstr ""
-
 #: apps/knowledge/views/tag.py:74
 msgid "Update a knowledge tag"
-msgstr ""
-
-#: no source
-msgid "Update a lark knowledge base"
-msgstr ""
-
-#: no source
-msgid "Update appearance settings"
-msgstr ""
-
-#: no source
-msgid "Update auth setting"
-msgstr ""
-
-#: no source
-msgid "Update chat user information"
 msgstr ""
 
 #: apps/folders/views/folder.py:93
@@ -8141,48 +6241,12 @@ msgstr ""
 msgid "Update folder"
 msgstr ""
 
-#: no source
-msgid "Update license information"
-msgstr ""
-
-#: no source
-msgid "Update license information by uploading a new license file"
-msgstr ""
-
 #: apps/models_provider/views/model.py:82
 #: apps/models_provider/views/model.py:83
 #: apps/models_provider/views/model.py:114
 #: apps/models_provider/views/model.py:115
 #: apps/models_provider/views/model.py:116
 msgid "Update model"
-msgstr ""
-
-#: no source
-msgid "Update personal system API_KEY"
-msgstr ""
-
-#: no source
-msgid "Update platform configuration"
-msgstr ""
-
-#: no source
-msgid "Update platform status"
-msgstr ""
-
-#: no source
-msgid "Update shared knowledge"
-msgstr ""
-
-#: no source
-msgid "Update shared tool"
-msgstr ""
-
-#: no source
-msgid "Update system knowledge"
-msgstr ""
-
-#: no source
-msgid "Update system tool"
 msgstr ""
 
 #: apps/tools/views/tool.py:121
@@ -8230,22 +6294,6 @@ msgstr ""
 #: apps/common/constants/permission_constants.py:403
 #: apps/common/constants/permission_constants.py:426
 msgid "User Group"
-msgstr ""
-
-#: no source
-msgid "User Group ID"
-msgstr ""
-
-#: no source
-msgid "User Group IDs"
-msgstr ""
-
-#: no source
-msgid "User Group IDs cannot be empty"
-msgstr ""
-
-#: no source
-msgid "User Group Names"
 msgstr ""
 
 #: apps/application/api/application_api.py:88
@@ -8347,52 +6395,12 @@ msgstr ""
 msgid "User Questions"
 msgstr ""
 
-#: no source
-msgid "User Relation ID"
-msgstr ""
-
 #: apps/users/serializers/user.py:471
 msgid "User does not exist"
 msgstr ""
 
-#: no source
-msgid "User does not have permission to use API Key"
-msgstr ""
-
 #: apps/application/serializers/application_chat.py:216
 msgid "User feedback"
-msgstr ""
-
-#: no source
-msgid "User group"
-msgstr ""
-
-#: no source
-msgid "User group does not exist"
-msgstr ""
-
-#: no source
-msgid "User group id"
-msgstr ""
-
-#: no source
-msgid "User group name"
-msgstr ""
-
-#: no source
-msgid "User group name already exists"
-msgstr ""
-
-#: no source
-msgid "User group relation IDs"
-msgstr ""
-
-#: no source
-msgid "User group relation IDs cannot be empty"
-msgstr ""
-
-#: no source
-msgid "User information address cannot be empty"
 msgstr ""
 
 #: no source
@@ -8401,14 +6409,6 @@ msgstr "User Management"
 
 #: apps/users/serializers/user.py:1145
 msgid "User registration"
-msgstr ""
-
-#: no source
-msgid "User relation ID"
-msgstr ""
-
-#: no source
-msgid "User relation does not exist"
 msgstr ""
 
 #: apps/homepage/api/home_page_api.py:213
@@ -8428,10 +6428,6 @@ msgstr ""
 
 #: apps/users/serializers/user.py:179
 msgid "Username must be 4-64 characters long"
-msgstr ""
-
-#: no source
-msgid "Username or Nickname"
 msgstr ""
 
 #: apps/system_manage/views/valid.py:28
@@ -8499,10 +6495,6 @@ msgstr ""
 
 #: apps/common/event/listener_manage.py:189
 msgid "Vectorized paragraph: {paragraph_id} error {error} {traceback}"
-msgstr ""
-
-#: no source
-msgid "Verification Token is required"
 msgstr ""
 
 #: apps/users/serializers/user.py:1166
@@ -8636,10 +6628,6 @@ msgstr ""
 msgid "Vietnamese"
 msgstr ""
 
-#: no source
-msgid "View appearance settings"
-msgstr ""
-
 #: apps/common/constants/permission_constants.py:383
 msgid "View related resources"
 msgstr ""
@@ -8706,24 +6694,8 @@ msgstr "Workspace Manager"
 msgid "Watermark"
 msgstr ""
 
-#: no source
-msgid "WeChat Official Account: {account}"
-msgstr ""
-
 #: apps/application/serializers/application_chat.py:291
 msgid "WeChat Public Account"
-msgstr ""
-
-#: no source
-msgid "WeCom OAuth2 callback"
-msgstr ""
-
-#: no source
-msgid "WeCom callback"
-msgstr ""
-
-#: no source
-msgid "WeCom configuration not found or not active"
 msgstr ""
 
 #: apps/application/flow/step_node/data_source_web_node/impl/base_data_source_web_node.py:24
@@ -8738,10 +6710,6 @@ msgstr ""
 msgid "Weixin Public Account"
 msgstr ""
 
-#: no source
-msgid "Welcome to subscribe"
-msgstr ""
-
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/itv.py:33
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/ttv.py:36
 #: apps/models_provider/impl/minimax_model_provider/credential/itv.py:22
@@ -8752,10 +6720,6 @@ msgstr ""
 
 #: apps/application/serializers/application_access_token.py:36
 msgid "Whether to display knowledge sources"
-msgstr ""
-
-#: no source
-msgid "Whether to enable MCP"
 msgstr ""
 
 #: apps/application/flow/step_node/ai_chat_step_node/i_chat_node.py:50
@@ -8817,10 +6781,6 @@ msgstr ""
 #: apps/tools/serializers/tool_version.py:91
 #: apps/tools/serializers/tool_version.py:107
 msgid "Workflow version does not exist"
-msgstr ""
-
-#: no source
-msgid "Workflow version id"
 msgstr ""
 
 #: apps/common/constants/permission_constants.py:325
@@ -8892,30 +6852,6 @@ msgstr ""
 msgid "Workspace IDs"
 msgstr ""
 
-#: no source
-msgid "Workspace Name"
-msgstr ""
-
-#: no source
-msgid "Workspace Role"
-msgstr ""
-
-#: no source
-msgid "Workspace does not exist"
-msgstr ""
-
-#: no source
-msgid "Workspace name already exists"
-msgstr ""
-
-#: no source
-msgid "Workspace/Chat user"
-msgstr ""
-
-#: no source
-msgid "Workspace/User Group"
-msgstr ""
-
 #: apps/models_provider/impl/aws_bedrock_model_provider/credential/reranker.py:47
 msgid "World"
 msgstr ""
@@ -8970,14 +6906,6 @@ msgstr ""
 msgid "answer"
 msgstr ""
 
-#: no source
-msgid "app_id is required"
-msgstr ""
-
-#: no source
-msgid "app_secret is required"
-msgstr ""
-
 #: apps/application/serializers/application.py:275
 msgid "application describe"
 msgstr "Agent description"
@@ -9002,18 +6930,6 @@ msgstr ""
 
 #: apps/models_provider/api/provide.py:45
 msgid "attrs"
-msgstr ""
-
-#: no source
-msgid "authentication type"
-msgstr ""
-
-#: no source
-msgid "avatar"
-msgstr ""
-
-#: no source
-msgid "avatar url"
 msgstr ""
 
 #: apps/models_provider/api/model.py:51
@@ -9042,10 +6958,6 @@ msgstr ""
 msgid "body must be an array"
 msgstr ""
 
-#: no source
-msgid "callback_url is required"
-msgstr ""
-
 #: apps/users/serializers/login.py:35
 #: apps/users/serializers/login.py:268
 msgid "captcha"
@@ -9055,14 +6967,6 @@ msgstr ""
 #: apps/models_provider/serializers/model_serializer.py:248
 #: apps/models_provider/serializers/model_serializer.py:285
 msgid "certification information"
-msgstr ""
-
-#: no source
-msgid "chat background"
-msgstr ""
-
-#: no source
-msgid "chat background url"
 msgstr ""
 
 #: apps/application/serializers/application_chat.py:35
@@ -9112,18 +7016,6 @@ msgstr ""
 #: apps/knowledge/serializers/termbase.py:29
 #: apps/knowledge/serializers/termbase.py:141
 msgid "content"
-msgstr ""
-
-#: no source
-msgid "convert audio to text"
-msgstr ""
-
-#: no source
-msgid "corporation"
-msgstr ""
-
-#: no source
-msgid "count"
 msgstr ""
 
 #: apps/application/serializers/application.py:386
@@ -9198,14 +7090,6 @@ msgstr "DingTalk"
 #: apps/knowledge/serializers/document.py:174
 #: apps/knowledge/serializers/document.py:250
 msgid "directly return similarity"
-msgstr ""
-
-#: no source
-msgid "disclaimer"
-msgstr ""
-
-#: no source
-msgid "disclaimer value"
 msgstr ""
 
 #: apps/application/flow/step_node/application_node/i_application_node.py:22
@@ -9297,18 +7181,6 @@ msgstr ""
 msgid "download url"
 msgstr ""
 
-#: no source
-msgid "draggable"
-msgstr ""
-
-#: no source
-msgid "edition"
-msgstr ""
-
-#: no source
-msgid "embedding model"
-msgstr ""
-
 #: apps/users/serializers/login.py:37
 msgid "encryptedData"
 msgstr ""
@@ -9334,10 +7206,6 @@ msgstr ""
 #: apps/common/result/api.py:28
 #: apps/common/result/api.py:29
 msgid "error prompt"
-msgstr ""
-
-#: no source
-msgid "expired"
 msgstr ""
 
 #: apps/tools/serializers/tool.py:599
@@ -9389,30 +7257,6 @@ msgid "flat illustration"
 msgstr ""
 
 #: no source
-msgid "float icon"
-msgstr ""
-
-#: no source
-msgid "float icon url"
-msgstr ""
-
-#: no source
-msgid "float location type"
-msgstr ""
-
-#: no source
-msgid "float location value"
-msgstr ""
-
-#: no source
-msgid "float location x"
-msgstr ""
-
-#: no source
-msgid "float location y"
-msgstr ""
-
-#: no source
 msgid "folder"
 msgstr "Folder"
 
@@ -9446,16 +7290,8 @@ msgstr ""
 msgid "folder name"
 msgstr ""
 
-#: no source
-msgid "folder token"
-msgstr ""
-
 #: apps/folders/serializers/folder.py:129
 msgid "folder user id"
-msgstr ""
-
-#: no source
-msgid "forum url"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_node/i_tool_node.py:46
@@ -9508,10 +7344,6 @@ msgstr ""
 msgid "group_name"
 msgstr ""
 
-#: no source
-msgid "header font color"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:170
 #: apps/knowledge/serializers/document.py:248
 #: apps/knowledge/serializers/document.py:478
@@ -9549,10 +7381,6 @@ msgstr ""
 #: apps/models_provider/api/provide.py:19
 #: apps/tools/serializers/tool.py:1378
 msgid "icon"
-msgstr ""
-
-#: no source
-msgid "icon url"
 msgstr ""
 
 #: apps/knowledge/serializers/knowledge.py:1358
@@ -9621,10 +7449,6 @@ msgstr ""
 msgid "input variable"
 msgstr ""
 
-#: no source
-msgid "input_field_list must be a dict"
-msgstr ""
-
 #: apps/trigger/serializers/trigger.py:220
 msgid "interval_unit must be one of %s"
 msgstr ""
@@ -9633,20 +7457,8 @@ msgstr ""
 msgid "interval_value must be an integer greater than or equal to 1"
 msgstr ""
 
-#: no source
-msgid "ip_address"
-msgstr ""
-
-#: no source
-msgid "is auth"
-msgstr ""
-
 #: apps/trigger/serializers/trigger.py:33
 msgid "is_active"
-msgstr ""
-
-#: no source
-msgid "knowledge Base"
 msgstr ""
 
 #: apps/knowledge/serializers/knowledge_workflow.py:267
@@ -9757,18 +7569,6 @@ msgstr ""
 msgid "lark"
 msgstr "Lark"
 
-#: no source
-msgid "license details"
-msgstr ""
-
-#: no source
-msgid "license file"
-msgstr ""
-
-#: no source
-msgid "license version"
-msgstr ""
-
 #: apps/application/flow/step_node/document_split_node/i_document_split_node.py:37
 #: apps/knowledge/serializers/document.py:198
 msgid "limit"
@@ -9782,28 +7582,8 @@ msgstr ""
 msgid "local model"
 msgstr ""
 
-#: no source
-msgid "login image"
-msgstr ""
-
-#: no source
-msgid "login logo"
-msgstr ""
-
 #: apps/application/flow/step_node/loop_node/i_loop_node.py:20
 msgid "loop_type"
-msgstr ""
-
-#: no source
-msgid "menu"
-msgstr ""
-
-#: no source
-msgid "menu_label"
-msgstr ""
-
-#: no source
-msgid "message"
 msgstr ""
 
 #: apps/application/chat_pipeline/step/chat_step/i_chat_step.py:99
@@ -9895,14 +7675,6 @@ msgstr ""
 #: apps/homepage/serializers/homepage.py:490
 #: apps/homepage/serializers/homepage.py:628
 msgid "number of questions"
-msgstr ""
-
-#: no source
-msgid "operate"
-msgstr ""
-
-#: no source
-msgid "operate_label"
 msgstr ""
 
 #: apps/application/serializers/application_api_key.py:39
@@ -10046,14 +7818,6 @@ msgstr ""
 msgid "problem list"
 msgstr ""
 
-#: no source
-msgid "product"
-msgstr ""
-
-#: no source
-msgid "project url"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:238
 #: apps/knowledge/serializers/paragraph.py:95
 msgid "prompt"
@@ -10125,10 +7889,6 @@ msgstr ""
 
 #: apps/models_provider/api/provide.py:43
 msgid "relation trigger field dict"
-msgstr ""
-
-#: no source
-msgid "remark"
 msgstr ""
 
 #: apps/models_provider/api/provide.py:40
@@ -10246,46 +8006,6 @@ msgstr ""
 msgid "semicolon"
 msgstr ""
 
-#: no source
-msgid "serial number"
-msgstr ""
-
-#: no source
-msgid "show avatar"
-msgstr ""
-
-#: no source
-msgid "show exec"
-msgstr ""
-
-#: no source
-msgid "show forum"
-msgstr ""
-
-#: no source
-msgid "show guide"
-msgstr ""
-
-#: no source
-msgid "show history"
-msgstr ""
-
-#: no source
-msgid "show project"
-msgstr ""
-
-#: no source
-msgid "show source"
-msgstr ""
-
-#: no source
-msgid "show user avatar"
-msgstr ""
-
-#: no source
-msgid "show user manual"
-msgstr ""
-
 #: apps/application/flow/step_node/search_knowledge_node/i_search_knowledge_node.py:27
 #: apps/knowledge/serializers/knowledge.py:159
 #: apps/knowledge/serializers/knowledge.py:1362
@@ -10294,10 +8014,6 @@ msgstr ""
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/tti.py:56
 msgid "sketch"
-msgstr ""
-
-#: no source
-msgid "slogan"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_node/i_tool_node.py:30
@@ -10416,10 +8132,6 @@ msgstr ""
 msgid "sync type"
 msgstr ""
 
-#: no source
-msgid "system API key id"
-msgstr ""
-
 #: apps/knowledge/serializers/document.py:484
 msgid "tag"
 msgstr ""
@@ -10491,31 +8203,15 @@ msgstr ""
 msgid "text to speech"
 msgstr ""
 
-#: no source
-msgid "theme"
-msgstr ""
-
-#: no source
-msgid "theme color"
-msgstr ""
-
 #: apps/models_provider/impl/volcanic_engine_model_provider/credential/tts.py:14
 #: apps/models_provider/impl/xinference_model_provider/credential/tts.py:15
 msgid "timbre"
-msgstr ""
-
-#: no source
-msgid "title"
 msgstr ""
 
 #: apps/chat/api/chat_embed_api.py:38
 #: apps/chat/serializers/chat_embed_serializers.py:27
 #: apps/users/serializers/login.py:48
 msgid "token"
-msgstr ""
-
-#: no source
-msgid "token is required"
 msgstr ""
 
 #: apps/trigger/serializers/trigger.py:248
@@ -10582,10 +8278,6 @@ msgstr ""
 msgid "total number of data"
 msgstr ""
 
-#: no source
-msgid "trial listening"
-msgstr ""
-
 #: apps/trigger/serializers/task_source_trigger.py:31
 #: apps/trigger/serializers/trigger.py:298
 #: apps/trigger/serializers/trigger.py:308
@@ -10627,18 +8319,6 @@ msgstr ""
 msgid "type error"
 msgstr ""
 
-#: no source
-msgid "user"
-msgstr ""
-
-#: no source
-msgid "user avatar"
-msgstr ""
-
-#: no source
-msgid "user avatar url"
-msgstr ""
-
 #: apps/folders/serializers/folder.py:135
 #: apps/folders/serializers/folder.py:179
 #: apps/knowledge/serializers/document.py:1002
@@ -10666,14 +8346,6 @@ msgstr ""
 #: apps/tools/serializers/tool_workflow.py:144
 #: apps/users/serializers/user.py:1186
 msgid "user id"
-msgstr ""
-
-#: no source
-msgid "user manual url"
-msgstr ""
-
-#: no source
-msgid "user_group_id"
 msgstr ""
 
 #: apps/application/serializers/application_chat.py:55
@@ -10852,14 +8524,6 @@ msgstr ""
 #: apps/trigger/serializers/trigger.py:503
 #: apps/trigger/serializers/trigger.py:644
 msgid "workspace id"
-msgstr ""
-
-#: no source
-msgid "workspace id list"
-msgstr ""
-
-#: no source
-msgid "workspace_id"
 msgstr ""
 
 #: apps/system_manage/serializers/resource_mapping_serializers.py:33
