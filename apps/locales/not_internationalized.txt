@@ -26,7 +26,7 @@ msgid "Clean period tasks: [{}]"
 msgid "Copied all locale files from admin to chat directory"
 
 #: apps/models_provider/impl/xinference_model_provider/model/embedding.py:43
-#: apps/models_provider/impl/xinference_model_provider/model/reranker.py:45
+#: apps/models_provider/impl/xinference_model_provider/model/reranker.py:47
 msgid "Could not import RESTfulClient from xinference. Please install it"
 
 #: apps/models_provider/impl/tencent_model_provider/model/hunyuan.py:259
@@ -41,10 +41,10 @@ msgid "FOR NO KEY UPDATE is not supported on this "
 #: apps/common/db/compiler.py:130
 msgid "FOR UPDATE OF is not supported on this database backend."
 
-#: apps/models_provider/impl/aliyun_bai_lian_model_provider/model/tts.py:93
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/model/tts.py:94
 msgid "Failed to generate audio"
 
-#: apps/models_provider/impl/aliyun_bai_lian_model_provider/model/tts.py:87
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/model/tts.py:88
 msgid "Failed to get audio data from response: "
 
 #: apps/models_provider/impl/gemini_model_provider/model/ttv.py:100
@@ -95,7 +95,7 @@ msgid "Not found __version__: {}"
 #: apps/ops/celery/logger.py:202
 msgid "Not found thread task file"
 
-#: apps/common/utils/common.py:246
+#: apps/common/utils/common.py:237
 msgid "Not support file type: {}"
 
 #: apps/oss/serializers/file.py:314
@@ -103,6 +103,9 @@ msgid "Only http and https are allowed"
 
 #: apps/ops/celery/signal_handler.py:81
 msgid "Periodic task [{}] is disabled!"
+
+#: apps/application/flow/step_node/document_extract_node/impl/base_document_extract_node.py:179
+msgid "Please provide a valid document file ID or URL"
 
 #: apps/models_provider/impl/xinference_model_provider/model/embedding.py:49
 msgid "Please provide server URL"
@@ -127,6 +130,12 @@ msgid "Start stop services"
 
 #: apps/application/flow/step_node/data_source_web_node/impl/base_data_source_web_node.py:49
 msgid "Task interrupted"
+
+#: apps/application/flow/step_node/document_extract_node/impl/base_document_extract_node.py:159
+msgid "The "
+
+#: apps/application/flow/compare/len_equal_compare.py:26
+msgid "The target length must be greater than or equal to 0"
 
 #: apps/oss/serializers/file.py:307
 msgid "URL contains dangerous characters"
@@ -167,7 +176,7 @@ msgid "expected at most 1 positional argument, got %d"
 #: apps/models_provider/impl/volcanic_engine_model_provider/model/stt.py:350
 msgid "format should in wav or mp3"
 
-#: apps/common/utils/common.py:393
+#: apps/common/utils/common.py:364
 #: apps/tools/serializers/tool.py:125
 msgid "global "
 
@@ -175,7 +184,7 @@ msgid "global "
 #: apps/trigger/handler/impl/trigger/scheduled_trigger.py:17
 msgid "hour/minute out of range"
 
-#: apps/common/utils/common.py:275
+#: apps/common/utils/common.py:266
 msgid "import pysilk failed, wechaty voice message will not be supported."
 
 #: apps/application/long_term_memory/__init__.py:503
@@ -215,10 +224,7 @@ msgid "不支持的处理器类型"
 #: apps/trigger/handler/simple_tools.py:57
 msgid "不支持的触发器类型"
 
-#: apps/application/flow/step_node/intent_node/impl/base_intent_node.py:141
-msgid "你是一个专业的意图识别助手，请根据用户输入和意图选项，准确识别用户的真实意图。"
-
-#: apps/application/flow/step_node/search_knowledge_node/impl/base_search_knowledge_node.py:31
+#: apps/application/flow/step_node/search_knowledge_node/impl/base_search_knowledge_node.py:33
 msgid "关联知识库的向量模型不一致，无法召回分段。"
 
 #: apps/models_provider/impl/aliyun_bai_lian_model_provider/model/ttv.py:64
@@ -230,7 +236,7 @@ msgid "多次重试后仍无法连接到 MiniMax API，请检查代理或网络�
 #: apps/common/log/log.py:81
 msgid "操作菜单"
 
-#: apps/application/flow/step_node/search_knowledge_node/impl/base_search_knowledge_node.py:33
+#: apps/application/flow/step_node/search_knowledge_node/impl/base_search_knowledge_node.py:31
 msgid "知识库设置错误,请重新设置知识库"
 
 #: apps/models_provider/impl/xf_model_provider/model/zh_en_stt.py:110
