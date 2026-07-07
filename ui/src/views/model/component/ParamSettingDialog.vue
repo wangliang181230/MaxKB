@@ -2,7 +2,7 @@
   <el-dialog
     :title="$t('views.model.modelForm.title.paramSetting')"
     v-model="dialogVisible"
-    width="800px"
+    width="1000px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :destroy-on-close="true"
