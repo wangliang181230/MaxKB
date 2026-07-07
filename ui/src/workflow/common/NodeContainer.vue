@@ -22,7 +22,10 @@
               :item="nodeModel?.properties.node_data"
               style="--el-avatar-border-radius: 6px"
             />
-            <h4 class="ellipsis-1 break-all">
+            <h4
+              class="ellipsis-1 break-all"
+              :title="nodeModel.properties.stepName?.length > 8 ? nodeModel.properties.stepName : ''"
+            >
               <span
                 v-for="(character, index) in Array.from(String(nodeModel.properties.stepName || ''))"
                 :key="index"
@@ -31,7 +34,13 @@
             </h4>
           </div>
 
-          <div @mousemove.stop @mousedown.stop @keydown.stop @click.stop>
+          <div
+            @mousemove.stop
+            @mousedown.stop
+            @keydown.stop
+            @click.stop
+            style="min-width: 85px; text-align: right"
+          >
             <el-button text @click="showNode = !showNode">
               <el-icon class="arrow-icon color-secondary" :class="showNode ? 'rotate-180' : ''"
                 ><ArrowDownBold />
