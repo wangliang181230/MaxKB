@@ -78,7 +78,7 @@
                 </el-dropdown-item>
                 <el-dropdown-item @click="openCreateWorkflowDialog()">
                   <div class="flex align-center">
-                    <el-avatar class="avatar-green mt-4" shape="square" :size="32">
+                    <el-avatar class="avatar-dark-green mt-4" shape="square" :size="32">
                       <img src="@/assets/workflow/logo_workflow.svg" style="width: 60%" alt="" />
                     </el-avatar>
                     <div class="pre-wrap ml-8">
@@ -280,6 +280,7 @@
                               <AppIcon iconName="app-operate-log" class="color-secondary"></AppIcon>
                               {{ $t('views.tool.mcp.mcpConfig') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="item.template_id && permissionPrecise.edit(item.id)"
                               @click.stop="addInternalTool(item, true)"
@@ -319,6 +320,7 @@
                               <AppIcon iconName="app-workflow" class="color-secondary"></AppIcon>
                               {{ $t('workflow.workflow') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="!item.template_id && permissionPrecise.copy(item.id)"
                               @click.stop="copyTool(item)"
@@ -326,6 +328,7 @@
                               <AppIcon iconName="app-copy" class="color-secondary"></AppIcon>
                               {{ $t('common.copy') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="
                                 item.init_field_list?.length > 0 && permissionPrecise.edit(item.id)
@@ -335,6 +338,7 @@
                               <AppIcon iconName="app-operation" class="color-secondary"></AppIcon>
                               {{ $t('common.param.initParam') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               @click.stop="openAuthorization(item)"
                               v-if="apiType === 'workspace' && permissionPrecise.auth(item.id)"
@@ -357,6 +361,7 @@
                               <AppIcon iconName="app-trigger" class="color-secondary"></AppIcon>
                               {{ $t('views.trigger.title') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               text
                               @click.stop="openResourceMappingDrawer(item)"
@@ -368,6 +373,7 @@
                               ></AppIcon>
                               {{ $t('views.system.resourceMapping.title') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               text
                               @click.stop="openToolRecordDrawer(item)"
@@ -382,6 +388,7 @@
                               ></AppIcon>
                               {{ $t('common.ExecutionRecord.subTitle') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               @click.stop="openMoveToDialog(item)"
                               v-if="permissionPrecise.copy(item.id) && apiType === 'workspace'"
@@ -389,6 +396,7 @@
                               <AppIcon iconName="app-migrate" class="color-secondary"></AppIcon>
                               {{ $t('common.moveTo') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="isSystemShare"
                               @click.stop="openAuthorizedWorkspaceDialog(item)"
@@ -396,6 +404,7 @@
                               <AppIcon iconName="app-lock" class="color-secondary"></AppIcon>
                               {{ $t('views.shared.authorized_workspace') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="!item.template_id && permissionPrecise.export(item.id)"
                               @click.stop="exportTool(item)"
@@ -403,6 +412,7 @@
                               <AppIcon iconName="app-export" class="color-secondary"></AppIcon>
                               {{ $t('common.export') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
                               v-if="permissionPrecise.delete(item.id)"
                               divided
