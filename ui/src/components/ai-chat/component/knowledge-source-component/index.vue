@@ -71,7 +71,7 @@
     >
       <div>
         <span class="mr-8">
-          {{ $t('aiChat.KnowledgeSource.consume') }}: {{ data?.message_tokens + data?.answer_tokens }}
+          {{ $t('aiChat.KnowledgeSource.consume') }}: ( in: {{ data?.message_tokens }}, out: {{ data?.answer_tokens }} )
         </span>
         <span>
           {{ $t('aiChat.KnowledgeSource.consumeTime') }}: {{ data?.run_time?.toFixed(2) }} s</span
