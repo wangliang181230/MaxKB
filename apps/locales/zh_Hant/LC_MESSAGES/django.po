@@ -9676,3 +9676,49 @@ msgstr "寬和高必須在 [512, 2048] 之間，且面積不得超過 1024x1024�
 #: apps/models_provider/impl/tencent_model_provider/credential/embedding.py
 msgid "api_key is required"
 msgstr "api_key 必填"
+
+#: apps/oss/serializers/file.py:450
+msgid "Access to internal IP addresses is blocked"
+msgstr "禁止訪問內網 IP 位址"
+
+#: apps/oss/serializers/file.py:494
+msgid "Failed to download the file: {error}"
+msgstr "下載文件失敗：{error}"
+
+#: apps/oss/serializers/file.py:446
+#: apps/oss/serializers/file.py:448
+msgid "Failed to resolve host: {error}"
+msgstr "解析主機失敗：{error}"
+
+#: apps/oss/serializers/file.py:448
+msgid "No address found"
+msgstr "未解析到 IP 位址"
+
+#: apps/application/flow/step_node/image_understand_step_node/impl/base_image_understand_node.py:137
+#: apps/application/flow/step_node/image_understand_step_node/impl/base_image_understand_node.py:310
+#: apps/application/flow/step_node/video_understand_step_node/impl/base_video_understand_node.py:274
+#: apps/application/flow/step_node/video_understand_step_node/impl/base_video_understand_node.py:299
+#: apps/application/flow/step_node/speech_to_text_step_node/impl/base_speech_to_text_node.py:58
+msgid "The file does not exist"
+msgstr "文件不存在"
+
+#: apps/common/auth/authenticate.py:151
+msgid "Unknown exception occurred while verifying all-token-auth"
+msgstr "驗證 all-token-auth 時發生未知異常"
+
+#: apps/common/auth/authenticate.py:124
+msgid "Unknown exception occurred while verifying chat-token-auth"
+msgstr "驗證 chat-token-auth 時發生未知異常"
+
+#: apps/common/auth/authenticate.py:97
+msgid "Unknown exception occurred while verifying token-auth"
+msgstr "驗證 token-auth 時發生未知異常"
+
+#: apps/oss/serializers/file.py:483
+#: apps/oss/serializers/file.py:521
+msgid "URL download timed out"
+msgstr "URL 下載逾時"
+
+#: apps/system_manage/views/chat_user.py:137
+msgid "Username is required"
+msgstr "用戶名不能為空"
