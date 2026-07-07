@@ -775,16 +775,46 @@ class WorkflowManage:
 
         return prompt
 
-    def generate_prompt(self, prompt: str):
+    def generate_prompt(self, prompt: str) -> str:
         """
         格式化生成提示词
         @param prompt: 提示词信息
         @return: 格式化后的提示词
         """
+        if prompt is None:
+            return ''
+        if prompt == '':
+            return ''
+        if "{{" not in prompt or "}}" not in prompt:
+            return prompt
+
         context = self.get_workflow_content()
         prompt = self.reset_prompt(prompt)
         prompt_template = PromptTemplate.from_template(prompt, template_format='jinja2')
         value = prompt_template.format(context=context)
+        if value == 'None':
+            return ''
+        return value
+
+    def generate_field_value(self, field_value: str):
+        """
+        格式化生成参数值
+        @param field_value: 参数信息
+        @return: 格式化后的参数值
+        """
+        if field_value is None:
+            return None
+        if not field_value:
+            return ''
+        if "{{" not in field_value or "}}" not in field_value:
+            return field_value
+
+        context = self.get_workflow_content()
+        field_value = self.reset_prompt(field_value)
+        field_value_template = PromptTemplate.from_template(field_value, template_format='jinja2')
+        value = field_value_template.format(context=context)
+        if field_value == 'None':
+            return None
         return value
 
     def get_start_node(self):
