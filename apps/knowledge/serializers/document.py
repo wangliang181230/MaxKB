@@ -273,12 +273,11 @@ class DocumentSerializers(serializers.Serializer):
                 self.is_valid(raise_exception=True)
             language = get_language()
             if self.data.get("type") == "csv":
-                file = open(
+                with open(
                     os.path.join(PROJECT_DIR, "apps", "knowledge", "template", f"csv_template_{language}.csv"),
                     "rb",
-                )
-                content = file.read()
-                file.close()
+                ) as file:
+                    content = file.read()
                 return HttpResponse(
                     content,
                     status=200,
@@ -288,12 +287,11 @@ class DocumentSerializers(serializers.Serializer):
                     },
                 )
             elif self.data.get("type") == "excel":
-                file = open(
+                with open(
                     os.path.join(PROJECT_DIR, "apps", "knowledge", "template", f"excel_template_{language}.xlsx"),
                     "rb",
-                )
-                content = file.read()
-                file.close()
+                ) as file:
+                    content = file.read()
                 return HttpResponse(
                     content,
                     status=200,
@@ -310,12 +308,11 @@ class DocumentSerializers(serializers.Serializer):
                 self.is_valid(raise_exception=True)
             language = get_language()
             if self.data.get("type") == "csv":
-                file = open(
+                with open(
                     os.path.join(PROJECT_DIR, "apps", "knowledge", "template", f"table_template_{language}.csv"),
                     "rb",
-                )
-                content = file.read()
-                file.close()
+                ) as file:
+                    content = file.read()
                 return HttpResponse(
                     content,
                     status=200,
@@ -325,12 +322,11 @@ class DocumentSerializers(serializers.Serializer):
                     },
                 )
             elif self.data.get("type") == "excel":
-                file = open(
+                with open(
                     os.path.join(PROJECT_DIR, "apps", "knowledge", "template", f"table_template_{language}.xlsx"),
                     "rb",
-                )
-                content = file.read()
-                file.close()
+                ) as file:
+                    content = file.read()
                 return HttpResponse(
                     content,
                     status=200,
