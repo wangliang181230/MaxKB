@@ -7,7 +7,7 @@
     :before-close="close"
     :destroy-on-close="true"
     :modal="false"
-    size="800px"
+    size="1000px"
     class="tool-debug-result-drawer"
   >
     <template #header>
