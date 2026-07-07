@@ -3,7 +3,7 @@
     v-model="drawer"
     :title="$t('common.ExecutionRecord.title')"
     direction="rtl"
-    size="800px"
+    size="1000px"
     :before-close="close"
     destroy-on-close
   >
