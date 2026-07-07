@@ -2,7 +2,7 @@
   <el-dialog
     align-center
     v-model="dialogVisible"
-    style="width: 800px"
+    style="width: 1000px"
     append-to-body
     :close-on-click-modal="true"
     :close-on-press-escape="true"
