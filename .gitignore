@@ -194,3 +194,6 @@ config.yml
 .SANDBOX_BANNED_HOSTS
 copilot-instructions.md
 .ai/
+
+# Backup Files
+*.bak
