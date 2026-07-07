@@ -130,7 +130,7 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
             condition = base_condition
 
         return {
-            'default_queryset': query_set.filter(condition).order_by("-application_chat.update_time")
+            'default_queryset': query_set.filter(condition).order_by("-application_chat.update_time", "application_chat.id")
         }
 
     def list(self, with_valid=True):
