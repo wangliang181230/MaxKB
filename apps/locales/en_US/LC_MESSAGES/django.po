@@ -9526,3 +9526,49 @@ msgstr "Width and height must be in [512, 2048] and the area must not exceed 102
 
 msgid "api_key is required"
 msgstr "api_key is required"
+
+#: apps/oss/serializers/file.py:450
+msgid "Access to internal IP addresses is blocked"
+msgstr "Access to internal IP addresses is blocked"
+
+#: apps/oss/serializers/file.py:494
+msgid "Failed to download the file: {error}"
+msgstr "Failed to download the file: {error}"
+
+#: apps/oss/serializers/file.py:446
+#: apps/oss/serializers/file.py:448
+msgid "Failed to resolve host: {error}"
+msgstr "Failed to resolve host: {error}"
+
+#: apps/oss/serializers/file.py:448
+msgid "No address found"
+msgstr "No address found"
+
+#: apps/application/flow/step_node/image_understand_step_node/impl/base_image_understand_node.py:137
+#: apps/application/flow/step_node/image_understand_step_node/impl/base_image_understand_node.py:310
+#: apps/application/flow/step_node/video_understand_step_node/impl/base_video_understand_node.py:274
+#: apps/application/flow/step_node/video_understand_step_node/impl/base_video_understand_node.py:299
+#: apps/application/flow/step_node/speech_to_text_step_node/impl/base_speech_to_text_node.py:58
+msgid "The file does not exist"
+msgstr "The file does not exist"
+
+#: apps/common/auth/authenticate.py:151
+msgid "Unknown exception occurred while verifying all-token-auth"
+msgstr "Unknown exception occurred while verifying all-token-auth"
+
+#: apps/common/auth/authenticate.py:124
+msgid "Unknown exception occurred while verifying chat-token-auth"
+msgstr "Unknown exception occurred while verifying chat-token-auth"
+
+#: apps/common/auth/authenticate.py:97
+msgid "Unknown exception occurred while verifying token-auth"
+msgstr "Unknown exception occurred while verifying token-auth"
+
+#: apps/oss/serializers/file.py:483
+#: apps/oss/serializers/file.py:521
+msgid "URL download timed out"
+msgstr "URL download timed out"
+
+#: apps/system_manage/views/chat_user.py:137
+msgid "Username is required"
+msgstr "Username is required"
