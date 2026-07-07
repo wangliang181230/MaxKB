@@ -63,8 +63,12 @@ class ResourceProxy(APIView):
             )
 
             return django_response
-        except Exception as e:
+        except requests.exceptions.Timeout:
+            return result.error("Image request timed out")
+        except requests.exceptions.RequestException as e:
             return result.error(f"Image request failed: {str(e)}")
+        except Exception as e:
+            return result.error(f"Unexpected image request error: {str(e)}")
 
 
 class OpenAIView(APIView):
