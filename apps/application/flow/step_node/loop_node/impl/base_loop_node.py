@@ -18,6 +18,7 @@ from application.flow.step_node.loop_node.i_loop_node import ILoopNode
 from application.flow.tools import Reasoning
 from application.models import ChatRecord
 from common.handle.impl.response.loop_to_response import LoopToResponse
+from common.utils.logger import maxkb_logger
 from maxkb.const import CONFIG
 
 max_loop_count = int(CONFIG.get("WORKFLOW_LOOP_NODE_MAX_LOOP_COUNT", 500))
@@ -138,73 +139,91 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
     start_node_data = None
     chat_record = None
     child_node = None
+    instances = []
+    
     if start_node_id:
         chat_record_id = node_params.get('child_node', {}).get('chat_record_id')
         child_node = node_params.get('child_node', {}).get('child_node')
         start_node_data = node_params.get('node_data')
         chat_record = ChatRecord(id=chat_record_id, answer_text_list=[], answer_text='',
-                                 details=loop_node_data[current_index])
+                                 details=loop_node_data[current_index] if current_index < len(loop_node_data) else {})
 
-    for item, index in generate_loop(current_index):
-        if 0 < max_loop_count <= index - start_index and loop_type == 'LOOP':
-            raise Exception(_('Exceeding the maximum number of cycles'))
-        """
-        指定次数循环
-        @return:
-        """
-        instance = workflow_manage_new_instance({'index': index, 'item': item}, loop_global_data, start_node_id,
-                                                start_node_data, chat_record, child_node)
-        response = instance.stream()
-        answer = ''
-        current_index = index
-        reasoning_content = ''
-        child_node_node_dict = {}
-        for chunk in response:
-            if chunk.get('node_type') == 'loop-break-node' and chunk.get('content', '') == 'BREAK':
-                break_outer = True
-                continue
-            child_node = chunk.get('child_node')
-            runtime_node_id = chunk.get('runtime_node_id', '')
-            chat_record_id = chunk.get('chat_record_id', '')
-            child_node_node_dict[runtime_node_id] = {
-                'runtime_node_id': runtime_node_id,
-                'chat_record_id': chat_record_id,
-                'child_node': child_node}
-            content_chunk = (chunk.get('content', '') or '')
-            reasoning_content_chunk = (chunk.get('reasoning_content', '') or '')
-            if chunk.get('real_node_id'):
-                chunk['real_node_id'] = chunk['real_node_id'] + '__' + node.runtime_node_id + '__' + str(index)
-            reasoning_content += reasoning_content_chunk
-            answer += content_chunk
-            yield chunk
-            if chunk.get('node_status', "SUCCESS") == 'ERROR':
+    try:
+        for item, index in generate_loop(current_index):
+            if 0 < max_loop_count <= index - start_index and loop_type == 'LOOP':
+                raise Exception(_('Exceeding the maximum number of cycles'))
+            """
+            指定次数循环
+            @return:
+            """
+            instance = workflow_manage_new_instance({'index': index, 'item': item}, loop_global_data, start_node_id,
+                                                    start_node_data, chat_record, child_node)
+            instances.append(instance)  # 跟踪实例
+            response = instance.stream()
+            answer = ''
+            current_index = index
+            reasoning_content = ''
+            child_node_node_dict = {}
+            try:
+                for chunk in response:
+                    if chunk.get('node_type') == 'loop-break-node' and chunk.get('content', '') == 'BREAK':
+                        break_outer = True
+                        continue
+                    child_node = chunk.get('child_node')
+                    runtime_node_id = chunk.get('runtime_node_id', '')
+                    chat_record_id = chunk.get('chat_record_id', '')
+                    child_node_node_dict[runtime_node_id] = {
+                        'runtime_node_id': runtime_node_id,
+                        'chat_record_id': chat_record_id,
+                        'child_node': child_node}
+                    content_chunk = (chunk.get('content', '') or '')
+                    reasoning_content_chunk = (chunk.get('reasoning_content', '') or '')
+                    if chunk.get('real_node_id'):
+                        chunk['real_node_id'] = chunk['real_node_id'] + '__' + node.runtime_node_id + '__' + str(index)
+                    reasoning_content += reasoning_content_chunk
+                    answer += content_chunk
+                    yield chunk
+                    if chunk.get('node_status', "SUCCESS") == 'ERROR':
+                        insert_or_replace(loop_node_data, index, instance.get_runtime_details())
+                        insert_or_replace(loop_answer_data, index,
+                                          get_answer_list(instance, child_node_node_dict, node.runtime_node_id))
+                        node.context['is_interrupt_exec'] = is_interrupt_exec
+                        node.context['loop_node_data'] = loop_node_data
+                        node.context['loop_answer_data'] = loop_answer_data
+                        node.context["index"] = current_index
+                        node.context["item"] = current_index
+                        node.status = 500
+                        node.err_message = chunk.get('content')
+                        return
+                    node_type = chunk.get('node_type')
+                    if node_type == 'form-node':
+                        break_outer = True
+                        is_interrupt_exec = True
+            finally:
+                start_node_id = None
+                start_node_data = None
+                chat_record = None
+                child_node = None
                 insert_or_replace(loop_node_data, index, instance.get_runtime_details())
                 insert_or_replace(loop_answer_data, index,
                                   get_answer_list(instance, child_node_node_dict, node.runtime_node_id))
-                node.context['is_interrupt_exec'] = is_interrupt_exec
-                node.context['loop_node_data'] = loop_node_data
-                node.context['loop_answer_data'] = loop_answer_data
-                node.context["index"] = current_index
-                node.context["item"] = current_index
-                node.status = 500
-                node.err_message = chunk.get('content')
-                return
-            node_type = chunk.get('node_type')
-            if node_type == 'form-node':
-                break_outer = True
-                is_interrupt_exec = True
-        start_node_id = None
-        start_node_data = None
-        chat_record = None
-        child_node = None
-        insert_or_replace(loop_node_data, index, instance.get_runtime_details())
-        insert_or_replace(loop_answer_data, index,
-                          get_answer_list(instance, child_node_node_dict, node.runtime_node_id))
-        instance._cleanup()
-        if break_outer:
-            break
-        if instance.is_the_task_interrupted():
-            break
+                try:
+                    instance._cleanup()
+                except Exception as e:
+                    maxkb_logger.warning(f'Failed to cleanup loop instance at index {index}: {str(e)}')
+
+            if break_outer:
+                break
+            if instance.is_the_task_interrupted():
+                break
+    finally:
+        for idx, inst in enumerate(instances):
+            try:
+                if hasattr(inst, '_cleanup'):
+                    inst._cleanup()
+            except Exception:
+                pass
+
     node.context['is_interrupt_exec'] = is_interrupt_exec
     node.context['loop_node_data'] = loop_node_data
     node.context['loop_answer_data'] = loop_answer_data
