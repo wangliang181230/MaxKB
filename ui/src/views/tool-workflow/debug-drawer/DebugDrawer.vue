@@ -5,7 +5,7 @@
     direction="rtl"
     :before-close="close"
     :destroy-on-close="true"
-    size="800px"
+    size="1000px"
   >
     <h4 class="title-decoration-1 mb-16" v-if="userInputFieldList.length > 0">
       {{ $t('common.param.inputParam') }}
