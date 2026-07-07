@@ -87,14 +87,19 @@
             <span :title="row.field" class="ellipsis-1">{{ row.field }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('dynamicsForm.paramForm.input_type.label')">
+        <el-table-column :label="$t('dynamicsForm.paramForm.name.label')">
+          <template #default="{ row }">
+            <span :title="getDisplayName(row)" class="ellipsis-1">{{ getDisplayName(row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('dynamicsForm.paramForm.input_type.label')" width="200">
           <template #default="{ row }">
             <el-tag size="small" type="info" class="info-tag">{{
               input_type_list.find((item) => item.value === row.input_type)?.label
             }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('common.required')">
+        <el-table-column :label="$t('common.required')" width="90">
           <template #default="{ row }">
             <div @click.stop>
               <el-switch disabled size="small" v-model="row.required" />
@@ -133,23 +138,28 @@
 
       <el-table ref="inputFieldTableRef" :data="form.input_field_list" class="mb-16">
         <el-table-column prop="name" :label="$t('views.tool.form.paramName.label')" />
-        <el-table-column :label="$t('views.tool.form.dataType.label')">
+        <el-table-column :label="$t('dynamicsForm.paramForm.tooltip.label')">
+          <template #default="{ row }">
+            <span :title="row.desc" class="ellipsis-1">{{ row.desc }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('views.tool.form.dataType.label')" width="100">
           <template #default="{ row }">
             <el-tag size="small" type="info" class="info-tag">{{ row.type }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('common.required')">
-          <template #default="{ row }">
-            <div @click.stop>
-              <el-switch size="small" v-model="row.is_required" />
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="source" :label="$t('views.tool.form.source.label')">
+        <el-table-column prop="source" :label="$t('views.tool.form.source.label')" width="100">
           <template #default="{ row }">
             {{
               row.source === 'custom' ? $t('common.custom') : $t('views.tool.form.source.reference')
             }}
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('common.required')" width="90">
+          <template #default="{ row }">
+            <div @click.stop>
+              <el-switch size="small" v-model="row.is_required" />
+            </div>
           </template>
         </el-table-column>
         <el-table-column :label="$t('common.operation')" align="left" width="90">
@@ -403,6 +413,13 @@ function refreshTool(data: any) {
 
 function deleteInitField(index: any) {
   form.value.init_field_list?.splice(index, 1)
+}
+
+function getDisplayName(row: any) {
+  if (typeof row.label === 'object' && row.label !== null) {
+    return row.label.label || ''
+  }
+  return row.label || ''
 }
 
 function openEditAvatar() {
