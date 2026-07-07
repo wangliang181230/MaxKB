@@ -25,7 +25,7 @@
             data.type == WorkflowType.IntentNode ||
             data.type === WorkflowType.VideoUnderstandNode
           "
-          >{{ data?.message_tokens + data?.answer_tokens }} tokens</span
+          >( in: {{ data?.message_tokens }}, out: {{ data?.answer_tokens }} ) tokens</span
         >
         <span class="mr-16 color-secondary" v-if="data.status != 202"
           >{{ data?.run_time?.toFixed(2) || 0.0 }} s</span
@@ -285,7 +285,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                {{ data.system || '-' }}
+                <pre>{{ data.system || '-' }}</pre>
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
@@ -381,7 +381,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                {{ data.system || '-' }}
+                <pre>{{ data.system || '-' }}</pre>
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="data.type !== WorkflowType.Application">
@@ -627,7 +627,7 @@
             <div class="card-never border-r-6 mt-8">
               <h5 class="p-8-12">{{ $t('aiChat.executionDetails.output') }}</h5>
               <div class="p-8-12 border-t-dashed lighter break-all">
-                {{ data.result || '-' }}
+                <pre>{{ data.result || '-' }}</pre>
               </div>
             </div>
           </template>
@@ -713,7 +713,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                {{ data.system || '-' }}
+                <pre>{{ data.system || '-' }}</pre>
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
@@ -825,7 +825,7 @@
                 {{ $t('views.application.form.roleSettings.label') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
-                {{ data.system || '-' }}
+                <pre>{{ data.system || '-' }}</pre>
               </div>
             </div>
             <div class="card-never border-r-6 mt-8" v-if="!isKnowLedge">
