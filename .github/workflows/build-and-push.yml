@@ -29,7 +29,7 @@ jobs:
         id: prepare
         run: |
           DOCKER_IMAGE=${{ secrets.ALIYUN_DOCKERHUB_REGISTRY }}/wangliang181230/maxkb
-          TAG_NAME="v2.10.x"
+          TAG_NAME="v2.10.5"
           DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME}"
           echo "buildx_args=--platform linux/amd64,linux/arm64 --memory-swap -1 \
             --build-arg DOCKER_IMAGE_TAG=${TAG_NAME} --build-arg BUILD_AT=$(TZ=Asia/Shanghai date +'%Y-%m-%dT%H:%M') --build-arg GITHUB_COMMIT=`git rev-parse --short HEAD` --no-cache \
@@ -78,7 +78,7 @@ jobs:
         id: prepare
         run: |
           DOCKER_IMAGE=wangliang181230/maxkb
-          TAG_NAME="v2.10.x"
+          TAG_NAME="v2.10.5"
           DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME}"
           echo "buildx_args=--platform linux/amd64,linux/arm64 --memory-swap -1 \
             --build-arg DOCKER_IMAGE_TAG=${TAG_NAME} --build-arg BUILD_AT=$(TZ=Asia/Shanghai date +'%Y-%m-%dT%H:%M') --build-arg GITHUB_COMMIT=`git rev-parse --short HEAD` --no-cache \
