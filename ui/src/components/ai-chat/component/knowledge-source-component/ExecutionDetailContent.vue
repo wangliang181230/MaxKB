@@ -28,7 +28,7 @@
           {{ $t('views.application.form.roleSettings.label') }}
         </h5>
         <div class="p-8-12 border-t-dashed lighter">
-          <span class="mb-8">{{ system }}</span>
+          <span class="mb-8"><pre>{{ system }}</pre></span>
         </div>
       </div>
 
