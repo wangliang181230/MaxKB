@@ -52,4 +52,40 @@ class ChatAuthenticationProfileAPI(APIMixin):
 class ChatOpenAPI(APIMixin):
     @staticmethod
     def get_parameters():
-        return []
+        return [
+            OpenApiParameter(
+                name="chat_user_id",
+                description="对话用户id",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+            OpenApiParameter(
+                name="username",
+                description="姓名",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+            OpenApiParameter(
+                name="email",
+                description="电子邮箱",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+            OpenApiParameter(
+                name="phone",
+                description="手机号",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+            OpenApiParameter(
+                name="group_id",
+                description="用户组ID（common_user=公众用户、medical_worker=医务工作者、manager=后台管理员、assistant=助理、escort=陪护工）",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+        ]
