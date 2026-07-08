@@ -126,20 +126,18 @@
         @sort-change="handleSortChange"
         :maxTableHeight="270"
       >
-        <el-table-column type="selection" width="55" />
+        <el-table-column type="selection" width="28" />
         <el-table-column
           prop="nick_name"
           :label="$t('views.userManage.userForm.nick_name.label')"
-          min-width="180"
           show-overflow-tooltip
         />
         <el-table-column
           prop="username"
           :label="$t('common.username')"
-          min-width="180"
           show-overflow-tooltip
         />
-        <el-table-column prop="is_active" :label="$t('common.status.label')" width="100">
+        <el-table-column prop="is_active" :label="$t('common.status.label')">
           <template #default="{ row }">
             <div v-if="row.is_active" class="flex align-center">
               <el-icon class="color-success mr-8" style="font-size: 16px">
@@ -162,7 +160,7 @@
           prop="email"
           :label="$t('views.login.loginForm.email.label')"
           show-overflow-tooltip
-          min-width="180"
+          width="170"
         >
           <template #default="{ row }">
             {{ row.email || '-' }}
@@ -171,7 +169,7 @@
         <el-table-column
           prop="phone"
           :label="$t('views.userManage.userForm.phone.label')"
-          width="120"
+          width="115"
         >
           <template #default="{ row }">
             {{ row.phone || '-' }}
@@ -180,7 +178,6 @@
         <el-table-column
           prop="user_group_names"
           :label="$t('views.chatUser.group.title')"
-          min-width="150"
         >
           <template #default="{ row }">
             <TagGroup :tags="row.user_group_names" />
@@ -199,12 +196,14 @@
                       ? $t('views.userManage.source.dingtalk')
                       : row.source === 'OAUTH2' || row.source === 'OAuth2'
                         ? 'OAuth2'
-                        : row.source
+                        : row.source === 'BUSINESS'
+                          ? '业务系统'
+                          : row.source
             }}
           </template>
         </el-table-column>
 
-        <el-table-column :label="$t('common.createTime')" width="180">
+        <el-table-column :label="$t('common.createTime')" width="165">
           <template #default="{ row }">
             {{ datetimeFormat(row.create_time) }}
           </template>
