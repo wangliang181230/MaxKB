@@ -37,12 +37,87 @@ from common.exception.app_exception import AppApiException, AppChatNumOutOfBound
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.openai_to_response import OpenaiToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
-from common.utils.common import flat_map, get_file_content, is_valid_uuid
+from common.utils.common import flat_map, get_file_content, is_valid_uuid, uuid_to_long
+from common.utils.logger import maxkb_logger
 from knowledge.models import Document, Paragraph
 from maxkb.conf import PROJECT_DIR
 from models_provider.models import Model, Status
 from models_provider.tools import get_model_instance_by_model_workspace_id
+from system_manage.models import UserGroupRelation
+from system_manage.models.chat_user import ChatUser
 from system_manage.models.resource_mapping import ResourceMapping
+
+
+def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_id=None):
+    """
+    确保对话用户存在，如果不存在则创建
+    :param chat_user_id: 用户ID（UUID格式）
+    :param username: 用户名
+    :param email: 电子邮箱
+    :param phone: 手机号码
+    :return: 用户信息字典
+    """
+    # 查询用户是否存在
+    existing_user = QuerySet(ChatUser).filter(id=chat_user_id).first()
+    if existing_user:
+        need_update = False
+        if username and existing_user.username != username:
+            if not existing_user.nick_name or existing_user.nick_name == existing_user.username:
+                existing_user.nick_name = username
+            existing_user.username = username
+            need_update = True
+        if email and existing_user.email != email:
+            existing_user.email = email
+            need_update = True
+        if phone and existing_user.phone != phone:
+            existing_user.phone = phone
+            need_update = True
+
+        # 更新用户数据
+        if need_update:
+            existing_user.save()
+
+        return
+
+    # 用户不存在，创建新用户
+
+    # 使用传入的username或默认值
+    user_username = username or f"user_{chat_user_id}"
+
+    # 检查username是否已存在，如果存在则添加数字
+    from django.db.models import Q
+    counter = 1
+    username_bak = user_username
+    while QuerySet(ChatUser).filter(Q(nick_name=user_username) | Q(username=user_username)).exists():
+        user_username = f"{username_bak}_{counter}"
+        counter += 1
+
+    # 创建用户对象，并保存
+    new_user = ChatUser(
+        id=chat_user_id,
+        email=email,
+        phone=phone or "",
+        nick_name=user_username,
+        username=user_username,
+        password="",
+        source="BUSINESS",  # 业务系统传过来的
+        is_active=True
+    )
+    new_user.save()
+    maxkb_logger.info(f"保存对话用户数据成功：id={new_user.id}, name={new_user.username}, source={new_user.source}")
+
+    # 创建用户组关联数据：表 UserGroupRelation
+    try:
+        group_id = group_id or "common_user"
+        new_user_group = UserGroupRelation(
+            id=str(uuid.uuid7()),
+            group_id=group_id,  # 默认：common_user=公众用户（对应业务系统的登录体系角色枚举值）
+            user_id=new_user.id,
+        )
+        new_user_group.save()
+        maxkb_logger.info(f"保存用户组关联数据成功：id={new_user_group.id}, user_id={new_user.id}, group_id={group_id}")
+    except Exception as e:
+        maxkb_logger.error(f"保存用户组关联数据失败：{e}")
 
 
 class ChatMessagesSerializers(serializers.Serializer):
@@ -393,8 +468,8 @@ class ChatSerializers(serializers.Serializer):
         message = instance.get('message')
         re_chat = instance.get('re_chat', False)
         stream = instance.get('stream', False)
-        chat_user_id = self.data.get("chat_user_id")
-        chat_user_type = self.data.get('chat_user_type')
+        chat_user_id = chat_info.chat_user_id
+        chat_user_type = chat_info.chat_user_type
         ip_address = self.data.get('ip_address')
         source = self.data.get('source')
         form_data = instance.get('form_data')
@@ -414,26 +489,33 @@ class ChatSerializers(serializers.Serializer):
                 history_chat_record = [r for r in chat_info.chat_record_list if str(r.id) != chat_record_id]
         work_flow = chat_info.application.work_flow
         work_flow_manage = WorkflowManage(Workflow.new_instance(work_flow),
-                                          {'history_chat_record': history_chat_record, 'question': message,
-                                           'chat_id': chat_info.chat_id, 'chat_record_id': str(
-                                              uuid.uuid7()) if chat_record_id is None else str(chat_record_id),
-                                           'stream': stream,
-                                           're_chat': re_chat,
-                                           'chat_user_id': chat_user_id,
-                                           'chat_user_type': chat_user_type,
-                                           'ip_address': ip_address,
-                                           'source': source,
-                                           'workspace_id': workspace_id,
-                                           'debug': debug,
-                                           'chat_user': chat_info.get_chat_user(),
-                                           'chat_user_group': chat_info.get_chat_user_group(),
-                                           'application_id': str(chat_info.application_id)},
+                                          {
+                                              'history_chat_record': history_chat_record, 'question': message,
+                                              'chat_id': chat_info.chat_id, 'chat_record_id': str(uuid.uuid7()) if chat_record_id is None else str(chat_record_id),
+                                              'stream': stream,
+                                              're_chat': re_chat,
+                                              'chat_user_id': chat_user_id,
+                                              'chat_user_type': chat_user_type,
+                                              'ip_address': ip_address,
+                                              'source': source,
+                                              'workspace_id': workspace_id,
+                                              'debug': debug,
+                                              'chat_user': chat_info.get_chat_user() if chat_user_type != ChatUserType.CHAT_USER.value else {
+                                                  "userid": str(uuid_to_long(chat_user_id)),
+                                                  "username": chat_info.get_chat_user().get("username"),
+                                                  "email": chat_info.get_chat_user().get("email"),
+                                                  "phone": chat_info.get_chat_user().get("phone"),
+                                              },
+                                              'chat_user_group': chat_info.get_chat_user_group(),
+                                              'application_id': str(chat_info.application_id),
+                                          },
                                           WorkFlowPostHandler(chat_info),
                                           base_to_response, form_data, image_list, document_list, audio_list,
                                           video_list,
                                           other_list,
                                           instance.get('runtime_node_id'),
-                                          instance.get('node_data'), chat_record, instance.get('child_node'))
+                                          instance.get('node_data'), chat_record, instance.get('child_node')
+                                      )
         chat_info.set_chat(message)
         r = work_flow_manage.run()
         return r
@@ -457,6 +539,14 @@ class ChatSerializers(serializers.Serializer):
         super().is_valid(raise_exception=True)
         ChatMessageSerializers(data=instance).is_valid(raise_exception=True)
         chat_info = self.get_chat_info()
+
+        # 如果会话用户类型为 CHAT_USER，且当前请求用户类型为 APPLICATION_API_KEY，则使用会话
+        if (chat_info.chat_user_type == ChatUserType.CHAT_USER.value
+                and self.data.get("chat_user_type") == ChatUserType.APPLICATION_API_KEY.value):
+            self.data.get("source", {})["api_key_id"] = self.data.get("chat_user_id")
+            self.data["chat_user_id"] = chat_info.chat_user_id
+            self.data["chat_user_type"] = chat_info.chat_user_type
+
         chat_info.get_application()
         chat_info.get_chat_user(asker=(instance.get('form_data') or {}).get('asker'))
         self.is_valid_chat_id(chat_info)
@@ -490,11 +580,11 @@ class ChatSerializers(serializers.Serializer):
         if application_version is None:
             raise ChatException(500, _("The application has not been published. Please use it after publishing."))
         if application.type == ApplicationTypeChoices.SIMPLE:
-            return self.re_open_chat_simple(chat_id, application)
+            return self.re_open_chat_simple(chat_id, application, chat)
         else:
-            return self.re_open_chat_work_flow(chat_id, application)
+            return self.re_open_chat_work_flow(chat_id, application, chat)
 
-    def re_open_chat_simple(self, chat_id, application):
+    def re_open_chat_simple(self, chat_id, application, chat: Chat):
         # 数据集id列表
         knowledge_id_list = [str(row.target_id) for row in
                              QuerySet(ResourceMapping).filter(source_id=str(application.id),
@@ -506,7 +596,7 @@ class ChatSerializers(serializers.Serializer):
                                     QuerySet(Document).filter(
                                         knowledge_id__in=knowledge_id_list,
                                         is_active=False)]
-        chat_info = ChatInfo(chat_id, self.data.get('chat_user_id'), self.data.get('chat_user_type'),
+        chat_info = ChatInfo(chat_id, chat.chat_user_id, chat.chat_user_type,
                              self.data.get('ip_address'),
                              self.data.get('source'), knowledge_id_list,
                              exclude_document_id_list, application.id)
@@ -516,8 +606,8 @@ class ChatSerializers(serializers.Serializer):
             chat_info.chat_record_list.append(chat_record)
         return chat_info
 
-    def re_open_chat_work_flow(self, chat_id, application):
-        chat_info = ChatInfo(chat_id, self.data.get('chat_user_id'), self.data.get('chat_user_type'),
+    def re_open_chat_work_flow(self, chat_id, application, chat: Chat):
+        chat_info = ChatInfo(chat_id, chat.chat_user_id, chat.chat_user_type,
                              self.data.get('ip_address'),
                              self.data.get('source'), [], [],
                              application.id)
@@ -533,6 +623,10 @@ class OpenChatSerializers(serializers.Serializer):
     application_id = serializers.UUIDField(required=True)
     chat_user_id = serializers.CharField(required=True, label=_("Client id"))
     chat_user_type = serializers.CharField(required=True, label=_("Client Type"))
+    username = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Username"))
+    email = serializers.EmailField(required=False, allow_blank=True, allow_null=True, label=_("Email"))
+    phone = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Phone"))
+    group_id = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Group Id"))
     debug = serializers.BooleanField(required=True, label=_("Debug"))
     ip_address = serializers.CharField(required=False, label=_("IP Address"))
     source = serializers.JSONField(required=False, label=_("Source"))
@@ -558,16 +652,27 @@ class OpenChatSerializers(serializers.Serializer):
             if application_version is None:
                 raise AppApiException(500,
                                       _("The application has not been published. Please use it after publishing."))
-        if application.type == ApplicationTypeChoices.SIMPLE:
-            return self.open_simple(application)
-        else:
-            return self.open_work_flow(application)
 
-    def open_work_flow(self, application):
-        self.is_valid(raise_exception=True)
-        application_id = self.data.get('application_id')
+        # 确保对话用户存在
         chat_user_id = self.data.get("chat_user_id")
         chat_user_type = self.data.get("chat_user_type")
+        if chat_user_type == ChatUserType.CHAT_USER.value:
+            username = self.data.get("username")
+            email = self.data.get("email")
+            phone = self.data.get("phone")
+            group_id = self.data.get("group_id")
+            ensure_chat_user_exists(chat_user_id, username, email, phone, group_id)
+
+        if application.type == ApplicationTypeChoices.SIMPLE:
+            return self.open_simple(application, chat_user_id, chat_user_type)
+        else:
+            return self.open_work_flow(application, chat_user_id, chat_user_type)
+
+    def open_work_flow(self, application, chat_user_id=None, chat_user_type=None):
+        self.is_valid(raise_exception=True)
+        application_id = self.data.get('application_id')
+        chat_user_id = chat_user_id or self.data.get("chat_user_id")
+        chat_user_type = chat_user_type or self.data.get("chat_user_type", ChatUserType.CHAT_USER.value)
         ip_address = self.data.get("ip_address")
         source = self.data.get("source")
         debug = self.data.get("debug")
@@ -577,10 +682,10 @@ class OpenChatSerializers(serializers.Serializer):
                  application_id, debug).set_cache()
         return chat_id
 
-    def open_simple(self, application):
+    def open_simple(self, application, chat_user_id=None, chat_user_type=None):
         application_id = self.data.get('application_id')
-        chat_user_id = self.data.get("chat_user_id")
-        chat_user_type = self.data.get("chat_user_type")
+        chat_user_id = chat_user_id or self.data.get("chat_user_id")
+        chat_user_type = chat_user_type or self.data.get("chat_user_type", ChatUserType.CHAT_USER.value)
         ip_address = self.data.get("ip_address")
         source = self.data.get("source")
         debug = self.data.get("debug")
