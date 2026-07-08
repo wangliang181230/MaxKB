@@ -27,6 +27,7 @@ from common.constants.permission_constants import ChatAuth
 from common.exception.app_exception import AppAuthenticationFailed
 from common.log.log import _get_ip_address
 from common.result import result
+from common.utils.common import long_to_uuid
 from knowledge.models import FileSourceType
 from maxkb.const import CONFIG
 from oss.serializers.file import FileSerializer
@@ -218,16 +219,32 @@ class OpenView(APIView):
     )
     def get(self, request: Request):
         ip_address = _get_ip_address(request)
+        # 仅允许 API Key（服务端）调用代传 chat_user_id 及用户信息；
+        # 匿名/嵌入令牌必须使用令牌内签发的身份，防止伪造他人 chat_user_id 接管会话、篡改用户数据
+        is_api_key_call = request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value
+        chat_user_id = request.query_params.get("chat_user_id") if is_api_key_call else None
+        if chat_user_id and chat_user_id.isdigit():
+            try:
+                chat_user_id = str(long_to_uuid(int(chat_user_id)))
+            except ValueError:
+                chat_user_id = None
+        source = {
+            "type": ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
+        }
+        if chat_user_id and is_api_key_call:
+            source["api_key_id"] = request.auth.chat_user_id
         return result.success(
             OpenChatSerializers(
                 data={
                     'application_id': request.auth.application_id,
-                    'chat_user_id': request.auth.chat_user_id,
-                    'chat_user_type': request.auth.chat_user_type,
+                    'chat_user_id': chat_user_id or request.auth.chat_user_id,
+                    'chat_user_type': ChatUserType.CHAT_USER.value if chat_user_id else request.auth.chat_user_type,
+                    'username': request.query_params.get("username") if chat_user_id else None,
+                    'email': request.query_params.get("email") if chat_user_id else None,
+                    'phone': request.query_params.get("phone") if chat_user_id else None,
+                    'group_id': request.query_params.get("group_id") if chat_user_id else None,
                     'ip_address': ip_address,
-                    'source': {
-                        'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
-                    },
+                    'source': source,
                     'debug': False,
                 }
             ).open()
