@@ -202,11 +202,19 @@ function deleteField(index: any) {
   set(props.nodeModel.properties.node_data, 'input_field_list', list)
 }
 
+function getFieldValue(old_field: any, data: any) {
+  // 编辑且取值方式没变时，保留已配置的参数值，避免被清空
+  if (old_field && old_field.source === data.source && old_field.value !== undefined) {
+    return old_field.value
+  }
+  return data.source === 'reference' ? [] : (data.default_value || '')
+}
+
 function refreshFieldList(data: any) {
   const list = cloneDeep(props.nodeModel.properties.node_data.input_field_list)
   const obj = {
     ...data,
-    value: data.source === 'reference' ? [] : '',
+    value: getFieldValue(currentIndex.value === null ? null : list[currentIndex.value], data),
   }
   if (currentIndex.value !== null) {
     list.splice(currentIndex.value, 1, obj)
