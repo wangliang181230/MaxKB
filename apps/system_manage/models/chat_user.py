@@ -14,6 +14,7 @@ from common.constants.permission_constants import Group
 
 class ChatUser(models.Model):
     id = models.UUIDField(primary_key=True, max_length=128, default=uuid.uuid7, editable=False, verbose_name="主键id")
+    uid = models.BigIntegerField(null=True, blank=True, verbose_name="UID", db_index=True)
     email = models.EmailField(null=True, blank=True, verbose_name="邮箱", db_index=True)
     phone = models.CharField(max_length=20, verbose_name="电话", default="")
     nick_name = models.CharField(max_length=150, verbose_name="昵称", unique=True, db_index=True)
