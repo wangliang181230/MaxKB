@@ -682,3 +682,29 @@ def get_file_name_from_url_or_response(url, response, default = None):
         file_name += f".{file_type}"
 
     return file_name
+
+# region long和UUID互转的两个方法
+FIXED_MASK = 0x0000000000000000  # 后面 8 个字节（64位）固定常量，可自定义，只要不修改就能保证映射不变（注：需与业务系统中的保持一致）
+def long_to_uuid(num: int) -> uuid.UUID:
+    """
+    long转UUID
+    :param num: Java long，Python int
+    :return: UUID对象
+    """
+    most_sig_bits = num
+    least_sig_bits = FIXED_MASK
+    return uuid.UUID(int=(most_sig_bits << 64) | least_sig_bits)
+
+
+def uuid_to_long(uid) -> int:
+    """
+    UUID转long
+    :param uid: uuid字符串或UUID实例
+    :return: 原始long值
+    """
+    if isinstance(uid, str):
+        uid = uuid.UUID(uid)
+    # 获取高64位 = original long
+    most = uid.int >> 64
+    return most
+# endregion

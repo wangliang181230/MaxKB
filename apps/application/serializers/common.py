@@ -18,9 +18,11 @@ from application.serializers.application_chat import ChatCountSerializer
 from common.constants.cache_version import Cache_Version
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import ChatException
+from common.utils.logger import maxkb_logger
 from knowledge.models import Document
 from models_provider.models import Model
 from models_provider.tools import get_model_credential
+from system_manage.models.chat_user import ChatUser, UserGroupRelation
 from system_manage.models.resource_mapping import ResourceMapping
 from tools.models import ToolRecord
 
@@ -171,17 +173,23 @@ class ChatInfo:
     def get_chat_user(self, asker=None):
         if self.chat_user:
             return self.chat_user
-        chat_user_model = DatabaseModelManage.get_model("chat_user")
-        if self.chat_user_type == ChatUserType.CHAT_USER.value and chat_user_model:
-            chat_user = QuerySet(chat_user_model).filter(id=self.chat_user_id).first()
-            return {
-                'id': str(chat_user.id),
-                'email': chat_user.email,
-                'phone': chat_user.phone,
-                'nick_name': chat_user.nick_name,
-                'username': chat_user.username,
-                'source': chat_user.source
-            }
+        if self.chat_user_type == ChatUserType.CHAT_USER.value:
+            chat_user = QuerySet(ChatUser).filter(id=self.chat_user_id).first()
+            if chat_user:
+                self.chat_user = {
+                    'id': str(chat_user.id),
+                    'email': chat_user.email,
+                    'phone': chat_user.phone,
+                    'nick_name': chat_user.nick_name,
+                    'username': chat_user.username,
+                    'source': chat_user.source
+                }
+            else:
+                maxkb_logger.error(f"chat_user数据不存在：chat_user_id = {self.chat_user_id}")
+                self.chat_user = {
+                    'id': str(self.chat_user_id),
+                    'username': '游客',
+                }
         else:
             if asker:
                 if isinstance(asker, dict):
@@ -199,14 +207,11 @@ class ChatInfo:
         if not chat_user_id:
             return []
 
-        user_group_relation_model = DatabaseModelManage.get_model("user_group_relation")
-        if user_group_relation_model:
-            return [{
-                'id': user_group_relation.group_id,
-                'name': user_group_relation.group.name
-            } for user_group_relation in
-                QuerySet(user_group_relation_model).select_related('group').filter(user_id=chat_user_id)]
-        return []
+        return [{
+            'id': user_group_relation.group_id,
+            'name': user_group_relation.group.name
+        } for user_group_relation in
+            QuerySet(UserGroupRelation).select_related('group').filter(user_id=chat_user_id)]
 
     def to_base_pipeline_manage_params(self):
         self.get_application()

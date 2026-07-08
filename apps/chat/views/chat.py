@@ -218,16 +218,24 @@ class OpenView(APIView):
     )
     def get(self, request: Request):
         ip_address = _get_ip_address(request)
+        chat_user_id = request.query_params.get("chat_user_id")
+        source = {
+            "type": ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
+        }
+        if chat_user_id and request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value:
+            source["api_key_id"] = request.auth.chat_user_id
         return result.success(
             OpenChatSerializers(
                 data={
                     'application_id': request.auth.application_id,
-                    'chat_user_id': request.auth.chat_user_id,
-                    'chat_user_type': request.auth.chat_user_type,
+                    'chat_user_id': chat_user_id or request.auth.chat_user_id,
+                    'chat_user_type': ChatUserType.CHAT_USER.value if chat_user_id else request.auth.chat_user_type,
+                    'username':  request.query_params.get("username"),
+                    'email': request.query_params.get("email"),
+                    'phone': request.query_params.get("phone"),
+                    'group_id': request.query_params.get("group_id"),
                     'ip_address': ip_address,
-                    'source': {
-                        'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value
-                    },
+                    'source': source,
                     'debug': False,
                 }
             ).open()
