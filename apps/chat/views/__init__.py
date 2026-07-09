@@ -9,3 +9,4 @@
 from .chat_embed import *
 from .chat import *
 from .chat_record import *
+from .long_term_memory import *
