@@ -153,3 +153,35 @@ class PageHistoricalConversationRecordAPI(APIMixin):
     @staticmethod
     def get_response():
         return PageApplicationRecordResponse
+
+
+class LongTermMemoryAPI(APIMixin):
+    @staticmethod
+    def get_parameters():
+        return [
+            OpenApiParameter(
+                name="chat_user_id",
+                description="对话用户id",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=True,
+            ),
+            OpenApiParameter(
+                name="application_ids",
+                description="智能体ID列表（用逗号`,`隔开）",
+                type=OpenApiTypes.STR,
+                location='query',
+                required=False,
+            ),
+            OpenApiParameter(
+                name="days",
+                description="查询最近几天的记忆",
+                type=OpenApiTypes.INT,
+                location='query',
+                required=False,
+            ),
+        ]
+
+    @staticmethod
+    def get_response():
+        return DefaultResultSerializer
