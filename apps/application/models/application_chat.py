@@ -161,6 +161,7 @@ class ApplicationLongTermMemory(AppModelMixin):
     application = models.ForeignKey(Application, on_delete=models.CASCADE, db_constraint=False, verbose_name="所属应用")
     chat_user_id = models.CharField( max_length=128, verbose_name="对话用户id", db_index=True)
     memory = models.TextField(verbose_name="长期记忆内容", default="")
+    last_extract_time = models.DateTimeField(verbose_name="上次提取时间", null=True, blank=True)
 
     class Meta:
         db_table = "application_long_term_memory"
