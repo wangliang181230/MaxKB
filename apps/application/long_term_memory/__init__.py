@@ -229,11 +229,11 @@ def _run_extract(workspace_id, application_id, chat_user_id, config, history_lim
             chat__chat_user_id=chat_user_id,
         )
         .order_by('-create_time')
-        .only('problem_text', 'answer_text')
+        .only('problem_text', 'answer_text', 'create_time')
     )
 
     if since_time is not None:
-        history_chat_record = list(qs.filter(create_time__gte=since_time))
+        history_chat_record = list(qs.filter(create_time__gt=since_time))
     else:
         history_chat_record = list(qs[:history_limit])
     if not history_chat_record:
@@ -272,8 +272,12 @@ def _run_extract(workspace_id, application_id, chat_user_id, config, history_lim
 
     content = re.sub(r'<think>.*?<\/think>', '', content, flags=re.DOTALL).strip()
 
+    # 获取最新一条对话的时间作为下次提取的起始点
+    latest_create_time = max(record.create_time for record in history_chat_record)
+
     if long_term_memory:
         long_term_memory.memory = content
+        long_term_memory.last_extract_time = latest_create_time
         long_term_memory.save()
     else:
         ApplicationLongTermMemory(
@@ -281,6 +285,7 @@ def _run_extract(workspace_id, application_id, chat_user_id, config, history_lim
             application_id=application_id,
             chat_user_id=chat_user_id,
             memory=content,
+            last_extract_time=latest_create_time,
         ).save()
 
 
@@ -340,9 +345,23 @@ def _execute_scheduled_extract(workspace_id, application_id):
             continue
         if config['trigger_type'] != 'SCHEDULED':
             continue
+
+        # 获取上次提取时间
+        long_term_memory = QuerySet(ApplicationLongTermMemory).filter(
+            application_id=application_id, chat_user_id=chat_user_id
+        ).first()
+
         setting = config['trigger_setting'] or {}
-        since_time = _get_since_time_from_setting(setting)
-        history_limit = None if since_time is not None else setting.get('rounds', 20)
+
+        # 如果有上次提取时间，则使用该时间；否则根据配置计算初始时间
+        if long_term_memory and long_term_memory.last_extract_time:
+            since_time = long_term_memory.last_extract_time
+            history_limit = None
+        else:
+            # 首次执行或没有记录，使用配置的时间窗口
+            since_time = _get_since_time_from_setting(setting)
+            history_limit = None if since_time is not None else setting.get('rounds', 20)
+
         try:
             _run_extract(workspace_id, application_id, chat_user_id, config,
                          history_limit=history_limit, since_time=since_time)
