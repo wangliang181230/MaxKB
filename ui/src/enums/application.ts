@@ -47,6 +47,7 @@ export enum WorkflowType {
   KnowledgeWriteNode = 'knowledge-write-node',
   ToolStartNode = 'tool-start-node',
   ToolBaseNode = 'tool-base-node',
+  ReadLongTermMemoryNode = 'read-long-term-memory-node',
 }
 export enum WorkflowKind {
   DataSource = 'data-source',
