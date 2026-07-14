@@ -443,6 +443,33 @@ export const emptyNode = {
     },
   },
 }
+export const readLongTermMemoryNode = {
+  type: WorkflowType.ReadLongTermMemoryNode,
+  text: t('workflow.nodes.readLongTermMemoryNode.text'),
+  label: t('workflow.nodes.readLongTermMemoryNode.label'),
+  height: 252,
+  properties: {
+    stepName: t('workflow.nodes.readLongTermMemoryNode.label'),
+    node_data: {
+      chat_user_id: [],
+      chat_user_type: [],
+      application_ids: [],
+      days: 0,
+    },
+    config: {
+      fields: [
+        {
+          label: t('workflow.nodes.readLongTermMemoryNode.memories'),
+          value: 'memories',
+        },
+        {
+          label: t('workflow.nodes.readLongTermMemoryNode.totalCount'),
+          value: 'total_count',
+        },
+      ],
+    },
+  },
+}
 export const rerankerNode = {
   type: WorkflowType.RerankerNode,
   text: t('workflow.nodes.rerankerNode.text'),
@@ -858,7 +885,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -912,7 +939,7 @@ export const menuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode],
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
@@ -950,7 +977,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode],
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
@@ -977,7 +1004,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -1019,7 +1046,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -1078,6 +1105,7 @@ const toolMenuNodes = [
       rerankerNode,
       documentExtractNode,
       documentSplitNode,
+      readLongTermMemoryNode,
     ],
   },
   {
@@ -1249,6 +1277,7 @@ export const nodeDict: any = {
   [WorkflowType.Start]: startNode,
   [WorkflowType.Reply]: replyNode,
   [WorkflowType.EmptyNode]: emptyNode,
+  [WorkflowType.ReadLongTermMemoryNode]: readLongTermMemoryNode,
   [WorkflowType.ToolLib]: toolNode,
   [WorkflowType.ToolWorkflowLib]: toolWorkflowLibNode,
   [WorkflowType.ToolLibCustom]: toolNode,
@@ -1382,6 +1411,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
   [switchNode, 'workflow.nodes.switchNode.text', 'workflow.nodes.switchNode.label'],
   [replyNode, 'workflow.nodes.replyNode.text', 'workflow.nodes.replyNode.label'],
   [emptyNode, 'workflow.nodes.emptyNode.text', 'workflow.nodes.emptyNode.label'],
+  [readLongTermMemoryNode, 'workflow.nodes.readLongTermMemoryNode.text', 'workflow.nodes.readLongTermMemoryNode.label'],
   [rerankerNode, 'workflow.nodes.rerankerNode.text', 'workflow.nodes.rerankerNode.label'],
   [formNode, 'workflow.nodes.formNode.text', 'workflow.nodes.formNode.label'],
   [

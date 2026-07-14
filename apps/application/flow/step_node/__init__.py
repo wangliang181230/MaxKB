@@ -28,6 +28,7 @@ from .loop_start_node import *
 from .mcp_node import BaseMcpNode
 from .parameter_extraction_node import BaseParameterExtractionNode
 from .question_node import *
+from .read_long_term_memory_node import BaseReadLongTermMemoryNode
 from .reranker_node import *
 from .search_document_node import BaseSearchDocumentNode
 from .search_knowledge_node import *
@@ -46,7 +47,7 @@ from .document_split_node import BaseDocumentSplitNode
 from .tool_start_node import BaseToolStartStepNode
 
 node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearchDocumentNode, BaseQuestionNode,
-             BaseConditionNode, BaseSwitchNode, BaseReplyNode, BaseEmptyNode,
+             BaseConditionNode, BaseSwitchNode, BaseReplyNode, BaseEmptyNode, BaseReadLongTermMemoryNode,
              BaseToolNodeNode, BaseToolLibNodeNode, BaseRerankerNode, BaseApplicationNode,
              BaseDocumentExtractNode,
              BaseImageUnderstandNode, BaseFormNode, BaseSpeechToTextNode, BaseTextToSpeechNode,
