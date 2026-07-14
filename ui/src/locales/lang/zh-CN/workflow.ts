@@ -264,6 +264,30 @@ export default {
       description: '这是一个空节点',
       hint: '当不需要执行任何操作时使用',
     },
+    readLongTermMemoryNode: {
+      label: '读取长期记忆',
+      text: '读取指定用户的长期记忆数据',
+      chatUserId: {
+        placeholder: '请选择对话用户ID变量',
+        tooltip: '可以是业务系统的Long型ID，也可以是MaxKB系统中的UUID型的ID',
+      },
+      chatUserType: {
+        placeholder: '请选择对话用户类型变量',
+        tooltip: '为 `空` 或 `CHAT_USER` 时，才查询',
+      },
+      applicationList: {
+        label: '启用了长期记忆的智能体列表',
+        placeholder: '请选择要查询的智能体',
+      },
+      days: {
+        label: '查询天数',
+        tooltip: '查询更新时间为最近 N 天的长期记忆数据，0 表示不限制',
+        placeholder: '请输入查询天数',
+      },
+      memories: '长期记忆内容',
+      totalCount: '长期记忆数量',
+      allApplications: '所有智能体',
+    },
     rerankerNode: {
       label: '多路召回',
       text: '使用重排模型对多个知识库的检索结果进行二次召回',
