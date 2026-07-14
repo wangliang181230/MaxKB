@@ -426,6 +426,71 @@
             </div>
           </template>
 
+          <!-- 读取长期记忆 -->
+          <template v-if="data.type === WorkflowType.ReadLongTermMemoryNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.input') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('aiChat.chatUserId') }}:</span>
+                  {{ data.chat_user_id || '-' }}
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('aiChat.chatUserType') }}:</span>
+                  {{ data.chat_user_type || '-' }}
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.readLongTermMemoryNode.applicationList.label') }}:</span>
+                  <template v-if="data.application_ids && data.application_ids.length > 0">
+                    <el-tag
+                      v-for="(application, index) in data.application_list"
+                      :key="index"
+                      size="small"
+                      class="mr-4 mb-4"
+                      :title="application.name + '  ' + application.id"
+                    >
+                      {{ application.name }}
+                    </el-tag>
+                  </template>
+                  <template v-else>
+                    <span class="ml-4">{{ $t('workflow.nodes.readLongTermMemoryNode.allApplications') }}</span>
+                  </template>
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.readLongTermMemoryNode.days.label') }}:</span>
+                  {{ data.days || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.output') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">{{ $t('workflow.nodes.readLongTermMemoryNode.totalCount') }}:</span>
+                  {{ data.total_count != null && data.total_count != '' ? data.total_count : '-' }}
+                </div>
+                <div v-if="data.memories">
+                  <p class="mb-8 color-secondary">{{ $t('workflow.nodes.readLongTermMemoryNode.memories') }}:</p>
+                  <el-scrollbar>
+                    <pre>{{ data.memories }}</pre>
+                  </el-scrollbar>
+                </div>
+                <div v-else>
+                  <span class="color-secondary mr-4">{{ $t('workflow.nodes.readLongTermMemoryNode.memories') }}:</span>
+                  <span>-</span>
+                </div>
+              </div>
+            </div>
+            <div v-if="data.err_message" class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">{{ $t('aiChat.executionDetails.errMessage') }}</h5>
+              <div class="p-8-12 border-t-dashed lighter">{{ data.err_message || '-' }}</div>
+            </div>
+          </template>
+
           <!-- 文档内容提取 -->
           <template v-if="data.type === WorkflowType.DocumentExtractNode">
             <div class="card-never border-r-6">

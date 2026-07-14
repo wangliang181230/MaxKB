@@ -245,7 +245,7 @@ export default {
     },
     replyNode: {
       label: '指定回覆',
-      text: '指定回覆內容，引用變量會轉換為字符串進行輸出',
+      text: '指定回覆內容，引用變數會轉換為字符串進行輸出',
       replyContent: '回覆內容',
     },
     emptyNode: {
@@ -253,6 +253,30 @@ export default {
       text: '不執行任何操作，僅作爲流程佔位節點使用',
       description: '這是一個空節點',
       hint: '當不需要執行任何操作時使用',
+    },
+    readLongTermMemoryNode: {
+      label: '讀取長期記憶',
+      text: '讀取指定用戶的長期記憶數據',
+      chatUserId: {
+        placeholder: '請選擇對話用戶ID變量',
+        tooltip: '可以是業務系統的Long型ID，也可以是MaxKB系統中的UUID型的ID',
+      },
+      chatUserType: {
+        placeholder: '請選擇對話用戶類型變量',
+        tooltip: '爲 `空` 或 `CHAT_USER` 時，才查詢',
+      },
+      applicationList: {
+        label: '啓用了長期記憶的智能體列表',
+        placeholder: '請選擇要查詢的智能體',
+      },
+      days: {
+        label: '查詢天數',
+        tooltip: '查詢更新時間為最近 N 天的長期記憶數據，0 表示不限制',
+        placeholder: '請輸入查詢天數',
+      },
+      memories: '長期記憶內容',
+      totalCount: '長期記憶數量',
+      allApplications: '所有智能體',
     },
     rerankerNode: {
       label: '多路召回',

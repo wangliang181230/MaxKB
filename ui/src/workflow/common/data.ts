@@ -424,6 +424,33 @@ export const emptyNode = {
     },
   },
 }
+export const readLongTermMemoryNode = {
+  type: WorkflowType.ReadLongTermMemoryNode,
+  text: t('workflow.nodes.readLongTermMemoryNode.text'),
+  label: t('workflow.nodes.readLongTermMemoryNode.label'),
+  height: 252,
+  properties: {
+    stepName: t('workflow.nodes.readLongTermMemoryNode.label'),
+    node_data: {
+      chat_user_id: [],
+      chat_user_type: [],
+      application_ids: [],
+      days: 0,
+    },
+    config: {
+      fields: [
+        {
+          label: t('workflow.nodes.readLongTermMemoryNode.memories'),
+          value: 'memories',
+        },
+        {
+          label: t('workflow.nodes.readLongTermMemoryNode.totalCount'),
+          value: 'total_count',
+        },
+      ],
+    },
+  },
+}
 export const rerankerNode = {
   type: WorkflowType.RerankerNode,
   text: t('workflow.nodes.rerankerNode.text'),
@@ -871,7 +898,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 
@@ -910,7 +937,7 @@ export const menuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 export const applicationLoopMenuNodes = [
@@ -948,7 +975,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 export const knowledgeLoopMenuNodes = [
@@ -990,7 +1017,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 export const toolLoopMenuNodes = [
@@ -1032,7 +1059,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 const toolMenuNodes = [
@@ -1076,7 +1103,7 @@ const toolMenuNodes = [
   },
   {
     label: t('common.other'),
-    list: [mcpNode, toolNode, emptyNode],
+    list: [mcpNode, toolNode, emptyNode, readLongTermMemoryNode],
   },
 ]
 export const getMenuNodes = (workflowMode: WorkflowMode) => {
@@ -1229,6 +1256,7 @@ export const nodeDict: any = {
   [WorkflowType.Start]: startNode,
   [WorkflowType.Reply]: replyNode,
   [WorkflowType.EmptyNode]: emptyNode,
+  [WorkflowType.ReadLongTermMemoryNode]: readLongTermMemoryNode,
   [WorkflowType.ToolLib]: toolNode,
   [WorkflowType.ToolWorkflowLib]: toolWorkflowLibNode,
   [WorkflowType.ToolLibCustom]: toolNode,
@@ -1361,6 +1389,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
   [conditionNode, 'workflow.nodes.conditionNode.text', 'workflow.nodes.conditionNode.label'],
   [replyNode, 'workflow.nodes.replyNode.text', 'workflow.nodes.replyNode.label'],
   [emptyNode, 'workflow.nodes.emptyNode.text', 'workflow.nodes.emptyNode.label'],
+  [readLongTermMemoryNode, 'workflow.nodes.readLongTermMemoryNode.text', 'workflow.nodes.readLongTermMemoryNode.label'],
   [rerankerNode, 'workflow.nodes.rerankerNode.text', 'workflow.nodes.rerankerNode.label'],
   [formNode, 'workflow.nodes.formNode.text', 'workflow.nodes.formNode.label'],
   [

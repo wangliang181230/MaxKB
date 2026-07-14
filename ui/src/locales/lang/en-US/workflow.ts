@@ -254,6 +254,30 @@ You are a master of problem optimization, adept at accurately inferring user int
       description: 'This is an empty node',
       hint: 'Used when no action is needed',
     },
+    readLongTermMemoryNode: {
+      label: 'Read Long Term Memory',
+      text: 'Read long-term memory data for a specified user',
+      chatUserId: {
+        placeholder: 'Please select chat user ID variable',
+        tooltip: 'It can be a Long type ID for the business-system or a UUID type ID in the MaxKB-system',
+      },
+      chatUserType: {
+        placeholder: 'Please select chat user type variable',
+        tooltip: 'Query only when it is null or \'CHAT_USER\'',
+      },
+      applicationList: {
+        label: 'Application List',
+        placeholder: 'Please select applications to query',
+      },
+      days: {
+        label: 'Query Days',
+        tooltip: 'Query long-term memory data updated within the last N days, 0 means no limit',
+        placeholder: 'Please enter query days',
+      },
+      memories: 'Long Term Memory Content',
+      totalCount: 'Long Term Memory Count',
+      allApplications: 'All Applications',
+    },
     rerankerNode: {
       label: 'Multi-path Recall',
       text: 'Use a re-ranking model to refine retrieval results from multiple knowledge sources',
