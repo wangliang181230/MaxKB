@@ -11,7 +11,8 @@ from (select application."id"::text, application."name",
              application."create_time",
              application."update_time",
              application."publish_time",
-             application.icon
+             application.icon,
+             application.long_term_enable
       from application
                left join "user" on user_id = "user".id
       where application."id"::text in (select target
