@@ -99,7 +99,7 @@
               <p>
                 {{
                   props.currentContent?.run_time != undefined
-                    ? props.currentContent?.run_time?.toFixed(2) + 's'
+                    ? props.currentContent?.run_time?.toFixed(3) + 's'
                     : '-'
                 }}
               </p>
@@ -132,7 +132,7 @@
             </div>
             <div class="flex align-center">
               <span class="mr-16 color-secondary" v-if="detail?.state !== 'STARTED'"
-                >{{ detail?.run_time?.toFixed(2) || 0.0 }} s</span
+                >{{ detail?.run_time?.toFixed(3) || 0.0 }} s</span
               >
               <el-icon class="color-success" :size="16" v-if="detail?.state === 'SUCCESS'">
                 <CircleCheck />
