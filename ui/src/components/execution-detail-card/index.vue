@@ -28,7 +28,7 @@
           >( in: {{ data?.message_tokens }}, out: {{ data?.answer_tokens }} ) tokens</span
         >
         <span class="mr-16 color-secondary" v-if="data.status != 202"
-          >{{ data?.run_time?.toFixed(2) || 0.0 }} s</span
+          >{{ data?.run_time?.toFixed(3) || 0.0 }} s</span
         >
         <el-icon class="color-success" :size="16" v-if="data.status === 200">
           <CircleCheck />
