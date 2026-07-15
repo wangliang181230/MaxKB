@@ -89,7 +89,7 @@
               <p>
                 {{
                   props.currentContent?.run_time != undefined
-                    ? props.currentContent?.run_time?.toFixed(2) + 's'
+                    ? props.currentContent?.run_time?.toFixed(3) + 's'
                     : '-'
                 }}
               </p>
@@ -146,7 +146,7 @@
             </div>
             <div class="flex align-center">
               <span class="mr-16 color-secondary" v-if="taskRecordDetails?.state !== 'STARTED'"
-                >{{ taskRecordDetails?.run_time?.toFixed(2) || 0.0 }} s</span
+                >{{ taskRecordDetails?.run_time?.toFixed(3) || 0.0 }} s</span
               >
               <el-icon
                 class="color-success"
