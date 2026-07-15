@@ -74,7 +74,7 @@
           {{ $t('aiChat.KnowledgeSource.consume') }}: ( in: {{ data?.message_tokens }}, out: {{ data?.answer_tokens }} )
         </span>
         <span>
-          {{ $t('aiChat.KnowledgeSource.consumeTime') }}: {{ data?.run_time?.toFixed(2) }} s</span
+          {{ $t('aiChat.KnowledgeSource.consumeTime') }}: {{ data?.run_time?.toFixed(3) }} s</span
         >
       </div>
       <el-button
