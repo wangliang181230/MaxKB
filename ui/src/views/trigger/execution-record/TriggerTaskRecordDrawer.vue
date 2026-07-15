@@ -131,7 +131,7 @@
       </el-table-column>
       <el-table-column prop="run_time" :label="$t('aiChat.KnowledgeSource.consumeTime')">
         <template #default="{ row }">
-          {{ row.run_time != undefined ? row.run_time?.toFixed(2) + 's' : '-' }}
+          {{ row.run_time != undefined ? row.run_time?.toFixed(3) + 's' : '-' }}
         </template>
       </el-table-column>
       <el-table-column
