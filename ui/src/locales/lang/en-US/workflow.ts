@@ -72,6 +72,8 @@ export default {
     deleteMessage: 'This node cannot be deleted',
   },
   control: {
+    selectionMode: 'Selection Mode',
+    handMode: 'Hand Mode',
     zoomOut: 'Zoom Out',
     zoomIn: 'Zoom In',
     fitView: 'Fit to Screen',
