@@ -344,6 +344,26 @@ export function initDefaultShortcut(lf: LogicFlow, graph: GraphModel) {
   keyboard.on(['cmd + c', 'ctrl + c'], copy_node)
   // 粘贴
   keyboard.on(['cmd + v', 'ctrl + v'], () => {})
+  // 切换模式：选择模式/拖拽模式（使用原生 keydown，避免 LogicFlow keyboard 对单字符键的兼容问题）
+  const container = lf.container as HTMLElement
+  container.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key !== 'v' && e.key !== 'V') return
+    if (e.ctrlKey || e.metaKey || e.altKey) return
+    if (!keyboardOptions?.enabled) return
+    if (graph.textEditElement) return
+    const element: HTMLElement = document.querySelector('.lf-drag-able') as HTMLElement
+    const isSelectionMode = element?.style.cursor !== 'pointer'
+    if (isSelectionMode) {
+      lf.closeSelectionSelect()
+      if (element) element.style.cursor = 'pointer'
+      graph.eventCenter.emit('selection:mode:change', false as any)
+    } else {
+      lf.openSelectionSelect()
+      lf.extension.selectionSelect.setSelectionSense(true, false)
+      if (element) element.style.cursor = 'default'
+      graph.eventCenter.emit('selection:mode:change', true as any)
+    }
+  })
   // undo
   keyboard.on(['cmd + z', 'ctrl + z'], () => {
     // if (!keyboardOptions?.enabled) return true

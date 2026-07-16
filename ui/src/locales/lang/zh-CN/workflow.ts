@@ -47,6 +47,8 @@ export default {
     deleteMessage: '节点不允许删除',
   },
   control: {
+    selectionMode: '选择模式',
+    handMode: '拖拽模式',
     zoomOut: '缩小',
     zoomIn: '放大',
     fitView: '适应',
