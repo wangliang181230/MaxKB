@@ -1,5 +1,9 @@
 <template>
-  <div @mousedown="mousedown" class="workflow-node-container p-16" style="overflow: visible">
+  <div
+    @mousedown="mousedown"
+    class="workflow-node-container p-16"
+    style="overflow: visible"
+  >
     <div
       class="step-container white-bg border-r-8 p-16"
       :class="{ isSelected: props.nodeModel.isSelected, error: node_status !== 200 }"
@@ -189,21 +193,22 @@
       </div>
     </div>
 
-    <el-collapse-transition>
-      <DropdownMenu
-        v-if="showAnchor"
-        @mousemove.stop
-        @mousedown.stop
-        @click.stop
-        @wheel="handleWheel"
-        :show="showAnchor"
-        :inner="true"
-        :id="id"
-        style="left: 100%; transform: translate(0, -50%)"
-        :style="dropdownMenuStyle"
-        @clickNodes="clickNodes"
-      />
-    </el-collapse-transition>
+    <Teleport to="body">
+      <Transition name="dropdown-fade">
+        <DropdownMenu
+          v-if="showAnchor"
+          @mousemove.stop
+          @mousedown.stop
+          @click.stop
+          @wheel="handleWheel"
+          :show="showAnchor"
+          :inner="true"
+          :id="id"
+          :style="teleportMenuStyle"
+          @clickNodes="clickNodes"
+        />
+      </Transition>
+    </Teleport>
 
     <el-dialog
       :title="$t('workflow.nodeName')"
@@ -242,7 +247,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { set } from 'lodash'
 import { iconComponent } from '../icons/utils'
 import { copyClick } from '@/utils/clipboard'
@@ -269,11 +274,40 @@ const height = ref<{
 })
 const showAnchor = ref<boolean>(false)
 const anchorData = ref<any>()
-const dropdownMenuStyle = computed(() => {
+const menuPos = ref<{ left: number; top: number } | null>(null)
+// 弹出层若留在节点的 foreignObject 内，Firefox 会裁剪溢出区域并丢失其命中测试，
+// 导致菜单渲染不全且点不动，只有画布重渲染才恢复；这里把菜单 Teleport 到 body 定位。
+// 锚点视口坐标直接用 transformModel.CanvasPointToHtmlPoint 换算（与 getPointByClient 互逆）：
+// transformModel 在 graph:transform 触发前已同步更新，而节点 DOM 的新变换要晚一个微任务才绘制，
+// 读节点 getBoundingClientRect 会在平移/缩放当帧拿到旧位置，导致菜单不跟随锚点。
+const calcMenuPosition = () => {
+  const anchor = anchorData.value
+  const graphModel = props.nodeModel?.graphModel
+  const transformModel = graphModel?.transformModel
+  const rootEl = graphModel?.rootEl
+  if (!anchor || !transformModel || !rootEl) {
+    menuPos.value = null
+    return
+  }
+  const [htmlX, htmlY] = transformModel.CanvasPointToHtmlPoint([anchor.x, anchor.y])
+  const rootRect = rootEl.getBoundingClientRect()
+  menuPos.value = {
+    left: rootRect.left + htmlX,
+    top: rootRect.top + htmlY,
+  }
+}
+const teleportMenuStyle = computed(() => {
+  const pos = menuPos.value
+  if (!pos) {
+    return { display: 'none' }
+  }
   return {
-    top: anchorData.value
-      ? anchorData.value.y - props.nodeModel.y + props.nodeModel.height / 2 + 'px'
-      : '0px',
+    position: 'fixed',
+    left: pos.left + 14 + 'px',
+    top: pos.top + 'px',
+    transform: 'translate(0, -50%)',
+    right: 'auto',
+    zIndex: 2000,
   }
 })
 const nodeDisabled = computed({
@@ -401,6 +435,9 @@ const deleteNode = () => {
 const resizeStepContainer = (wh: any) => {
   if (wh.height) {
     if (!props.nodeModel.virtual) {
+      if (height.value.stepContainerHeight === wh.height) {
+        return
+      }
       height.value.stepContainerHeight = wh.height
       props.nodeModel.setHeight(height.value.stepContainerHeight)
     }
@@ -517,24 +554,97 @@ function showConditionOperate(type: string) {
     ].includes(type) && props.nodeModel.properties.kind != WorkflowKind.DataSource
   )
 }
+// 菜单打开期间平移/缩放会高频触发 graph:transform，用 rAF 合并到每帧最多一次重定位，
+// 避免每个 transform 事件都 getBoundingClientRect（与 CanvasPosition 的处理一致）
+let repositionRaf = 0
+const repositionMenu = () => {
+  if (repositionRaf) {
+    return
+  }
+  repositionRaf = window.requestAnimationFrame(() => {
+    repositionRaf = 0
+    calcMenuPosition()
+  })
+}
+let menuRepositionBound = false
+const bindMenuReposition = () => {
+  if (menuRepositionBound) {
+    return
+  }
+  menuRepositionBound = true
+  props.nodeModel?.graphModel?.eventCenter?.on('graph:transform', repositionMenu)
+  window.addEventListener('resize', repositionMenu)
+}
+const unbindMenuReposition = () => {
+  if (repositionRaf) {
+    window.cancelAnimationFrame(repositionRaf)
+    repositionRaf = 0
+  }
+  if (!menuRepositionBound) {
+    return
+  }
+  menuRepositionBound = false
+  props.nodeModel?.graphModel?.eventCenter?.off('graph:transform', repositionMenu)
+  window.removeEventListener('resize', repositionMenu)
+}
+// 菜单 Teleport 到 body 后脱离了画布，需显式监听“点击外部”才能关闭；
+// 菜单自身的 @click.stop 会拦住内部点击，冒泡到这里的都是菜单以外的点击
+// 用一次性标志忽略“打开菜单这一次点击”冒泡到 document 的关闭，
+// 不依赖 nextTick/事件传播顺序（Preact 下微任务仍会晚于本次 click 到达 document）
+let suppressOutsideClick = false
+const onDocumentClick = () => {
+  if (suppressOutsideClick) {
+    return
+  }
+  closeNodeMenu()
+}
+let menuOutsideBound = false
+const bindOutsideClose = () => {
+  if (menuOutsideBound) {
+    return
+  }
+  menuOutsideBound = true
+  document.addEventListener('click', onDocumentClick)
+}
+const unbindOutsideClose = () => {
+  if (!menuOutsideBound) {
+    return
+  }
+  menuOutsideBound = false
+  document.removeEventListener('click', onDocumentClick)
+}
 const openNodeMenu = (anchorValue: any) => {
   showAnchor.value = true
   anchorData.value = anchorValue
+  calcMenuPosition()
+  bindMenuReposition()
+  // 同步绑定以捕获后续外部点击；抑制标志在下一个宏任务清除，
+  // 恰好跨过“打开这一次点击”冒泡到 document 的阶段
+  suppressOutsideClick = true
+  bindOutsideClose()
+  setTimeout(() => {
+    suppressOutsideClick = false
+  }, 0)
 }
 const closeNodeMenu = () => {
   showAnchor.value = false
   anchorData.value = undefined
+  suppressOutsideClick = false
+  // 不清空 menuPos：保留最后一次定位，让淡出(leave)动画期间菜单仍在原位渐隐，
+  // 下次打开会由 calcMenuPosition 重新计算覆盖
+  unbindMenuReposition()
+  unbindOutsideClose()
 }
+
 /**
  * 检索选中时候触发
  * @param kw
  */
-
 const keyWord = ref('')
 const currentKeyWord = ref(false)
 const selectOn = (kw: string) => {
   keyWord.value = kw
-  props.nodeModel.isSelected = false
+  set(props.nodeModel, 'isSelected', false)
   currentKeyWord.value = false
 }
 /**
@@ -553,32 +663,34 @@ const clearSelectOn = () => {
   currentKeyWord.value = false
 }
 
-// 高亮选中关键字
-
+/**
+ * 高亮选中关键字
+ * @param contentText 需要高亮的内容
+ */
 const highlightedStepName = (contentText: string) => {
-  let res = contentText
   if (keyWord.value === '') {
-    return res
-  } else {
-    const wordsArray = contentText.split('')
-    for (let i = 0; i < wordsArray.length; i++) {
-      if (keyWord.value.includes(wordsArray[i])) {
-        wordsArray[i] = currentKeyWord.value
-          ? `<span style='background: #FF8800;'>${wordsArray[i]}</span>`
-          : `<span style='background: #FFC60A;'>${wordsArray[i]}</span>`
-      }
-    }
-    res = wordsArray.join('')
-    return res
+    return contentText
   }
+  const escaped = keyWord.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escaped})`, 'g')
+  const color = currentKeyWord.value ? '#FF8800' : '#FFC60A'
+  return contentText.replace(regex, `<span style='background: ${color};'>$1</span>`)
 }
 onMounted(() => {
   set(props.nodeModel, 'openNodeMenu', (anchorData: any) => {
-    showAnchor.value ? closeNodeMenu() : openNodeMenu(anchorData)
+    if (showAnchor.value) {
+      closeNodeMenu()
+    } else {
+      openNodeMenu(anchorData)
+    }
   })
   set(props.nodeModel, 'selectOn', selectOn)
   set(props.nodeModel, 'focusOn', focusOn)
   set(props.nodeModel, 'clearSelectOn', clearSelectOn)
+})
+onBeforeUnmount(() => {
+  unbindMenuReposition()
+  unbindOutsideClose()
 })
 </script>
 <style lang="scss" scoped>
@@ -605,5 +717,15 @@ onMounted(() => {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0px 2px 4px 0px rgba(31, 35, 41, 0.12);
+}
+.dropdown-fade-enter-active,
+.dropdown-fade-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.dropdown-fade-enter-from,
+.dropdown-fade-leave-to {
+  opacity: 0;
 }
 </style>
