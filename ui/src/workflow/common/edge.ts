@@ -92,7 +92,8 @@ class CustomEdge2 extends BezierEdge {
     const id = model.id
     const { customWidth = DEFAULT_WIDTH, customHeight = DEFAULT_HEIGHT } = model.getProperties()
     const { startPoint, endPoint, path, isAnimation, arrowConfig } = model
-    const animationStyle = model.getEdgeAnimationStyle()
+    // 非动画边（绝大多数）不需要动画样式，跳过每帧的 getEdgeAnimationStyle 计算
+    const animationStyle = isAnimation ? model.getEdgeAnimationStyle() : ({} as any)
     const {
       strokeDasharray,
       stroke,
@@ -115,22 +116,21 @@ class CustomEdge2 extends BezierEdge {
       height: customHeight,
     }
 
-    setTimeout(() => {
-      const s = document.getElementById(id)
-      if (s && !this.isMounted) {
-        this.isMounted = true
-        this.renderVueComponent(s)
-      }
-    }, 0)
+    if (!this.isMounted) {
+      setTimeout(() => {
+        const s = document.getElementById(id)
+        if (s && !this.isMounted) {
+          this.isMounted = true
+          this.renderVueComponent(s)
+        }
+      }, 0)
+    }
 
     delete style.stroke
 
+    // 边的描边/悬停色改为全局样式（见 workflow/index.vue 的 .lf-edge 规则），
+    // 不再每条边注入一份相同的 <style>，省去拖拽相连边时每帧重建该 vnode 的开销
     return h('g', {}, [
-      h(
-        'style' as any,
-        { type: 'text/css' },
-        '.lf-edge{stroke:#afafaf}.lf-edge:hover{stroke: #3370FF;}',
-      ),
       h('path', {
         d: path,
         ...style,
