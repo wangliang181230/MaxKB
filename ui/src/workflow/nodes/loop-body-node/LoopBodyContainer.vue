@@ -2,7 +2,7 @@
   <div @mousedown="mousedown" class="workflow-node-container p-16" style="overflow: visible">
     <div
       class="step-container white-bg border-r-8 p-16"
-      :class="{ isSelected: props.nodeModel.isSelected, error: node_status !== 200 }"
+      :class="{ isSelected: isSelected, error: node_status !== 200 }"
       style="overflow: visible;"
     >
       <div>
@@ -115,6 +115,7 @@ import { ref, computed, provide, inject } from 'vue'
 import { set } from 'lodash'
 import { iconComponent } from '../../icons/utils'
 import { copyClick } from '@/utils/clipboard'
+import { syncNodeSelected } from '@/workflow/common/selectionSync'
 import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import { t } from '@/locales'
@@ -123,6 +124,10 @@ provide('workflowMode', inject('loopWorkflowMode'))
 const props = defineProps<{
   nodeModel: any
 }>()
+
+// 同 NodeContainer：isSelected 是 LogicFlow(mobx) 上的 observable，Vue 读不到变化，
+// 需要经 selectionSync 桥接成响应式值，多选后才能正常显示蓝色边框
+const isSelected = syncNodeSelected(props.nodeModel)
 
 const titleFormRef = ref()
 const nodeNameDialogVisible = ref<boolean>(false)

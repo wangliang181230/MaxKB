@@ -1,6 +1,6 @@
 <template>
   <div class="application-workflow" v-loading="loading">
-    <div class="header border-b flex-between p-12-24 white-bg">
+    <div class="header border-b flex-between p-8-24 white-bg">
       <div class="flex align-center">
         <back-button @click="back"></back-button>
         <h4 class="ellipsis" style="max-width: 300px" :title="detail?.name">{{ detail?.name }}</h4>
@@ -721,11 +721,11 @@ onBeforeUnmount(() => {
     height: calc(100vh - 62px);
     box-sizing: border-box;
   }
+}
 
-  .workflow-dropdown-tabs {
-    .el-tabs__nav-wrap {
-      padding: 0 16px;
-    }
+.workflow-dropdown-tabs {
+  .el-tabs__nav-wrap {
+    padding: 0 16px;
   }
 }
 
