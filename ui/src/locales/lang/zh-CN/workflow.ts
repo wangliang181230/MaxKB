@@ -71,8 +71,12 @@ export default {
     deleteMessage: '节点不允许删除',
   },
   control: {
+    selectionMode: '选择模式',
+    handMode: '拖拽模式',
+    middleDragHint: '鼠标中键可拖拽画布',
     zoomOut: '缩小',
     zoomIn: '放大',
+    zoom: '缩放',
     fitView: '适应',
     retract: '收起全部节点',
     extend: '展开全部节点',

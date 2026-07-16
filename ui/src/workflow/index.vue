@@ -3,23 +3,25 @@
   <!-- 辅助工具栏 -->
   <Control class="workflow-control" v-if="lf" :lf="lf"></Control>
   <TeleportContainer :flow-id="flowId"/>
+  <CanvasPosition :lf="lf" v-if="lf"></CanvasPosition>
   <NodeSearch :lf="lf" ref="nodeSearchRef"></NodeSearch>
 </template>
 <script setup lang="ts">
 import LogicFlow from '@logicflow/core'
-import {ref, onMounted, onUnmounted, inject, nextTick} from 'vue'
+import {ref, onMounted, onUnmounted, onActivated, onDeactivated, inject, nextTick} from 'vue'
 import AppEdge from './common/edge'
 import loopEdge from './common/loopEdge'
 import Control from './common/NodeControl.vue'
 import {SelectionSelect} from '@logicflow/extension'
 import '@logicflow/extension/lib/style/index.css'
 import '@logicflow/core/dist/style/index.css'
-import {initDefaultShortcut} from '@/workflow/common/shortcut'
+import {initDefaultShortcut, blockOverscrollNavigation} from '@/workflow/common/shortcut'
 import Dagre from '@/workflow/plugins/dagre'
 import {disconnectAll, getTeleport} from '@/workflow/common/teleport'
 import {WorkflowMode} from '@/enums/application'
 
 import NodeSearch from '@/workflow/common/NodeSearch.vue'
+import CanvasPosition from '@/workflow/common/CanvasPosition.vue'
 
 const nodes: any = import.meta.glob('./nodes/**/index.ts', {eager: true})
 const workflow_mode = inject('workflowMode') || WorkflowMode.Application
@@ -44,10 +46,114 @@ const props = defineProps({
 })
 
 const lf = ref()
+let removeZoomListener: null | (() => void) = null
+let removeShortcutListeners: null | (() => void) = null
+let removeOverscrollNavBlock: null | (() => void) = null
+
+// 工作流页面被 keep-alive 缓存，离开路由只会 deactivated，必须同时接住两组生命周期，
+// 否则防护会残留到其他页面，把全站的后退手势一并禁掉
+const blockNavGesture = () => {
+  if (!removeOverscrollNavBlock) {
+    removeOverscrollNavBlock = blockOverscrollNavigation()
+  }
+}
+const releaseNavGesture = () => {
+  removeOverscrollNavBlock?.()
+  removeOverscrollNavBlock = null
+}
+
+// 快捷键会把监听绑在常驻的 #container、document 与 window 上，
+// 重新渲染画布（如默认模型“应用到全部”）或卸载时必须先解绑，否则监听会不断累积
+const releaseShortcut = () => {
+  removeShortcutListeners?.()
+  removeShortcutListeners = null
+}
+
+const createZoomScheduler = (instance: any, container: HTMLElement) => {
+  let frameId = 0
+  let isApplying = false
+  let pendingZoom: null | { zoomSize: any; point?: [number, number]; clientX?: number; clientY?: number } =
+    null
+
+  const scheduleNextFrame = () => {
+    if (frameId) {
+      return
+    }
+    frameId = window.requestAnimationFrame(() => {
+      frameId = 0
+      if (!pendingZoom) {
+        isApplying = false
+        return
+      }
+      isApplying = true
+      const currentZoom = pendingZoom
+      pendingZoom = null
+      let point = currentZoom.point
+      if (!point && currentZoom.clientX !== undefined && currentZoom.clientY !== undefined) {
+        const canvasPoint = instance.graphModel.getPointByClient({
+          x: currentZoom.clientX,
+          y: currentZoom.clientY,
+        }).canvasOverlayPosition
+        point = [canvasPoint.x, canvasPoint.y]
+      }
+      instance.zoom(currentZoom.zoomSize, point || [0, 0])
+      if (pendingZoom) {
+        scheduleNextFrame()
+      } else {
+        isApplying = false
+      }
+    })
+  }
+
+  const scheduleZoom = (zoomSize: any, point?: [number, number], event?: WheelEvent) => {
+    pendingZoom = point
+      ? { zoomSize, point }
+      : event
+        ? {
+            zoomSize,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }
+        : { zoomSize }
+    if (!frameId && !isApplying) {
+      scheduleNextFrame()
+    }
+  }
+
+  const handleWheel = (event: WheelEvent) => {
+    if (!(event.ctrlKey || event.metaKey)) {
+      return
+    }
+    event.preventDefault()
+    scheduleZoom(event.deltaY < 0, undefined, event)
+  }
+
+  container.addEventListener('wheel', handleWheel, { passive: false })
+
+  return {
+    scheduleZoom,
+    cleanup: () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+      frameId = 0
+      pendingZoom = null
+      isApplying = false
+      container.removeEventListener('wheel', handleWheel)
+    },
+  }
+}
+
 onMounted(() => {
+  blockNavGesture()
   renderGraphData()
 })
+onActivated(blockNavGesture)
+onDeactivated(releaseNavGesture)
 onUnmounted(() => {
+  releaseNavGesture()
+  releaseShortcut()
+  removeZoomListener?.()
   disconnectAll()
 })
 const render = (data: any) => {
@@ -57,11 +163,14 @@ const render = (data: any) => {
 const renderGraphData = (data?: any) => {
   const container: any = document.querySelector('#container')
   if (container) {
+    releaseShortcut()
+    removeZoomListener?.()
     lf.value = new LogicFlow({
       plugins: [Dagre, SelectionSelect],
       textEdit: false,
       adjustEdge: false,
       adjustEdgeStartAndEnd: false,
+      stopZoomGraph: true,
       background: {
         backgroundColor: '#f5f6f7',
       },
@@ -79,6 +188,11 @@ const renderGraphData = (data?: any) => {
       isSilentMode: false,
       container: container,
     })
+    const { scheduleZoom, cleanup } = createZoomScheduler(lf.value, container)
+    removeZoomListener = cleanup
+    lf.value.scheduleZoom = scheduleZoom
+    // Set flowId immediately so TeleportContainer can filter items from the very first render
+    flowId.value = lf.value.graphModel.flowId
     lf.value.setTheme({
       bezier: {
         stroke: '#afafaf',
@@ -91,7 +205,7 @@ const renderGraphData = (data?: any) => {
     lf.value.on('node:delete', () => {
       nodeSearchRef.value?.reSearch()
     })
-    initDefaultShortcut(lf.value, lf.value.graphModel)
+    removeShortcutListeners = initDefaultShortcut(lf.value, lf.value.graphModel)
     lf.value.batchRegister([
       ...Object.keys(nodes).map((key) => nodes[key].default),
       AppEdge,
@@ -224,6 +338,7 @@ defineExpose({
   width: 100%;
   height: 100%;
   position: relative;
+  will-change: transform;
 }
 
 .workflow-control {
@@ -235,5 +350,21 @@ defineExpose({
 
 .lf-drag-able {
   cursor: pointer;
+}
+
+/* 工作页面期间禁止触摸板双指横滑触发浏览器后退/前进 */
+html.workflow-no-overscroll-nav,
+html.workflow-no-overscroll-nav body {
+  overscroll-behavior-x: none;
+}
+
+/* 允许滚动手势同时作用于两个轴：浏览器默认会在手势起手时把滚动锁死到单一轴，
+   导致先横滑再上下滑（或反之）时另一轴完全没反应，必须抬手重新滑；
+   该属性告知浏览器不要过滤垂直轴的增量，Chrome/Edge 153+ 支持，更早版本会忽略它 */
+.workflow-app,
+.workflow-app *,
+html.workflow-no-overscroll-nav,
+html.workflow-no-overscroll-nav body {
+  scroll-axis-lock: none;
 }
 </style>
