@@ -346,13 +346,13 @@ export function initDefaultShortcut(lf: LogicFlow, graph: GraphModel) {
   keyboard.on(['cmd + v', 'ctrl + v'], () => {})
   // undo
   keyboard.on(['cmd + z', 'ctrl + z'], () => {
-    // if (!keyboardOptions?.enabled) return true
-    // if (graph.textEditElement) return true
-    // lf.undo()
-    // return false
+    if (!keyboardOptions?.enabled) return true
+    if (graph.textEditElement) return true
+    lf.undo()
+    return false
   })
   // redo
-  keyboard.on(['cmd + y', 'ctrl + y'], () => {
+  keyboard.on(['cmd + y', 'ctrl + y', 'cmd + shift + z', 'ctrl + shift + z'], () => {
     if (!keyboardOptions?.enabled) return true
     if (graph.textEditElement) return true
     lf.redo()

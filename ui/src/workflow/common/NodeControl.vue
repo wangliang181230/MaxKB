@@ -15,6 +15,25 @@
       <AppIcon iconName="app-raisehand" :size="16"></AppIcon>
     </el-button>
     <el-divider direction="vertical" />
+    <el-button link @click="undo" style="border: none" :disabled="!canUndo">
+      <el-tooltip
+        effect="dark"
+        :content="$t('workflow.control.undo')"
+        placement="top"
+      >
+        <el-icon :size="16"><RefreshLeft /></el-icon>
+      </el-tooltip>
+    </el-button>
+    <el-button link @click="redo" style="border: none" :disabled="!canRedo">
+      <el-tooltip
+        effect="dark"
+        :content="$t('workflow.control.redo')"
+        placement="top"
+      >
+        <el-icon :size="16"><RefreshRight /></el-icon>
+      </el-tooltip>
+    </el-button>
+    <el-divider direction="vertical" />
     <el-button link @click="zoomOut" style="border: none">
       <el-tooltip
         effect="dark"
@@ -93,12 +112,90 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 const props = defineProps({
   lf: Object || String || null,
 })
 
 const isDrag = ref(false)
+const canUndo = ref(false)
+const canRedo = ref(false)
+
+/** 读取按钮状态 */
+const updateHistoryState = () => {
+  if (props.lf) {
+    const lf = props.lf as any
+    canUndo.value = lf.history?.undoAble() ?? false
+    canRedo.value = lf.history?.redoAble() ?? false
+  }
+}
+
+onMounted(() => {
+  if (props.lf) {
+    const lf = props.lf as any
+    const history = lf.history
+    if (!history) return
+
+    const origAdd = history.add.bind(history)
+    const origLfUndo = lf.undo.bind(lf)
+    const origLfRedo = lf.redo.bind(lf)
+
+    /**
+     * 核心修复：阻止 undo/redo 后 debounced MobX reaction（100ms）调用 add。
+     * 原始 add 内部会执行 this.redos=[] 和 emit history:change，
+     * 导致栈被污染和按钮状态错误。
+     * _skipNextAdd 标志让 debounced add 变成 no-op，保持栈干净。
+     */
+    let skipNextAdd = false
+
+    history.add = function (data: any) {
+      if (skipNextAdd) {
+        skipNextAdd = false
+        return // 完全跳过，不修改栈，不 emit 事件
+      }
+      origAdd(data)
+    }
+
+    /**
+     * history:change 监听器：skipNextAdd 为 true 时不更新按钮状态。
+     * 虽然我们的 add 覆盖会跳过 debounced add，但作为安全措施，
+     * 防止任何意外事件触发错误的按钮状态。
+     */
+    const onHistoryChange = () => {
+      if (skipNextAdd) return
+      updateHistoryState()
+    }
+
+    lf.undo = function () {
+      origLfUndo()
+      skipNextAdd = true // 标记：阻止后续的 debounced add
+      updateHistoryState()
+    }
+
+    lf.redo = function () {
+      origLfRedo()
+      skipNextAdd = true
+      updateHistoryState()
+    }
+
+    lf.on('history:change', onHistoryChange)
+    updateHistoryState()
+  }
+})
+
+onUnmounted(() => {
+  if (props.lf) {
+    const lf = props.lf as any
+    lf.off('history:change', updateHistoryState)
+  }
+})
+
+function undo() {
+  props.lf?.undo()
+}
+function redo() {
+  props.lf?.redo()
+}
 
 function zoomIn() {
   props.lf?.zoom(true, [0, 0])

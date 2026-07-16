@@ -53,6 +53,8 @@ export default {
     retract: '收起全部節點',
     extend: '展開全部節點',
     beautify: '一鍵美化',
+    undo: '撤銷',
+    redo: '重做',
   },
   variable: {
     global: '全局變量',

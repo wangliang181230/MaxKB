@@ -54,6 +54,8 @@ export default {
     retract: 'Collapse All',
     extend: 'Expand All',
     beautify: 'Auto-Arrange',
+    undo: 'Undo',
+    redo: 'Redo',
   },
   variable: {
     global: 'Global Variable',
