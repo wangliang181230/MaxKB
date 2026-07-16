@@ -72,8 +72,12 @@ export default {
     deleteMessage: 'This node cannot be deleted',
   },
   control: {
+    selectionMode: 'Selection Mode',
+    handMode: 'Hand Mode',
+    middleDragHint: 'Middle-click to drag canvas',
     zoomOut: 'Zoom Out',
     zoomIn: 'Zoom In',
+    zoom: 'Zoom',
     fitView: 'Fit to Screen',
     retract: 'Collapse All',
     extend: 'Expand All',

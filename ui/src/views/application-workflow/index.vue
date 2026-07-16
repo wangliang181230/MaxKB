@@ -721,11 +721,11 @@ onBeforeUnmount(() => {
     height: calc(100vh - 62px);
     box-sizing: border-box;
   }
+}
 
-  .workflow-dropdown-tabs {
-    .el-tabs__nav-wrap {
-      padding: 0 16px;
-    }
+.workflow-dropdown-tabs {
+  .el-tabs__nav-wrap {
+    padding: 0 16px;
   }
 }
 
