@@ -1,19 +1,35 @@
 <template>
   <el-card shadow="always" style="--el-card-padding: 8px 12px; --el-card-border-radius: 8px">
-    <el-button
-      @click="changeCursor(true)"
-      style="border: none; padding: 4px; height: 24px"
-      :class="{ 'is-drag-active': isDrag }"
-    >
-      <el-icon :size="16"><Position /></el-icon>
-    </el-button>
-    <el-button
-      @click="changeCursor(false)"
-      style="border: none; padding: 4px; height: 24px; margin-left: 8px"
-      :class="{ 'is-drag-active': !isDrag }"
-    >
-      <AppIcon iconName="app-raisehand" :size="16"></AppIcon>
-    </el-button>
+    <el-tooltip effect="dark" placement="top">
+      <template #content>
+        <span>{{ $t('workflow.control.selectionMode') }}</span>
+        <span style="opacity: 0.6; margin-left: 8px">V</span>
+        <br />
+        <span style="opacity: 0.6">{{ $t('workflow.control.middleDragHint') }}</span>
+      </template>
+      <el-button
+        @click="changeCursor(true)"
+        style="border: none; padding: 4px; height: 24px"
+        :class="{ 'is-drag-active': isDrag }"
+      >
+        <el-icon :size="16"><Position /></el-icon>
+      </el-button>
+    </el-tooltip>
+    <el-tooltip effect="dark" placement="top">
+      <template #content>
+        <span>{{ $t('workflow.control.handMode') }}</span>
+        <span style="opacity: 0.6; margin-left: 8px">V</span>
+        <br />
+        <span style="opacity: 0.6">{{ $t('workflow.control.middleDragHint') }}</span>
+      </template>
+      <el-button
+        @click="changeCursor(false)"
+        style="border: none; padding: 4px; height: 24px; margin-left: 8px"
+        :class="{ 'is-drag-active': !isDrag }"
+      >
+        <AppIcon iconName="app-raisehand" :size="16"></AppIcon>
+      </el-button>
+    </el-tooltip>
     <el-divider direction="vertical" />
     <el-button link @click="zoomOut" style="border: none">
       <el-tooltip
@@ -93,17 +109,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 const props = defineProps({
   lf: Object || String || null,
 })
 
 const isDrag = ref(false)
 
+// 保存回调引用，卸载时只解绑自己的监听，避免 off(eventType) 清空同实例上其他组件的监听
+const onModeChange = (isSelection: boolean) => {
+  isDrag.value = isSelection
+}
+
+onMounted(() => {
+  if (props.lf) {
+    const lf = props.lf as any
+    // 监听快捷键切换模式事件，同步按钮状态
+    lf.on('selection:mode:change', onModeChange)
+  }
+})
+
+onUnmounted(() => {
+  if (props.lf) {
+    const lf = props.lf as any
+    lf.off('selection:mode:change', onModeChange)
+  }
+})
+
 function zoomIn() {
+  if (props.lf?.scheduleZoom) {
+    props.lf.scheduleZoom(true, [0, 0])
+    return
+  }
   props.lf?.zoom(true, [0, 0])
 }
 function zoomOut() {
+  if (props.lf?.scheduleZoom) {
+    props.lf.scheduleZoom(false, [0, 0])
+    return
+  }
   props.lf?.zoom(false, [0, 0])
 }
 function fitView() {
