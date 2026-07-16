@@ -7,8 +7,8 @@ import call$ from 'dingtalk-jsapi/api/biz/telephone/call'
 export const startNode = {
   id: WorkflowType.Start,
   type: WorkflowType.Start,
-  x: 480,
-  y: 3340,
+  x: 700,
+  y: 3000,
   properties: {
     height: 364,
     stepName: t('workflow.nodes.startNode.label'),
@@ -39,8 +39,8 @@ export const startNode = {
 export const baseNode = {
   id: WorkflowType.Base,
   type: WorkflowType.Base,
-  x: 360,
-  y: 2761.3875,
+  x: 160,
+  y: 3000,
   text: '',
   properties: {
     height: 728.375,
@@ -63,8 +63,8 @@ export const baseNode = {
 export const knowledgeBaseNode = {
   id: WorkflowType.KnowledgeBase,
   type: WorkflowType.KnowledgeBase,
-  x: 360,
-  y: 2761.3875,
+  x: 160,
+  y: 3000,
   text: '',
   properties: {
     height: 728.375,
@@ -85,8 +85,8 @@ export const knowledgeBaseNode = {
 export const toolBaseNode = {
   id: WorkflowType.ToolBaseNode,
   type: WorkflowType.ToolBaseNode,
-  x: 360,
-  y: 2761.3875,
+  x: 160,
+  y: 3000,
   text: '',
   properties: {
     width: 500,
@@ -103,8 +103,8 @@ export const toolBaseNode = {
 export const toolStartNode = {
   id: WorkflowType.ToolStartNode,
   type: WorkflowType.ToolStartNode,
-  x: 280,
-  y: 3301,
+  x: 700,
+  y: 3000,
   text: '',
   properties: {
     height: 728.375,
