@@ -74,6 +74,7 @@ const refresh_loop_fields = (fields: Array<any>) => {
 }
 
 const lf = ref()
+let removeShortcutListeners: null | (() => void) = null
 
 const renderGraphData = (data?: any) => {
   const container: any = containerRef.value
@@ -125,7 +126,7 @@ const renderGraphData = (data?: any) => {
       lf.value.graphModel.transformModel,
     )
 
-    initDefaultShortcut(lf.value, lf.value.graphModel)
+    removeShortcutListeners = initDefaultShortcut(lf.value, lf.value.graphModel)
     lf.value.graphModel.get_provide = (node: any, graph: any) => {
       return {
         getNode: () => node,
@@ -214,6 +215,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  removeShortcutListeners?.()
   disconnectByFlow(lf.value.graphModel.flowId)
   lf.value = null
 })
