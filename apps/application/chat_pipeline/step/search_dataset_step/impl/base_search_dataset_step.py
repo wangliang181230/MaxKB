@@ -35,11 +35,11 @@ def reset_meta(meta):
 
 def get_embedding_id(knowledge_id_list):
     knowledge_list = QuerySet(Knowledge).filter(id__in=knowledge_id_list)
+    if not knowledge_list:
+        raise Exception(_("The knowledge base setting is wrong, please reset the knowledge base"))
     if len(set([knowledge.embedding_model_id for knowledge in knowledge_list])) > 1:
         raise Exception(
             _("The vector model of the associated knowledge base is inconsistent and the segmentation cannot be recalled."))
-    if not knowledge_list:
-        raise Exception(_("The knowledge base setting is wrong, please reset the knowledge base"))
     return knowledge_list[0].embedding_model_id
 
 
