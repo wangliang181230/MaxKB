@@ -659,6 +659,8 @@ class TextToSpeechSerializers(serializers.Serializer):
         self.is_valid(raise_exception=True)
         application_id = self.data.get('application_id')
         application = QuerySet(Application).filter(id=application_id).first()
+        if application is None:
+            raise AppApiException(500, _('Application id does not exist'))
         return ApplicationOperateSerializer(
             data={'application_id': application_id,
                   'user_id': application.user_id}).text_to_speech(instance, False)
@@ -671,6 +673,8 @@ class SpeechToTextSerializers(serializers.Serializer):
         self.is_valid(raise_exception=True)
         application_id = self.data.get('application_id')
         application = QuerySet(Application).filter(id=application_id).first()
+        if application is None:
+            raise AppApiException(500, _('Application id does not exist'))
         return ApplicationOperateSerializer(
             data={'application_id': application_id,
                   'user_id': application.user_id}).speech_to_text(instance, False)
