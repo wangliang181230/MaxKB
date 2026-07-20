@@ -771,6 +771,9 @@ error: {e}""", exc_info=True)
 
 async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_type, run_time):
     tool = await sync_to_async(lambda: QuerySet(Tool).filter(id=tool_id).first())()
+    if tool is None:
+        maxkb_logger.warning(f"save_tool_record: tool {tool_id} not found, skipping record")
+        return
     tool_info["icon"] = tool.icon
     tool_record = ToolRecord(
         id=uuid.uuid7(),
