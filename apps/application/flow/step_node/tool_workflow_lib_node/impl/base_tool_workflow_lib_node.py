@@ -75,45 +75,30 @@ def write_context_stream(node_variable: Dict, workflow_variable: Dict, node: INo
                                  details=child_node_data)
     instance = workflow_manage_new_instance(start_node_id,
                                             start_node_data, chat_record, child_node)
-    answer = ''
-    reasoning_content = ''
+    # answer = ''  # 暂未用到
+    # easoning_content = ''  # 暂未用到
     usage = {}
     node_child_node = {}
     is_interrupt_exec = False
     response = instance.stream()
     child_node_node_dict = {}
     for chunk in response:
-        response_content = chunk
-        content = (response_content.get('content', '') or '')
-        runtime_node_id = response_content.get('runtime_node_id', '')
-        chat_record_id = response_content.get('chat_record_id', '')
-        child_node = response_content.get('child_node')
-        node_type = response_content.get('node_type')
-        _reasoning_content = (response_content.get('reasoning_content', '') or '')
-        if node_type == 'form-node':
-            is_interrupt_exec = True
-        answer += content
-        reasoning_content += _reasoning_content
-        node_child_node = {'runtime_node_id': runtime_node_id, 'chat_record_id': chat_record_id,
-                           'child_node': child_node}
-
-        child_node = chunk.get('child_node')
         runtime_node_id = chunk.get('runtime_node_id', '')
         chat_record_id = chunk.get('chat_record_id', '')
-        child_node_node_dict[runtime_node_id] = {
-            'runtime_node_id': runtime_node_id,
-            'chat_record_id': chat_record_id,
-            'child_node': child_node}
-        content_chunk = (chunk.get('content', '') or '')
-        reasoning_content_chunk = (chunk.get('reasoning_content', '') or '')
-        reasoning_content += reasoning_content_chunk
-        answer += content_chunk
+        child_node = chunk.get('child_node')
+        node_type = chunk.get('node_type')
+        if node_type == 'form-node':
+            is_interrupt_exec = True
+        # reasoning_content += chunk.get('reasoning_content') or ''
+        # answer += chunk.get('content') or ''
+        node_child_node = {'runtime_node_id': runtime_node_id, 'chat_record_id': chat_record_id,
+                           'child_node': child_node}
         yield chunk
         if chunk.get('node_status', "SUCCESS") == 'ERROR':
             is_interrupt_exec = True
             node.status = 500
             node.err_message = chunk.get('content')
-        usage = response_content.get('usage', {})
+        usage = chunk.get('usage', {})
     child_answer_data = get_answer_list(instance, child_node_node_dict, node.runtime_node_id)
     node.context['usage'] = {'usage': usage}
     node.context['child_node'] = node_child_node
