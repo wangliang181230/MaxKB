@@ -786,6 +786,9 @@ async def save_tool_record(tool_id, tool_info, tool_result, source_id, source_ty
     from django.db import close_old_connections
     await sync_to_async(close_old_connections)()
     tool = await sync_to_async(lambda: QuerySet(Tool).filter(id=tool_id).first())()
+    if tool is None:
+        maxkb_logger.warning(f"save_tool_record: tool {tool_id} not found, skipping record")
+        return
     tool_info["icon"] = tool.icon
     if tool.tool_type == ToolType.WORKFLOW:
         # 工作流工具在内部工作流执行完成时，已由 ToolWorkflowPostHandler 落库一条含 details 的完整执行记录
