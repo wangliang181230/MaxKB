@@ -11,7 +11,6 @@ from typing import List
 
 from django.db import close_old_connections
 from django.utils.translation import get_language
-from langchain_core.prompts import PromptTemplate
 
 from application.flow.common import Workflow
 from application.flow.i_step_node import WorkFlowPostHandler, INode
@@ -20,6 +19,8 @@ from application.flow.workflow_manage import WorkflowManage
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from common.utils.common import get_workflow_max_workers, has_jinja_syntax
+
+from .functions import FUNCS, render_jinja_template
 
 executor = ThreadPoolExecutor(max_workers=get_workflow_max_workers())
 
@@ -196,8 +197,7 @@ class LoopWorkflowManage(WorkflowManage):
 
         context = {**self.get_workflow_content(), **self.parentWorkflowManage.get_workflow_content()}
         prompt = self.reset_prompt(prompt)
-        prompt_template = PromptTemplate.from_template(prompt, template_format='jinja2')
-        value = prompt_template.format(context=context)
+        value = render_jinja_template(prompt, context, **FUNCS)
         if value == 'None':
             return ''
         return value
@@ -227,8 +227,7 @@ class LoopWorkflowManage(WorkflowManage):
 
         context = {**self.get_workflow_content(), **self.parentWorkflowManage.get_workflow_content()}
         field_value = self.reset_field_value(field_value)
-        prompt_template = PromptTemplate.from_template(field_value, template_format='jinja2')
-        value = prompt_template.format(context=context)
+        value = render_jinja_template(field_value, context, **FUNCS)
         if value == 'None':
             return None
         return value
