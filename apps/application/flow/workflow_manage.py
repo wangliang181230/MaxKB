@@ -16,7 +16,6 @@ from typing import List, Dict
 from django.db import close_old_connections, connection
 from django.utils import translation
 from django.utils.translation import get_language
-from langchain_core.prompts import PromptTemplate
 from rest_framework import status
 
 from application.flow import tools
@@ -27,6 +26,8 @@ from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from common.utils.common import get_workflow_max_workers, has_jinja_syntax
 from common.utils.logger import maxkb_logger
+
+from .functions import FUNCS, render_jinja_template
 
 executor = ThreadPoolExecutor(max_workers=get_workflow_max_workers())
 
@@ -800,8 +801,7 @@ class WorkflowManage:
 
         context = self.get_workflow_content()
         prompt = self.reset_prompt(prompt)
-        prompt_template = PromptTemplate.from_template(prompt, template_format='jinja2')
-        value = prompt_template.format(context=context)
+        value = render_jinja_template(prompt, context, **FUNCS)
         if value == 'None':
             return ''
         return value
@@ -839,8 +839,7 @@ class WorkflowManage:
 
         context = self.get_workflow_content()
         field_value = self.reset_field_value(field_value)
-        field_value_template = PromptTemplate.from_template(field_value, template_format='jinja2')
-        value = field_value_template.format(context=context)
+        value = render_jinja_template(field_value, context, **FUNCS)
         if value == 'None':
             return None
         return value
