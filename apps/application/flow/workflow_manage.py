@@ -27,6 +27,8 @@ from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from common.utils.logger import maxkb_logger
 
+from .functions import FUNCS
+
 executor = ThreadPoolExecutor(max_workers=200)
 
 
@@ -799,7 +801,7 @@ class WorkflowManage:
         context = self.get_workflow_content()
         prompt = self.reset_prompt(prompt)
         prompt_template = PromptTemplate.from_template(prompt, template_format='jinja2')
-        value = prompt_template.format(context=context)
+        value = prompt_template.format(context=context, **FUNCS)
         if value == 'None':
             return ''
         return value
@@ -838,7 +840,7 @@ class WorkflowManage:
         context = self.get_workflow_content()
         field_value = self.reset_field_value(field_value)
         field_value_template = PromptTemplate.from_template(field_value, template_format='jinja2')
-        value = field_value_template.format(context=context)
+        value = field_value_template.format(context=context, **FUNCS)
         if value == 'None':
             return None
         return value
