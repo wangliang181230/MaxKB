@@ -41,6 +41,7 @@ from common.utils.logger import maxkb_logger
 from deepagents import create_deep_agent
 from django.db.models import OuterRef, QuerySet, Subquery
 from django.http import StreamingHttpResponse
+from django.utils.translation import gettext_lazy as _
 from knowledge.models import File
 from knowledge.models.knowledge_action import State
 from langchain_core.messages import AIMessageChunk, BaseMessage, BaseMessageChunk, ToolMessage
@@ -439,7 +440,16 @@ async def _initialize_skills(mcp_servers, temp_dir):
                         with open(env_path, "w", encoding="utf-8") as f:
                             f.write(env_content)
 
-        os.system("chmod -R g+rx " + temp_dir)  # 确保技能目录可访问
+        # 使用异步子进程替代 os.system 避免阻塞事件循环
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                'chmod', '-R', 'g+rx', temp_dir,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+            await proc.wait()
+        except Exception as e:
+            maxkb_logger.warning(f"chmod '{temp_dir}' failed: {e}")
 
     client = MultiServerMCPClient(mcp_config)
 
@@ -452,13 +462,15 @@ async def _yield_mcp_response(
     message_list,
     mcp_servers,
     mcp_output_enable=True,
-    tool_init_params={},
+    tool_init_params=None,
     source_id=None,
     source_type=None,
     temp_dir=None,
     chat_id=None,
     extra_tools=None,
 ):
+    if tool_init_params is None:
+        tool_init_params = {}
     tools = None
     try:
         checkpointer = MemorySaver()
@@ -794,14 +806,16 @@ def mcp_response_generator(
     message_list,
     mcp_servers,
     mcp_output_enable=True,
-    tool_init_params={},
+    tool_init_params=None,
     source_id=None,
     source_type=None,
     chat_id=None,
     extra_tools=None,
 ):
     """使用全局事件循环，不创建新实例"""
-    result_queue = queue.Queue()
+    if tool_init_params is None:
+        tool_init_params = {}
+    result_queue = queue.Queue(maxsize=100)
     loop = get_global_loop()  # 使用共享循环
     # 创建临时文件夹
     if chat_id:
@@ -812,6 +826,9 @@ def mcp_response_generator(
     os.makedirs(skills_dir, exist_ok=True)
 
     # print(f"Initializing skills in temporary directory: {skills_dir}")
+
+    mcp_timeout = int(CONFIG.get("MCP_TOOL_CALL_TIMEOUT_SECONDS", "300"))
+    cancelled = False
 
     async def _run():
         try:
@@ -829,27 +846,52 @@ def mcp_response_generator(
                 extra_tools,
             )
             async for chunk in async_gen:
-                result_queue.put(("data", chunk))
+                if cancelled:
+                    break
+                try:
+                    result_queue.put(("data", chunk), timeout=60)
+                except queue.Full as e:
+                    maxkb_logger.error(f"Consumer stopped reading, abort the async task: {e}", exc_info=True)
+                    result_queue.put(("error", e), timeout=60)
+                    break
         except Exception as e:
             maxkb_logger.error(f"Exception: {e}", exc_info=True)
-            result_queue.put(("error", e))
+            if not cancelled:
+                result_queue.put(("error", e), timeout=60)
         finally:
-            result_queue.put(("done", None))
+            if not cancelled:
+                result_queue.put(("done", None), timeout=60)
 
-    # 在全局循环中调度任务
-    asyncio.run_coroutine_threadsafe(_run(), loop)
+    try:
+        # 使用全局事件循环，在全局循环中调度任务
+        future = asyncio.run_coroutine_threadsafe(_run(), loop)
 
-    while True:
-        msg_type, data = result_queue.get()
-        if msg_type == "done":
-            # 清理临时文件夹
-            shutil.rmtree(temp_dir, ignore_errors=True)
-            break
-        if msg_type == "error":
-            # 清理临时文件夹
-            shutil.rmtree(temp_dir, ignore_errors=True)
-            raise data
-        yield data
+        while True:
+            try:
+                msg_type, data = result_queue.get(timeout=mcp_timeout)
+            except queue.Empty:
+                future.cancel()
+                maxkb_logger.error(f"mcp_response_generator: queue timeout ({mcp_timeout}s), forcing cleanup")
+                raise RuntimeError(
+                    _("MCP tool call timed out after {seconds} seconds.").format(seconds=mcp_timeout)
+                )
+            if msg_type == "done":
+                break
+            if msg_type == "error":
+                raise data
+            if not _loop_thread or not _loop_thread.is_alive():
+                future.cancel()
+                raise RuntimeError(
+                    _("MCP async event loop thread is not alive. Please retry.")
+                )
+            yield data
+    except GeneratorExit:
+        maxkb_logger.debug("mcp_response_generator: consumer disconnected, cleaning up")
+        raise
+    finally:
+        # 确保无论生成器是否被完全消费，都清理资源
+        cancelled = True
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 async def anext_async(agen):
