@@ -619,7 +619,7 @@ export const iconMap: any = {
             ]),
             h('defs', [
               h('clipPath', { id: 'clip0_10754_9765' }, [
-                h('rect', { width: '16', height: '15.9993', fill: 'currentColor' }),
+                h('rect', { width: '16', height: '16', fill: 'currentColor' }),
               ]),
             ]),
           ],
