@@ -161,7 +161,7 @@ import Workflow from '@/workflow/index.vue'
 import DropdownMenu from '@/components/workflow-dropdown-menu/index.vue'
 
 import PublishHistory from '@/views/tool-workflow/component/PublishHistory.vue'
-import { isAppIcon, resetUrl } from '@/utils/common'
+import { isAppIcon, resetUrl, isDeepEqualIgnoreXYHeight } from '@/utils/common'
 import { MsgSuccess, MsgError, MsgConfirm } from '@/utils/message'
 import { datetimeFormat } from '@/utils/time'
 import useStore from '@/stores'
@@ -226,7 +226,7 @@ const apiInputParams = ref([])
 const isPublish = computed(() => detail.value?.is_publish)
 
 function back() {
-  if (JSON.stringify(cloneWorkFlow.value) !== JSON.stringify(getGraphData())) {
+  if (cloneWorkFlow.value != null && !isDeepEqualIgnoreXYHeight(cloneWorkFlow.value, getGraphData())) {
     console.debug("JSON.stringify(cloneWorkFlow.value):", JSON.stringify(cloneWorkFlow.value))
     console.debug("JSON.stringify(getGraphData()):", JSON.stringify(getGraphData()))
 
@@ -460,7 +460,26 @@ const clickShowDebug = () => {
 }
 
 function getGraphData() {
-  return workflowRef.value?.getGraphData()
+  return roundXYHeight(workflowRef.value?.getGraphData())
+}
+
+/** 递归将对象中所有 x、y、height 属性四舍五入为整数，消除 LogicFlow 浮点精度差异 */
+function roundXYHeight(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(roundXYHeight)
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const result: any = {}
+    for (const key of Object.keys(obj)) {
+      if ((key === 'x' || key === 'y' || key === 'height') && typeof obj[key] === 'number') {
+        result[key] = Math.round(obj[key])
+      } else {
+        result[key] = roundXYHeight(obj[key])
+      }
+    }
+    return result
+  }
+  return obj
 }
 
 const isShared = computed(() => {
@@ -481,8 +500,11 @@ function getDetail() {
       workflowRef.value?.clearGraphData()
       nextTick(() => {
         workflowRef.value?.render(detail.value.work_flow)
-        cloneWorkFlow.value = getGraphData()
         workflowRef.value?.fitView()
+        // 等待 LogicFlow 渲染完成（包括 fitView/translateCenter 布局调整）后再保存基线
+        setTimeout(() => {
+          cloneWorkFlow.value = getGraphData()
+        }, 2000)
       })
     })
 }

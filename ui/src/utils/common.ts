@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
 import { t } from '@/locales'
+import { isEqualWith } from 'lodash'
 
 /**
  * 数字处理
@@ -185,4 +186,19 @@ export const resetUrl = (url: string, defaultUrl?: string) => {
     return `${window.MaxKB.prefix}/${url.substring(2)}`
   }
   return url ? url : defaultUrl ? defaultUrl : ''
+}
+
+export function isDeepEqualIgnoreXYHeight(a?: any, b?: any) {
+  return isEqualWith(a, b, (valueA: any, valueB: any, key: any) => {
+    if (valueA === valueB) {
+      return true // 相等
+    }
+    // 直接忽略 x、y、height 属性的比较
+    if (key === 'x' || key === 'y' || key === 'height') {
+      return true // 忽略height
+    }
+
+    // 其他属性使用默认比较
+    return undefined
+  })
 }
