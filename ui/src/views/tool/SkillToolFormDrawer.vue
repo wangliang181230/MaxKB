@@ -216,7 +216,7 @@ import { input_type_list } from '@/components/dynamics-form/constructor/data'
 import type { toolData } from '@/api/type/tool'
 import type { FormInstance, UploadFiles } from 'element-plus'
 import { MsgConfirm, MsgError, MsgSuccess } from '@/utils/message'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import { t } from '@/locales'
 import { filesize, getImgUrl, isAppIcon } from '@/utils/common'
 import { useRoute } from 'vue-router'
@@ -268,6 +268,7 @@ const form = ref<toolData>({
   tool_type: 'SKILL',
   fileList: [],
 })
+const originalForm = ref<any>(null)
 
 watch(visible, (bool) => {
   if (!bool) {
@@ -302,9 +303,12 @@ const rules = reactive({
 })
 
 function close() {
-  if (!areAllValuesNonEmpty(form.value)) {
+  if (!isFormChanged()) {
     visible.value = false
   } else {
+    console.debug("JSON.stringify(form.value):", JSON.stringify(form.value))
+    console.debug("JSON.stringify(originalForm.value):", JSON.stringify(originalForm.value))
+
     MsgConfirm(t('common.tip'), t('views.tool.tip.saveMessage'), {
       confirmButtonText: t('common.confirm'),
     })
@@ -313,6 +317,13 @@ function close() {
       })
       .catch(() => {})
   }
+}
+
+function isFormChanged() {
+  if (!originalForm.value) {
+    return areAllValuesNonEmpty(form.value)
+  }
+  return !isEqual(form.value, originalForm.value)
 }
 
 function areAllValuesNonEmpty(obj: any) {
@@ -457,6 +468,9 @@ const open = (data: any) => {
   if (data) {
     isEdit.value = data?.id ? true : false
     form.value = cloneDeep(data)
+    originalForm.value = cloneDeep(data)
+  } else {
+    originalForm.value = null
   }
   visible.value = true
   setTimeout(() => {
