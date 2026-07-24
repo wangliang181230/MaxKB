@@ -8,9 +8,11 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.mcp_node.i_mcp_node import IMcpNode
+from application.flow.tools import get_global_loop
 from common.utils.shared_resource_auth import get_runtime_user_id, validate_authorized_tool_ids
 from tools.models import Tool
 from common.utils.tool_code import ToolExecutor
+from maxkb.const import CONFIG
 
 
 class BaseMcpNode(IMcpNode):
@@ -45,12 +47,24 @@ class BaseMcpNode(IMcpNode):
         params = json.loads(json.dumps(tool_params))
         params = self.handle_variables(params)
 
+        mcp_timeout = int(CONFIG.get("MCP_TOOL_CALL_TIMEOUT_SECONDS", "300"))
+
         async def call_tool(t, a):
             client = MultiServerMCPClient(servers)
             async with client.session(mcp_server) as s:
-                return await s.call_tool(t, a)
+                return await asyncio.wait_for(s.call_tool(t, a), timeout=mcp_timeout)
 
-        res = asyncio.run(call_tool(mcp_tool, params))
+        # 使用全局事件循环，避免 asyncio.run 每次创建/销毁循环的开销
+        loop = get_global_loop()
+        future = asyncio.run_coroutine_threadsafe(call_tool(mcp_tool, params), loop)
+        try:
+            res = future.result(timeout=mcp_timeout + 10)
+        except asyncio.TimeoutError:
+            future.cancel()
+            raise RuntimeError(f"MCP tool call timed out after {mcp_timeout} seconds.")
+        except Exception:
+            future.cancel()
+            raise
         return NodeResult(
             {'result': [content.text for content in res.content], 'tool_params': params, 'mcp_tool': mcp_tool}, {})
 
