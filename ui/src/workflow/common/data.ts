@@ -43,7 +43,7 @@ export const baseNode = {
   y: 3000,
   text: '',
   properties: {
-    height: 728.375,
+    height: 728,
     stepName: t('common.info'),
     input_field_list: [],
     node_data: {
@@ -67,7 +67,7 @@ export const knowledgeBaseNode = {
   y: 3000,
   text: '',
   properties: {
-    height: 728.375,
+    height: 728,
     stepName: t('common.info'),
     input_field_list: [],
     node_data: {
@@ -90,7 +90,7 @@ export const toolBaseNode = {
   text: '',
   properties: {
     width: 500,
-    height: 728.375,
+    height: 728,
     stepName: t('common.info'),
     input_field_list: [],
     node_data: {},
@@ -107,7 +107,7 @@ export const toolStartNode = {
   y: 3000,
   text: '',
   properties: {
-    height: 728.375,
+    height: 728,
     stepName: t('workflow.nodes.startNode.label'),
     input_field_list: [],
     node_data: {},
@@ -120,12 +120,12 @@ export const toolStartNode = {
 export const dataSourceLocalNode = {
   type: WorkflowType.DataSourceLocalNode,
   x: 360,
-  y: 2761.3875,
+  y: 2761,
   text: t('workflow.nodes.dataSourceLocalNode.text'),
   label: t('workflow.nodes.dataSourceLocalNode.label'),
   properties: {
     kind: WorkflowKind.DataSource,
-    height: 728.375,
+    height: 728,
     stepName: t('workflow.nodes.dataSourceLocalNode.label'),
     input_field_list: [],
     config: {
@@ -146,7 +146,7 @@ export const dataSourceWebNode = {
   id: WorkflowType.DataSourceWebNode,
   type: WorkflowType.DataSourceWebNode,
   x: 360,
-  y: 2761.3875,
+  y: 2761,
   text: t('workflow.nodes.dataSourceWebNode.text'),
   label: t('workflow.nodes.dataSourceWebNode.label'),
   properties: {
@@ -705,7 +705,7 @@ export const loopNode = {
               globalFields: [],
             },
             fields: [],
-            height: 361.333,
+            height: 361,
             showNode: true,
             stepName: '开始',
             globalFields: [],
