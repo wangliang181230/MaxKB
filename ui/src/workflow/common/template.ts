@@ -10,10 +10,10 @@ export const applicationTemplate: any = {
         id: 'base-node',
         type: 'base-node',
         x: 120,
-        y: 260.30849999999987,
+        y: 260,
         properties: {
           config: {},
-          height: 734.766,
+          height: 735,
           showNode: true,
           stepName: '基本信息',
           node_data: {
@@ -35,7 +35,7 @@ export const applicationTemplate: any = {
         id: 'start-node',
         type: 'start-node',
         x: 120,
-        y: 929.6914999999999,
+        y: 930,
         properties: {
           config: {
             fields: [
@@ -80,7 +80,7 @@ export const applicationTemplate: any = {
         id: 'fd0324fc-f5e4-4fa6-a2d9-cb251b467605',
         type: 'search-knowledge-node',
         x: 710,
-        y: 929.6914999999999,
+        y: 930,
         properties: {
           config: {
             fields: [
@@ -124,7 +124,7 @@ export const applicationTemplate: any = {
         id: '420a6e4f-44ff-4847-bb81-0923630846b5',
         type: 'condition-node',
         x: 1300,
-        y: 929.6914999999999,
+        y: 930,
         properties: {
           width: 600,
           config: {
@@ -135,7 +135,7 @@ export const applicationTemplate: any = {
               },
             ],
           },
-          height: 544.148,
+          height: 544,
           showNode: true,
           stepName: '判断器',
           condition: 'AND',
@@ -176,12 +176,12 @@ export const applicationTemplate: any = {
           branch_condition_list: [
             {
               index: 0,
-              height: 121.383,
+              height: 121,
               id: '7887',
             },
             {
               index: 1,
-              height: 121.383,
+              height: 121,
               id: '6847',
             },
             {
@@ -222,7 +222,7 @@ export const applicationTemplate: any = {
         id: 'f7c3b4a2-cb80-4e47-b050-7fef0315daaf',
         type: 'ai-chat-node',
         x: 1890,
-        y: 929.6914999999999,
+        y: 930,
         properties: {
           config: {
             fields: [
@@ -236,7 +236,7 @@ export const applicationTemplate: any = {
               },
             ],
           },
-          height: 993.383,
+          height: 993,
           showNode: true,
           stepName: 'AI 对话',
           condition: 'AND',
@@ -261,7 +261,7 @@ export const applicationTemplate: any = {
         id: '04dd6c1e-95f9-4757-bb3e-134d503fce54',
         type: 'reply-node',
         x: 1890,
-        y: 1798.383,
+        y: 1798,
         properties: {
           config: {
             fields: [
@@ -292,29 +292,29 @@ export const applicationTemplate: any = {
         targetNodeId: 'fd0324fc-f5e4-4fa6-a2d9-cb251b467605',
         startPoint: {
           x: 280,
-          y: 929.6914999999999,
+          y: 930,
         },
         endPoint: {
           x: 550,
-          y: 929.6914999999999,
+          y: 930,
         },
         properties: {},
         pointsList: [
           {
             x: 280,
-            y: 929.6914999999999,
+            y: 930,
           },
           {
             x: 390,
-            y: 929.6914999999999,
+            y: 930,
           },
           {
             x: 440,
-            y: 929.6914999999999,
+            y: 930
           },
           {
             x: 550,
-            y: 929.6914999999999,
+            y: 930
           },
         ],
         sourceAnchorId: 'start-node_right',
@@ -327,29 +327,29 @@ export const applicationTemplate: any = {
         targetNodeId: '420a6e4f-44ff-4847-bb81-0923630846b5',
         startPoint: {
           x: 870,
-          y: 929.6914999999999,
+          y: 930
         },
         endPoint: {
           x: 1010,
-          y: 929.6914999999999,
+          y: 930
         },
         properties: {},
         pointsList: [
           {
             x: 870,
-            y: 929.6914999999999,
+            y: 930
           },
           {
             x: 980,
-            y: 929.6914999999999,
+            y: 930
           },
           {
             x: 900,
-            y: 929.6914999999999,
+            y: 930
           },
           {
             x: 1010,
-            y: 929.6914999999999,
+            y: 930
           },
         ],
         sourceAnchorId: 'fd0324fc-f5e4-4fa6-a2d9-cb251b467605_right',
@@ -362,7 +362,7 @@ export const applicationTemplate: any = {
         targetNodeId: '36a440a9-5b00-4d82-b13a-8e7819112918',
         startPoint: {
           x: 1590,
-          y: 793.3089999999999,
+          y: 793
         },
         endPoint: {
           x: 1730,
@@ -372,11 +372,11 @@ export const applicationTemplate: any = {
         pointsList: [
           {
             x: 1590,
-            y: 793.3089999999999,
+            y: 793
           },
           {
             x: 1700,
-            y: 793.3089999999999,
+            y: 793
           },
           {
             x: 1620,
@@ -397,29 +397,29 @@ export const applicationTemplate: any = {
         targetNodeId: 'f7c3b4a2-cb80-4e47-b050-7fef0315daaf',
         startPoint: {
           x: 1590,
-          y: 922.6919999999999,
+          y: 923
         },
         endPoint: {
           x: 1730,
-          y: 929.6914999999999,
+          y: 930
         },
         properties: {},
         pointsList: [
           {
             x: 1590,
-            y: 922.6919999999999,
+            y: 923
           },
           {
             x: 1700,
-            y: 922.6919999999999,
+            y: 923
           },
           {
             x: 1620,
-            y: 929.6914999999999,
+            y: 930
           },
           {
             x: 1730,
-            y: 929.6914999999999,
+            y: 930
           },
         ],
         sourceAnchorId: '420a6e4f-44ff-4847-bb81-0923630846b5_6847_right',
@@ -432,29 +432,29 @@ export const applicationTemplate: any = {
         targetNodeId: '04dd6c1e-95f9-4757-bb3e-134d503fce54',
         startPoint: {
           x: 1590,
-          y: 1013.3834999999998,
+          y: 1013
         },
         endPoint: {
           x: 1730,
-          y: 1798.383,
+          y: 1798,
         },
         properties: {},
         pointsList: [
           {
             x: 1590,
-            y: 1013.3834999999998,
+            y: 1013
           },
           {
             x: 1700,
-            y: 1013.3834999999998,
+            y: 1013
           },
           {
             x: 1620,
-            y: 1798.383,
+            y: 1798,
           },
           {
             x: 1730,
-            y: 1798.383,
+            y: 1798,
           },
         ],
         sourceAnchorId: '420a6e4f-44ff-4847-bb81-0923630846b5_2794_right',
@@ -786,7 +786,7 @@ export const knowledgeTemplate: any = {
     nodes: [
       {
         x: 120,
-        y: 115.05849999999998,
+        y: 115,
         id: 'knowledge-base-node',
         type: 'knowledge-base-node',
         properties: {
@@ -794,7 +794,7 @@ export const knowledgeTemplate: any = {
             fields: [],
             globalFields: [],
           },
-          height: 394.383,
+          height: 394,
           showNode: true,
           stepName: '\u57fa\u672c\u4fe1\u606f',
           node_data: {
@@ -1082,7 +1082,7 @@ export const knowledgeTemplate: any = {
               },
             ],
           },
-          height: 570.7660000000001,
+          height: 571,
           showNode: true,
           stepName: '\u805a\u5408\u6587\u6863\u5206\u6bb5\u5217\u8868',
           condition: 'OR',
