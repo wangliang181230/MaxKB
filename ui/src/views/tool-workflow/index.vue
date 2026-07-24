@@ -161,7 +161,7 @@ import Workflow from '@/workflow/index.vue'
 import DropdownMenu from '@/components/workflow-dropdown-menu/index.vue'
 
 import PublishHistory from '@/views/tool-workflow/component/PublishHistory.vue'
-import { isAppIcon, resetUrl } from '@/utils/common'
+import { isAppIcon, resetUrl, isDeepEqualIgnoreXYHeight, roundXYHeight } from '@/utils/common'
 import { MsgSuccess, MsgError, MsgConfirm } from '@/utils/message'
 import { datetimeFormat } from '@/utils/time'
 import useStore from '@/stores'
@@ -226,7 +226,7 @@ const apiInputParams = ref([])
 const isPublish = computed(() => detail.value?.is_publish)
 
 function back() {
-  if (JSON.stringify(cloneWorkFlow.value) !== JSON.stringify(getGraphData())) {
+  if (cloneWorkFlow.value != null && !isDeepEqualIgnoreXYHeight(cloneWorkFlow.value, getGraphData())) {
     console.debug("JSON.stringify(cloneWorkFlow.value):", JSON.stringify(cloneWorkFlow.value))
     console.debug("JSON.stringify(getGraphData()):", JSON.stringify(getGraphData()))
 
@@ -460,7 +460,7 @@ const clickShowDebug = () => {
 }
 
 function getGraphData() {
-  return workflowRef.value?.getGraphData()
+  return roundXYHeight(workflowRef.value?.getGraphData())
 }
 
 const isShared = computed(() => {
@@ -481,8 +481,11 @@ function getDetail() {
       workflowRef.value?.clearGraphData()
       nextTick(() => {
         workflowRef.value?.render(detail.value.work_flow)
-        cloneWorkFlow.value = getGraphData()
         workflowRef.value?.fitView()
+        // 等待 LogicFlow 渲染完成（包括 fitView/translateCenter 布局调整）后再保存基线
+        setTimeout(() => {
+          cloneWorkFlow.value = getGraphData()
+        }, 2000)
       })
     })
 }
