@@ -1,6 +1,7 @@
 from django.urls import path
 
 from application.views import ChatRecordDetailView, ChatRecordLinkView
+from chat.views.chat_record import ToolRecordDetailView
 from chat.views.mcp import mcp_view
 from . import views
 
@@ -27,6 +28,7 @@ urlpatterns = [
     path('historical_conversation/<str:chat_id>',views.HistoricalConversationView.Operate.as_view(), name='historical_conversation_operate'),
     path('historical_conversation_record/<str:chat_id>', views.HistoricalConversationRecordView.as_view(), name='historical_conversation_record'),
     path('historical_conversation_record/<str:chat_id>/<int:current_page>/<int:page_size>', views.HistoricalConversationRecordView.PageView.as_view(), name='historical_conversation_record'),
+    path('tool/<str:tool_id>/tool_record/<str:record_id>', ToolRecordDetailView.as_view()),
     path('share/<str:link>', ChatRecordDetailView.as_view()),
     path('<str:application_id>/chat/<str:chat_id>/share_chat', ChatRecordLinkView.as_view()),
 ]
