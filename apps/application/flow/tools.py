@@ -330,7 +330,7 @@ def to_stream_response_simple(stream_event):
     return r
 
 
-def generate_tool_message_complete(icon, name, input_content, output_content, run_time):
+def generate_tool_message_complete(icon, name, input_content, output_content, run_time, tool_id=None, tool_record_id=None):
     """生成包含输入和输出的工具消息模版"""
     # 确保输入内容是字符串，如果不是则尝试转换为 JSON 字符串
     if not isinstance(input_content, str):
@@ -345,6 +345,10 @@ def generate_tool_message_complete(icon, name, input_content, output_content, ru
         "run_time": round(run_time, 3),
         "content": {"input": input_content, "output": output_content},
     }
+    if tool_id:
+        content["tool_id"] = tool_id
+    if tool_record_id:
+        content["tool_record_id"] = tool_record_id
     return f"<tool_calls_render>{json.dumps(content, ensure_ascii=False)}</tool_calls_render>"
 
 
@@ -369,6 +373,7 @@ def _parse_tool_result(content):
         return None, content, content
 
     tool_id = content.pop("tool_id", None)
+    tool_record_id = content.pop("tool_record_id", None)
     text = content.get("text")
     if isinstance(text, str) and content.get("type") in (None, "text"):
         try:
@@ -378,7 +383,7 @@ def _parse_tool_result(content):
         if isinstance(output, dict):
             tool_id = output.pop("tool_id", None) or tool_id
         return tool_id, content, output
-    return tool_id, content, content
+    return tool_id, tool_record_id, content, content
 
 
 def _tool_result_for_display(content, media=False):
@@ -752,7 +757,7 @@ async def _yield_mcp_response(
                 display_message = chunk[0]
 
                 if tool_info:
-                    tool_lib_id, record_result, tool_result = _parse_tool_result(chunk[0].content)
+                    tool_lib_id, tool_record_id, record_result, tool_result = _parse_tool_result(chunk[0].content)
                     run_time = time.time() - tool_info.get('start_time', time.time())
                     if tool_lib_id:
                         try:
@@ -765,6 +770,8 @@ async def _yield_mcp_response(
                         tool_info["input"],
                         _tool_result_for_display(tool_result),
                         run_time,
+                        tool_lib_id,
+                        tool_record_id,
                     )
                     # LangGraph streams the same ToolMessage used by subsequent model calls.
                     display_message = chunk[0].model_copy(deep=True, update={"content": content})
@@ -1185,7 +1192,10 @@ def get_workflow_func(source_type, source_id, tool, qv, workspace_id, user_id=No
         res = work_flow_manage.run()
         for r in res:
             pass
-        return work_flow_manage.out_context
+        result = dict(work_flow_manage.out_context)
+        result['tool_id'] = str(tool_id)
+        result['tool_record_id'] = tool_record_id
+        return result
 
     return inner
 
