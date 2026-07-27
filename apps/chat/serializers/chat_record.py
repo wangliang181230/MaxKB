@@ -200,3 +200,41 @@ class HistoricalConversationRecordSerializer(serializers.Serializer):
         return ApplicationChatRecordQuerySerializers(
             data={'application_id': self.data.get('application_id'), 'chat_id': self.data.get('chat_id')}).page(
             current_page, page_size, show_source=show_source, show_exec=show_exec)
+
+
+class ToolRecordDetailSerializer(serializers.Serializer):
+    tool_id = serializers.UUIDField(required=True, label=_("Tool ID"))
+    record_id = serializers.UUIDField(required=True, label=_("Record ID"))
+
+    def one(self):
+        self.is_valid(raise_exception=True)
+        from tools.models import ToolRecord
+        from django.core.cache import cache
+        from common.constants.cache_version import Cache_Version
+
+        tool_record = cache.get(
+            Cache_Version.TOOL_WORKFLOW_EXECUTE.get_key(key=self.data.get("record_id")),
+            version=Cache_Version.TOOL_WORKFLOW_EXECUTE.get_version(),
+        )
+        if tool_record:
+            return tool_record
+        tool_record = (
+            QuerySet(ToolRecord)
+            .filter(
+                id=self.data.get("record_id"),
+                tool_id=self.data.get("tool_id"),
+            )
+            .first()
+        )
+        if tool_record:
+            return {
+                "id": tool_record.id,
+                "tool_id": tool_record.tool_id,
+                "workspace_id": tool_record.workspace_id,
+                "source_type": tool_record.source_type,
+                "source_id": tool_record.source_id,
+                "meta": tool_record.meta,
+                "state": tool_record.state,
+                "run_time": tool_record.run_time,
+            }
+        raise AppApiException(500, _("Tool record does not exist"))
