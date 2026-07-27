@@ -406,6 +406,14 @@ const getShareLink: (link: string) => Promise<Result<any>> = (link) => {
   return get(`/share/${link}`, undefined)
 }
 
+const getToolRecordDetail: (
+  tool_id: string,
+  record_id: string,
+  loading?: Ref<boolean>,
+) => Promise<Result<any>> = (tool_id, record_id, loading) => {
+  return get(`/tool/${tool_id}/tool_record/${record_id}`, {}, loading)
+}
+
 export default {
   open,
   chat,
@@ -440,4 +448,5 @@ export default {
   getFile,
   postShareChat,
   getShareLink,
+  getToolRecordDetail,
 }
