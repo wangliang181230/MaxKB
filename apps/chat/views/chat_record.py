@@ -12,6 +12,7 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from application.serializers.application_chat_record import ChatRecordOperateSerializer
+from chat.serializers.chat_record import ToolRecordDetailSerializer
 from chat.api.chat_api import HistoricalConversationAPI, PageHistoricalConversationAPI, \
     PageHistoricalConversationRecordAPI, HistoricalConversationRecordAPI, HistoricalConversationOperateAPI
 from chat.api.vote_api import VoteAPI
@@ -177,6 +178,20 @@ class HistoricalConversationRecordView(APIView):
                     'application_id': request.auth.application_id,
                     'chat_user_id': request.auth.chat_user_id,
                 }).page(current_page, page_size))
+
+
+class ToolRecordDetailView(APIView):
+    authentication_classes = [ChatTokenAuth]
+
+    def get(self, request: Request, tool_id: str, record_id: str):
+        return result.success(
+            ToolRecordDetailSerializer(
+                data={
+                    'tool_id': tool_id,
+                    'record_id': record_id,
+                }
+            ).one()
+        )
 
 
 class ChatRecordView(APIView):
