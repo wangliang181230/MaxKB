@@ -126,6 +126,7 @@ export default {
     cancel: '取消执行',
     errLog: '错误日志',
     cancelExecutionTip: '确定取消所选的任务？',
+    workflowDetail: '工作流执行详情',
   },
   KnowledgeSource: {
     title: '知识来源',
