@@ -368,6 +368,55 @@
               </div>
             </div>
           </template>
+
+          <!-- 读取历史对话 -->
+          <template v-if="data.type === WorkflowType.ReadChatHistoryNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.chatId') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.chat_id }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('workflow.nodes.readChatHistoryNode.application') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.application }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('workflow.nodes.readChatHistoryNode.chat') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.chat }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('workflow.nodes.readChatHistoryNode.totalCount') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.total_count }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('workflow.nodes.readChatHistoryNode.historyList') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.history_list }}
+              </div>
+            </div>
+            <div v-if="data.err_message" class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">{{ $t('aiChat.executionDetails.errMessage') }}</h5>
+              <div class="p-8-12 border-t-dashed lighter">{{ data.err_message || '-' }}</div>
+            </div>
+          </template>
+
           <!-- 问题优化 / 意图识别-->
           <template
             v-if="
