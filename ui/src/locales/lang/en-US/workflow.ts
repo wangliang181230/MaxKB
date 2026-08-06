@@ -278,6 +278,18 @@ You are a master of problem optimization, adept at accurately inferring user int
       totalCount: 'Long Term Memory Count',
       allApplications: 'All Applications',
     },
+    readChatHistoryNode: {
+      label: 'Read Chat History',
+      text: 'Read historical conversation records for a specified chat ID, supports cross-agent chat history reading',
+      chatId: {
+        placeholder: 'Please select chat ID variable',
+        tooltip: 'It can be the chat ID of the current agent or another agent',
+      },
+      application: 'Agent Info',
+      chat: 'Chat Info',
+      historyList: 'History List',
+      totalCount: 'Total Count',
+    },
     rerankerNode: {
       label: 'Multi-path Recall',
       text: 'Use a re-ranking model to refine retrieval results from multiple knowledge sources',

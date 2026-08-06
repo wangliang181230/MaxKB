@@ -451,6 +451,39 @@ export const readLongTermMemoryNode = {
     },
   },
 }
+
+export const readChatHistoryNode = {
+  type: WorkflowType.ReadChatHistoryNode,
+  text: t('workflow.nodes.readChatHistoryNode.text'),
+  label: t('workflow.nodes.readChatHistoryNode.label'),
+  height: 252,
+  properties: {
+    stepName: t('workflow.nodes.readChatHistoryNode.label'),
+    node_data: {
+      chat_id: [],
+    },
+    config: {
+      fields: [
+        {
+          label: t('workflow.nodes.readChatHistoryNode.application'),
+          value: 'application',
+        },
+        {
+          label: t('workflow.nodes.readChatHistoryNode.chat'),
+          value: 'chat',
+        },
+        {
+          label: t('workflow.nodes.readChatHistoryNode.historyList'),
+          value: 'history_list',
+        },
+        {
+          label: t('workflow.nodes.readChatHistoryNode.totalCount'),
+          value: 'total_count',
+        },
+      ],
+    },
+  },
+}
 export const rerankerNode = {
   type: WorkflowType.RerankerNode,
   text: t('workflow.nodes.rerankerNode.text'),
@@ -866,7 +899,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode, readChatHistoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -920,7 +953,7 @@ export const menuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode, readChatHistoryNode],
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
@@ -958,7 +991,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode, readLongTermMemoryNode, readChatHistoryNode],
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
@@ -985,7 +1018,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode, readChatHistoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -1027,7 +1060,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode],
+    list: [documentSplitNode, knowledgeWriteNode, documentExtractNode, readLongTermMemoryNode, readChatHistoryNode],
   },
   {
     label: t('workflow.nodes.classify.aiCapability'),
@@ -1087,6 +1120,7 @@ const toolMenuNodes = [
       documentExtractNode,
       documentSplitNode,
       readLongTermMemoryNode,
+      readChatHistoryNode,
     ],
   },
   {
@@ -1258,6 +1292,7 @@ export const nodeDict: any = {
   [WorkflowType.Reply]: replyNode,
   [WorkflowType.EmptyNode]: emptyNode,
   [WorkflowType.ReadLongTermMemoryNode]: readLongTermMemoryNode,
+  [WorkflowType.ReadChatHistoryNode]: readChatHistoryNode,
   [WorkflowType.ToolLib]: toolNode,
   [WorkflowType.ToolWorkflowLib]: toolWorkflowLibNode,
   [WorkflowType.ToolLibCustom]: toolNode,
@@ -1391,6 +1426,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
   [replyNode, 'workflow.nodes.replyNode.text', 'workflow.nodes.replyNode.label'],
   [emptyNode, 'workflow.nodes.emptyNode.text', 'workflow.nodes.emptyNode.label'],
   [readLongTermMemoryNode, 'workflow.nodes.readLongTermMemoryNode.text', 'workflow.nodes.readLongTermMemoryNode.label'],
+  [readChatHistoryNode, 'workflow.nodes.readChatHistoryNode.text', 'workflow.nodes.readChatHistoryNode.label'],
   [rerankerNode, 'workflow.nodes.rerankerNode.text', 'workflow.nodes.rerankerNode.label'],
   [formNode, 'workflow.nodes.formNode.text', 'workflow.nodes.formNode.label'],
   [
@@ -1570,6 +1606,15 @@ ${t('workflow.nodes.formNode.form_content_format2')}`,
   [textToVideoNode.properties.config.fields, ['common.fileUpload.video']],
   [toolLibNode.properties.config.fields, ['common.result']],
   [applicationNode.properties.config.fields, ['common.result']],
+  [
+    readChatHistoryNode.properties.config.fields,
+    [
+      'workflow.nodes.readChatHistoryNode.application',
+      'workflow.nodes.readChatHistoryNode.chat',
+      'workflow.nodes.readChatHistoryNode.historyList',
+      'workflow.nodes.readChatHistoryNode.totalCount',
+    ],
+  ],
 ].forEach(([fields, keys]) => bindFieldLabels(fields as Array<any>, keys as string[]))
 ;[
   [
