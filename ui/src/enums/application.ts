@@ -48,6 +48,7 @@ export enum WorkflowType {
   ToolStartNode = 'tool-start-node',
   ToolBaseNode = 'tool-base-node',
   ReadLongTermMemoryNode = 'read-long-term-memory-node',
+  ReadChatHistoryNode = 'read-chat-history-node',
 }
 export enum WorkflowKind {
   DataSource = 'data-source',
