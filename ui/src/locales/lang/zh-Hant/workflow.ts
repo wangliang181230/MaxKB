@@ -288,6 +288,18 @@ export default {
       totalCount: '長期記憶數量',
       allApplications: '所有智能體',
     },
+    readChatHistoryNode: {
+      label: '讀取歷史對話',
+      text: '讀取指定對話ID的歷史對話記錄，支持跨智能體對話讀取',
+      chatId: {
+        placeholder: '請選擇對話ID變量',
+        tooltip: '可以是當前智能體的對話ID，也可以是其他智能體的對話ID',
+      },
+      application: '智能體信息',
+      chat: '對話信息',
+      historyList: '歷史對話列表',
+      totalCount: '對話記錄總數',
+    },
     rerankerNode: {
       label: '多路召回',
       text: '使用重排模型對多個知識庫的檢索結果進行二次召回',
