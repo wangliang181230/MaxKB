@@ -6,7 +6,6 @@
     @date：2024/8/8 17:49
     @desc:
 """
-import json
 import time
 from typing import Dict
 
@@ -15,9 +14,7 @@ from django.utils.translation import gettext as _
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.tool_node.i_tool_node import IToolNode
 from common.utils.common import common_convert_value
-from common.utils.logger import maxkb_logger
 from common.utils.tool_code import ToolExecutor
-from maxkb.const import CONFIG
 
 function_executor = ToolExecutor()
 
@@ -33,60 +30,26 @@ def write_context(step_variable: Dict, global_variable: Dict, node, workflow):
     node.context['run_time'] = time.time() - node.context['start_time']
 
 
-def valid_reference_value(_type, value, name):
-    if _type == 'int':
-        instance_type = int | float
-    elif _type == 'boolean':
-        instance_type = bool
-    elif _type == 'float':
-        instance_type = float | int
-    elif _type == 'dict':
-        value = json.loads(value) if isinstance(value, str) else value
-        instance_type = dict
-    elif _type == 'array':
-        value = json.loads(value) if isinstance(value, str) else value
-        instance_type = list
-    elif _type == 'string':
-        instance_type = str
-    else:
-        maxkb_logger.error(_(
-            'Field: {name} Type: {_type} Value: {value} Unsupported this type'
-        ).format(name=name, _type=_type, value=value))
-        return value
-    if not isinstance(value, instance_type):
-        raise Exception(_(
-            'Field: {name} Type: {_type} Value: {value} Type error'
-        ).format(name=name, _type=_type, value=value))
-    return value
-
-
-def convert_value(name: str, value, _type, is_required, source, node):
-    if not is_required and (value is None or (isinstance(value, (str, list)) and not value)):
+def convert_value(name: str, value, _type: str, is_required: bool, source, node):
+    if value is None and not is_required:
         return None
-    if source == 'reference':
-        value = node.workflow_manage.get_reference_field(
-            value[0],
-            value[1:])
-        if value is None:
-            if not is_required:
-                return None
-            else:
-                raise Exception(_(
-                    'Field: {name} Type: {_type} is required'
-                ).format(name=name, _type=_type))
-        value = valid_reference_value(_type, value, name)
-        if _type == 'int':
-            return int(value)
-        if _type == 'float':
-            return float(value)
-        return value
+    if value:
+        if source == 'reference' and isinstance(value, list):
+            value = node.workflow_manage.get_reference_field(value[0], value[1:])
+        elif isinstance(value, str):
+            value = node.workflow_manage.generate_field_value(value)
     try:
-        value = node.workflow_manage.generate_field_value(value)
-        return common_convert_value(_type, value)
-    except Exception as e:
+        value = common_convert_value(_type, value, name)
+    except Exception:
         raise Exception(
-            _('Field: {name} Type: {_type} Value: {value} Type error').format(name=name, _type=_type,
-                                                                              value=value))
+            _('Field: {name}, Type: {type}, Value: {value}, Type conversion error')
+            .format(name=name, type=_type, value=f"${value}({type(value).__name__})")
+        )
+    if value is None and is_required:
+        raise Exception(_(
+            'Field: {name}, Type: {_type}, is required'
+        ).format(name=name, _type=_type))
+    return value
 
 
 class BaseToolNodeNode(IToolNode):
