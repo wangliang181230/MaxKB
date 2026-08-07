@@ -121,9 +121,9 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
             user_id=new_user.id,
         )
         new_user_group.save()
-        maxkb_logger.info(f"保存用户组关联数据成功：id={new_user_group.id}, user_id={new_user.id}, group_id={group_id}")
+        maxkb_logger.info(f"保存用户组关联数据成功：user_id={new_user.id}, group_id={group_id}")
     except Exception as e:
-        maxkb_logger.error(f"保存用户组关联数据失败：{e}", exc_info=True)
+        maxkb_logger.error(f"保存用户组关联数据失败：user_id={new_user.id}, group_id={group_id}, error：{e}", exc_info=True)
     return new_user
 
 
