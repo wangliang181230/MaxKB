@@ -607,8 +607,8 @@ class ToolSerializer(serializers.Serializer):
             if not is_required and (value is None or (isinstance(value, str) and len(value.strip()) == 0)):
                 return None
             try:
-                return common_convert_value(_type, value)
-            except Exception as e:
+                return common_convert_value(_type, value, name)
+            except Exception:
                 raise AppApiException(
                     500,
                     _("Field: {name} Type: {type} Value: {value} Type conversion error").format(
