@@ -19,35 +19,12 @@ from common.auth import WebhookAuth
 from common.exception.app_exception import AppApiException, AppAuthenticationFailed
 from common.log.log import _get_ip_address
 from common.result import Result
+from common.utils.common import common_convert_value
 from common.utils.logger import maxkb_logger
 from trigger.handler.base_trigger import BaseTrigger
 from trigger.models import TriggerTask, Trigger
 from trigger.serializers.trigger import TriggerResponse
 from trigger.serializers.trigger_task import TriggerTaskResponse
-
-
-def valid_parameter_type(value, _type, desc):
-    if _type == 'int':
-        instance_type = int | float
-    elif _type == 'boolean':
-        instance_type = bool
-    elif _type == 'float':
-        instance_type = float | int
-    elif _type == 'dict':
-        instance_type = dict
-    elif _type == 'array':
-        instance_type = list
-    elif _type == 'string':
-        instance_type = str
-    else:
-        maxkb_logger.error(_(
-            'Field: {name} Type: {_type} Value: {value} Unsupported this type'
-        ).format(name=desc, _type=_type, value=value))
-        return
-    if not isinstance(value, instance_type):
-        raise Exception(_(
-            'Field: {name} Type: {_type} Value: {value} Type error'
-        ).format(name=desc, _type=_type, value=value))
 
 
 def get_parameters(body_setting, request: Request):
@@ -61,7 +38,7 @@ def get_parameters(body_setting, request: Request):
             parameters[body.get('field')] = None
             continue
         _type = body.get('type')
-        valid_parameter_type(value, _type, body.get("desc"))
+        value = common_convert_value(_type, value, body.get("desc"))
         parameters[body.get('field')] = value
     ip_address = _get_ip_address(request)
     parameters['ip_address'] = ip_address or '-'
