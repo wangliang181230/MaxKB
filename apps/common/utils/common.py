@@ -456,32 +456,50 @@ def is_valid_uuid(uuid_string):
         return False
 
 
-def common_convert_value(_type, value):
+def common_convert_value(_type, value, name):
     if value is None:
         return None
 
-    if _type == "int":
-        return int(value)
-    if _type == "boolean":
-        if isinstance(value, str) and value.lower() in ("false", "0", "[]", ""):
-            return False
-        return bool(value)
-    if _type == "float":
-        return float(value)
-    if _type == "dict":
-        if isinstance(value, dict):
-            return value
-        v = json.loads(value)
-        if isinstance(v, dict):
-            return v
-        raise Exception(_("type error"))
-    if _type == "array":
-        if isinstance(value, list):
-            return value
-        v = json.loads(value)
-        if isinstance(v, list):
-            return v
-        raise Exception(_("type error"))
+    if isinstance(value, str) and not value.strip():
+        return None
+    if isinstance(value, (list, dict)) and not value:
+        return None
+
+    try:
+        if _type == "int":
+            return int(value)
+        if _type == "boolean":
+            if isinstance(value, str) and value.lower() in ("false", "0", "[]"):
+                return False
+            return bool(value)
+        if _type == "float":
+            return float(value)
+        if _type == "dict":
+            if isinstance(value, dict):
+                return value
+            v = json.loads(value)
+            if isinstance(v, dict):
+                return v
+            raise Exception(_("type error"))
+        if _type == "array":
+            if isinstance(value, list):
+                return value
+            v = json.loads(value)
+            if isinstance(v, list):
+                return v
+            raise Exception(_("type error"))
+        if _type == "string":
+            return str(value)
+    except Exception:
+        try:
+            if len(value) == 0:
+                return None
+        except Exception:
+            pass
+        raise Exception(
+            _('Field: {name}, Type: {type}, Value: {value}, Type conversion error')
+            .format(name=name, type=_type, value=f"${value}({type(value).__name__})")
+        )
     return value
 
 

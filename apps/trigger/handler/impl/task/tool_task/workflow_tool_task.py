@@ -50,7 +50,7 @@ def get_tool_execute_parameters(input_field_list, parameter_setting, kwargs):
     if parameter_setting:
         for key, value in parameter_setting.items():
             raw = get_field_value(value, kwargs)
-            parameters[key] = common_convert_value(type_map.get(key), raw)
+            parameters[key] = common_convert_value(type_map.get(key), raw, key)
     return parameters
 
 

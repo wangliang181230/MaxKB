@@ -599,22 +599,30 @@ class ToolSerializer(serializers.Serializer):
             if len(result0) > 0:
                 return result0[-1].get("value")
             if is_required:
-                raise AppApiException(500, f"{name}" + _("field has no value set"))
+                raise AppApiException(500, f"'{name}' {_('field has no value set')}")
             return None
 
         @staticmethod
         def convert_value(name: str, value: str, _type: str, is_required: bool):
-            if not is_required and (value is None or (isinstance(value, str) and len(value.strip()) == 0)):
+            if value is None and not is_required:
                 return None
             try:
-                return common_convert_value(_type, value)
-            except Exception as e:
+                value = common_convert_value(_type, value, name)
+            except Exception:
                 raise AppApiException(
                     500,
-                    _("Field: {name} Type: {type} Value: {value} Type conversion error").format(
-                        name=name, type=_type, value=value
+                    _("Field: {name}, Type: {type}, Value: {value}, Type conversion error").format(
+                        name=name, type=_type, value=f"${value}({type(value).__name__})"
                     ),
                 )
+            if value is None and is_required:
+                raise AppApiException(
+                    500,
+                    _('Field: {name}, Type: {_type}, is required').format(
+                        name=name, _type=_type
+                    )
+                )
+            return value
 
     class Operate(serializers.Serializer):
         id = serializers.UUIDField(required=True, label=_("tool id"))
