@@ -51,7 +51,7 @@ msgid "empty command"
 #: apps/application/flow/backend/sandbox_shell.py:269
 msgid "empty command group"
 
-#: apps/common/utils/tool_code.py:148
+#: apps/common/utils/tool_code.py:175
 msgid "Execution interrupted or tampered"
 
 #: apps/maxkb/conf.py:180
@@ -128,7 +128,7 @@ msgid "MiniMax TTS API returned empty audio data"
 #: apps/ops/celery/decorator.py:49
 msgid "Must set crontab or interval one"
 
-#: apps/common/utils/tool_code.py:151
+#: apps/common/utils/tool_code.py:178
 msgid "No result found."
 
 #: apps/ops/celery/logger.py:202

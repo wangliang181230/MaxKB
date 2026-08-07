@@ -23,9 +23,9 @@ from django.utils.translation import gettext as _
 from application.flow.common import WorkflowMode
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.tool_lib_node.i_tool_lib_node import IToolLibNode
+from application.flow.step_node.tool_node.impl.base_tool_node import convert_value
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import AppApiException
-from common.utils.common import common_convert_value
 from common.utils.logger import maxkb_logger
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.shared_resource_auth import get_runtime_user_id, validate_authorized_tool_ids
@@ -56,62 +56,6 @@ def get_field_value(debug_field_list, name, is_required):
     if is_required:
         raise AppApiException(500, _('Field: {name} No value set').format(name=name))
     return None
-
-
-def valid_reference_value(_type, value, name):
-    if _type == 'int':
-        instance_type = int | float
-    elif _type == 'boolean':
-        instance_type = bool
-    elif _type == 'float':
-        instance_type = float | int
-    elif _type == 'dict':
-        value = json.loads(value) if isinstance(value, str) else value
-        instance_type = dict
-    elif _type == 'array':
-        value = json.loads(value) if isinstance(value, str) else value
-        instance_type = list
-    elif _type == 'string':
-        instance_type = str
-    else:
-        maxkb_logger.error(_(
-            'Field: {name} Type: {_type} Value: {value} Unsupported this type'
-        ).format(name=name, _type=_type, value=value))
-        return value
-    if not isinstance(value, instance_type):
-        raise Exception(_(
-            'Field: {name} Type: {_type} Value: {value} Type error'
-        ).format(name=name, _type=_type, value=value))
-    return value
-
-
-def convert_value(name: str, value, _type, is_required, source, node):
-    if not is_required and (value is None or (isinstance(value, (str, list)) and not value)):
-        return None
-    if source == 'reference':
-        value = node.workflow_manage.get_reference_field(
-            value[0],
-            value[1:])
-        if value is None:
-            if not is_required:
-                return None
-            else:
-                raise Exception(_(
-                    'Field: {name} Type: {_type} is required'
-                ).format(name=name, _type=_type))
-        value = valid_reference_value(_type, value, name)
-        if _type == 'int':
-            return int(value)
-        if _type == 'float':
-            return float(value)
-        return value
-    try:
-        value = node.workflow_manage.generate_field_value(value)
-        return common_convert_value(_type, value)
-    except Exception as e:
-        raise Exception(
-            _('Field: {name} Type: {_type} Value: {value} Type error').format(name=name, _type=_type,
-                                                                              value=value))
 
 
 def valid_function(tool_lib, workspace_id, user_id=None):
