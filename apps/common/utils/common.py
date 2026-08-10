@@ -460,11 +460,16 @@ def common_convert_value(_type, value, name):
     if value is None:
         return None
 
+    if isinstance(value, str) and value.strip():
+        return None
+    if isinstance(value, (list, dict)) and not value:
+        return None
+
     try:
         if _type == "int":
             return int(value)
         if _type == "boolean":
-            if isinstance(value, str) and value.lower() in ("false", "0", "[]", ""):
+            if isinstance(value, str) and value.lower() in ("false", "0", "[]"):
                 return False
             return bool(value)
         if _type == "float":
@@ -491,8 +496,6 @@ def common_convert_value(_type, value, name):
                 return None
         except Exception:
             pass
-        if isinstance(value, str) and value.strip() == '':
-            return None
         raise Exception(
             _('Field: {name} Type: {_type} Value: {value} Type conversion error')
             .format(name=name, _type=_type, value=value)
