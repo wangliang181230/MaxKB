@@ -40,34 +40,47 @@ class BaseVariableAssignNode(IVariableAssignNode):
 
     def convert(self, val, target_type):
         if not target_type or val is None:
-            return val
+            return None
 
-        if target_type == 'json_object':
-            if isinstance(val, dict) or isinstance(val, list):
+        if isinstance(val, str) and val.strip():
+            return None
+
+        try:
+            if target_type == "json_object":
+                if isinstance(val, dict) or isinstance(val, list):
+                    return val
+                return json.loads(val)
+            elif target_type == "json_string":
+                if isinstance(val, str):
+                    return val
+                return json.dumps(val, ensure_ascii=False)
+            elif target_type == "string":
+                if isinstance(val, str):
+                    return val
+                return str(val)
+            elif target_type == "int":
+                if isinstance(val, int):
+                    return val
+                return int(val)
+            elif target_type == "float":
+                if isinstance(val, float):
+                    return val
+                return float(val)
+            elif target_type == "boolean":
+                if val == "":
+                    return None
+                if isinstance(val, str) and val.lower() in ('false', '0', '[]'):
+                    return False
+                return bool(val)
+            else:
                 return val
-            return json.loads(val)
-        elif target_type == 'json_string':
-            if isinstance(val, str):
-                return val
-            return json.dumps(val, ensure_ascii=False)
-        elif target_type == 'string':
-            if isinstance(val, str):
-                return val
-            return str(val)
-        elif target_type == 'int':
-            if isinstance(val, int):
-                return val
-            return int(val)
-        elif target_type == 'float':
-            if isinstance(val, float):
-                return val
-            return float(val)
-        elif target_type == 'boolean':
-            if isinstance(val, str) and val.lower() in ('false', '0', '[]', ''):
-                return False
-            return bool(val)
-        else:
-            return val
+        except Exception as e:
+            try:
+                if len(val) == 0:
+                    return None
+            except Exception:
+                pass
+            raise e
 
     def handle(self, variable, evaluation):
         result = {
