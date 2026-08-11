@@ -243,6 +243,16 @@ export default {
       addCondition: '添加條件',
       addBranch: '添加分支',
     },
+    switchNode: {
+      label: 'Switch',
+      text: '針對單個變量進行枚舉值匹配，執行不同分支',
+      branch_name: '分支名稱',
+      variable: '匹配變量',
+      valuePlaceholder: '請輸入匹配值',
+      valueMessage: '請輸入匹配值',
+      addCase: '添加 Case',
+      equalTo: '等於',
+    },
     replyNode: {
       label: '指定回覆',
       text: '指定回覆內容，引用變量會轉換為字符串進行輸出',
