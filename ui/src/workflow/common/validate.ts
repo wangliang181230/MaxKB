@@ -210,7 +210,7 @@ export class WorkFlowInstance {
     if (node.properties.status && node.properties.status === 500) {
       throw `${node.properties.stepName} ${t('workflow.validate.nodeUnavailable')}`
     }
-    if (node.type === WorkflowType.Condition) {
+    if (node.type === WorkflowType.Condition || node.type === WorkflowType.Switch) {
       const branch_list = node.properties.node_data.branch
       for (const branch of branch_list) {
         const source_anchor_id = `${node.id}_${branch.id}_right`
@@ -362,7 +362,7 @@ export class KnowledgeWorkFlowInstance extends WorkFlowInstance {
     if (node.properties.status && node.properties.status === 500) {
       throw `${node.properties.stepName} ${t('workflow.validate.nodeUnavailable')}`
     }
-    if (node.type === WorkflowType.Condition) {
+    if (node.type === WorkflowType.Condition || node.type === WorkflowType.Switch) {
       const branch_list = node.properties.node_data.branch
       for (const branch of branch_list) {
         const source_anchor_id = `${node.id}_${branch.id}_right`
