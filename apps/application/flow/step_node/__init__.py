@@ -9,6 +9,7 @@
 from .ai_chat_step_node import *
 from .application_node import BaseApplicationNode
 from .condition_node import *
+from .switch_node import *
 from .data_source_local_node.impl.base_data_source_local_node import BaseDataSourceLocalNode
 from .data_source_web_node.impl.base_data_source_web_node import BaseDataSourceWebNode
 from .direct_reply_node import *
@@ -45,7 +46,7 @@ from .document_split_node import BaseDocumentSplitNode
 from .tool_start_node import BaseToolStartStepNode
 
 node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearchDocumentNode, BaseQuestionNode,
-             BaseConditionNode, BaseReplyNode, BaseEmptyNode,
+             BaseConditionNode, BaseSwitchNode, BaseReplyNode, BaseEmptyNode,
              BaseToolNodeNode, BaseToolLibNodeNode, BaseRerankerNode, BaseApplicationNode,
              BaseDocumentExtractNode,
              BaseImageUnderstandNode, BaseFormNode, BaseSpeechToTextNode, BaseTextToSpeechNode,
