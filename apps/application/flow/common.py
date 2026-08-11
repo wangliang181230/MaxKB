@@ -214,7 +214,7 @@ class Workflow:
 
     def is_valid_node(self, node: Node):
         self.is_valid_node_params(node)
-        if node.type == 'condition-node':
+        if node.type in ('condition-node', 'switch-node'):
             branch_list = node.properties.get('node_data').get('branch')
             for branch in branch_list:
                 source_anchor_id = f"{node.id}_{branch.get('id')}_right"

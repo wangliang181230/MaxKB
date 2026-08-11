@@ -330,22 +330,19 @@
   }
 }
 // 拖拽排序
-.drag-card.no-drag {
+.drag-card {
   .handle {
+    cursor: pointer;
     .handle-img {
       display: none;
     }
   }
 }
+// 可拖拽分支：拖拽图标默认直接显示（无需 hover）
 .drag-card:not(.no-drag) {
   .handle {
     .handle-img {
-      display: none;
-    }
-    &:hover {
-      .handle-img {
-        display: block;
-      }
+      display: block;
     }
   }
 }
