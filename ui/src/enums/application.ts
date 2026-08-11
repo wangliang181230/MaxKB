@@ -13,6 +13,7 @@ export enum WorkflowType {
   SearchDocument = 'search-document-node',
   Question = 'question-node',
   Condition = 'condition-node',
+  Switch = 'switch-node',
   Reply = 'reply-node',
   EmptyNode = 'empty-node',
   ToolLib = 'tool-lib-node',
