@@ -1,27 +1,33 @@
-import ConditioNodeVue from './index.vue'
+import SwitchNodeVue from './index.vue'
 import { AppNode, AppNodeModel } from '@/workflow/common/app-node'
-class ConditioNode extends AppNode {
+
+class SwitchNode extends AppNode {
   constructor(props: any) {
-    super(props, ConditioNodeVue)
+    super(props, SwitchNodeVue)
   }
 }
-const get_up_index_height = (condition_list: Array<any>, index: number) => {
-  return condition_list
+
+const get_up_index_height = (branch_list: Array<any>, index: number) => {
+  return branch_list
     .filter((item, i) => i < index)
     .map((item) => item.height + 8)
     .reduce((x, y) => x + y, 0)
 }
-class ConditionModel extends AppNodeModel {
+
+class SwitchNodeModel extends AppNodeModel {
+  get_width() {
+    return 340
+  }
+
   refreshBranch() {
-    // 更新节点连接边的path
     this.incoming.edges.forEach((edge: any) => {
-      // 调用自定义的更新方案
       edge.updatePathByAnchor()
     })
     this.outgoing.edges.forEach((edge: any) => {
       edge.updatePathByAnchor()
     })
   }
+
   getDefaultAnchor() {
     const {
       id,
@@ -29,7 +35,7 @@ class ConditionModel extends AppNodeModel {
       y,
       width,
       height,
-      properties: { branch_condition_list }
+      properties: { branch_condition_list },
     } = this
     if (this.height === undefined) {
       this.height = 200
@@ -41,7 +47,7 @@ class ConditionModel extends AppNodeModel {
       y: showNode ? y : y - 15,
       id: `${id}_left`,
       edgeAddable: false,
-      type: 'left'
+      type: 'left',
     })
 
     if (branch_condition_list) {
@@ -50,9 +56,9 @@ class ConditionModel extends AppNodeModel {
         const h = get_up_index_height(branch_condition_list, index)
         anchors.push({
           x: x + width / 2 - 10,
-          y: showNode ? y - height / 2 + 75 + h + element.height / 2 : y - 15,
+          y: showNode ? y - height / 2 + 155 + h + element.height / 2 : y - 15,
           id: `${id}_${element.id}_right`,
-          type: 'right'
+          type: 'right',
         })
       }
     }
@@ -60,8 +66,9 @@ class ConditionModel extends AppNodeModel {
     return anchors
   }
 }
+
 export default {
-  type: 'condition-node',
-  model: ConditionModel,
-  view: ConditioNode
+  type: 'switch-node',
+  model: SwitchNodeModel,
+  view: SwitchNode,
 }

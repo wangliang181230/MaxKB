@@ -110,6 +110,8 @@ export default {
     searchResult: 'Search Results',
     conditionResult: 'Condition Evaluation',
     branchEvaluationDetails: 'Branch Evaluation Details',
+    switchResult: 'Switch Result',
+    switchBranchDetails: 'Branch Match Details',
     currentChat: 'Current Chat',
     answer: 'AI Response',
     replyContent: 'Reply Content',

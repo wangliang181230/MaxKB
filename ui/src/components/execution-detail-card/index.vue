@@ -229,6 +229,44 @@
               </div>
             </div>
           </template>
+          <!-- Switch 节点 -->
+          <template v-if="data.type == WorkflowType.Switch">
+            <div class="card-never border-r-6 mb-12">
+              <h5 class="p-8-12">
+                {{ $t('workflow.nodes.switchNode.variable') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <el-tag type="warn" size="small" class="f_val" :title="formatValue(data.field_value, data.field_type)">{{ data.field_value }}</el-tag>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mb-12">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.switchResult') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <el-tag type="success" size="small">
+                  {{ data.branch_name || '-' }}
+                </el-tag>
+              </div>
+            </div>
+            <!-- Switch 执行细节 -->
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('aiChat.executionDetails.switchBranchDetails') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <h5 class="mb-8" v-if="data.branch_details && data.branch_details.length > 0" v-for="(branch, bIndex) in data.branch_details" :key="bIndex">
+                  <el-tag :type="branch.is_matched ? 'success' : 'error'" size="small" class="mr-8">
+                    {{ branch.type || '-' }}
+                  </el-tag>
+                  <span v-if="branch.type !== 'DEFAULT' && (branch.match_type != null || branch.case_value != null)" class="color-secondary">
+                    <el-tag type="primary" size="small" class="ml-8" v-if="branch.match_type != null">{{ branch.match_type }}</el-tag>
+                    <el-tag type="warn" size="small" class="f_val" v-if="branch.case_value != null">{{ branch.case_value }}</el-tag>
+                  </span>
+                </h5>
+              </div>
+            </div>
+          </template>
           <!-- AI 对话 -->
           <template v-if="data.type == WorkflowType.AiChat">
             <div class="card-never border-r-6">
