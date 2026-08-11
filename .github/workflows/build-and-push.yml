@@ -5,7 +5,7 @@ on:
     branches:
       - v2.10*
       - v3*
-      - my*
+      - my*dev
       - test*
       - dev*
     paths-ignore:
