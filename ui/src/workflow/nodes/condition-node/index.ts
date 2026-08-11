@@ -1,5 +1,4 @@
 import ConditioNodeVue from './index.vue'
-import { cloneDeep, set } from 'lodash'
 import { AppNode, AppNodeModel } from '@/workflow/common/app-node'
 class ConditioNode extends AppNode {
   constructor(props: any) {
