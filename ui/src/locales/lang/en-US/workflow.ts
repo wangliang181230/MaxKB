@@ -241,6 +241,16 @@ You are a master of problem optimization, adept at accurately inferring user int
       addCondition: 'Add Condition',
       addBranch: 'Add Branch',
     },
+    switchNode: {
+      label: 'Switch',
+      text: 'Match a single variable against enumerated values and route to different branches',
+      branch_name: 'Branch Name',
+      variable: 'Match Variable',
+      valuePlaceholder: 'Please enter match value',
+      valueMessage: 'Please enter match value',
+      addCase: 'Add Case',
+      equalTo: 'equals',
+    },
     replyNode: {
       label: 'Specified Reply',
       text: 'Specify reply content, referenced variables will be converted to strings for output',
