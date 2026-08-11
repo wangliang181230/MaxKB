@@ -260,8 +260,9 @@
                   {{ branch.type || '-' }}
                 </el-tag>
                 <span v-if="branch.type !== 'DEFAULT'" class="color-secondary">
-                  {{ $t('workflow.nodes.switchNode.matchValue') }}: <strong>{{ branch.field_value }}</strong>
-                  {{ $t('workflow.nodes.switchNode.equalTo') }} <strong>{{ branch.case_value }}</strong>
+                  <el-tag type="warn" size="small" class="f_val">{{ formatValue(branch.field_value, branch.field_type) }}</el-tag>
+                  <el-tag type="primary" size="small" class="ml-8">{{ branch.match_type || $t('workflow.nodes.switchNode.equalTo') }}</el-tag>
+                  <el-tag type="warn" size="small" class="f_val" v-if="branch.case_value != null">{{ formatValue(branch.case_value, null) }}</el-tag>
                 </span>
               </h5>
             </div>

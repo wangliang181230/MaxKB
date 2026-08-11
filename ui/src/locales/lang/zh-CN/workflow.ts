@@ -251,7 +251,6 @@ export default {
       valuePlaceholder: '请输入匹配值',
       valueMessage: '请输入匹配值',
       addCase: '添加 Case',
-      matchValue: '变量值',
       equalTo: '等于',
     },
     replyNode: {

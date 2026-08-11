@@ -251,7 +251,6 @@ You are a master of problem optimization, adept at accurately inferring user int
       valuePlaceholder: 'Please enter match value',
       valueMessage: 'Please enter match value',
       addCase: 'Add Case',
-      matchValue: 'Variable value',
       equalTo: 'equals',
     },
     replyNode: {

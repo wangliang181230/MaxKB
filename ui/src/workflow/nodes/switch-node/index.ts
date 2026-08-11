@@ -1,5 +1,4 @@
 import SwitchNodeVue from './index.vue'
-import { cloneDeep, set } from 'lodash'
 import { AppNode, AppNodeModel } from '@/workflow/common/app-node'
 
 class SwitchNode extends AppNode {
@@ -16,6 +15,10 @@ const get_up_index_height = (branch_list: Array<any>, index: number) => {
 }
 
 class SwitchNodeModel extends AppNodeModel {
+  get_width() {
+    return 340
+  }
+
   refreshBranch() {
     this.incoming.edges.forEach((edge: any) => {
       edge.updatePathByAnchor()
@@ -53,7 +56,7 @@ class SwitchNodeModel extends AppNodeModel {
         const h = get_up_index_height(branch_condition_list, index)
         anchors.push({
           x: x + width / 2 - 10,
-          y: showNode ? y - height / 2 + 75 + h + element.height / 2 : y - 15,
+          y: showNode ? y - height / 2 + 155 + h + element.height / 2 : y - 15,
           id: `${id}_${element.id}_right`,
           type: 'right',
         })

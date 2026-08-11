@@ -36,28 +36,49 @@ class BaseSwitchNode(ISwitchNode):
             field_value = self.workflow_manage.get_reference_field(field[0], field[1:])
         except Exception:
             pass
+        field_value = str(field_value) if field_value is not None else None
 
         for branch in branch_list:
             branch_type = branch.get('type')
+
+            case_value = self.workflow_manage.generate_field_value(str(branch.get('value', '')))
+            if isinstance(case_value, str) and case_value.lower().strip() in ('[none]', '[null]', '为空'):
+                try:
+                    is_matched = True if field_value is None or len(field_value) == 0 else False
+                    branch_details.append({
+                        'id': branch.get('id'),
+                        'type': branch_type,
+                        'match_type': '为空',
+                        'is_matched': is_matched,
+                        'field_value': field_value,
+                        'field_type': type(field_value).__name__,
+                    })
+                    if not is_matched:
+                        continue
+                    return branch, branch_details
+                except TypeError:
+                    pass
+
             # DEFAULT branch always matches last
             if branch_type == 'DEFAULT':
                 branch_details.append({
                     'id': branch.get('id'),
                     'type': branch_type,
-                    'case_value': branch.get('value', ''),
+                    'case_value': case_value,
                     'is_matched': True,
-                    'field_value': str(field_value) if field_value is not None else '',
+                    'field_value': field_value,
+                    'field_type': type(field_value).__name__,
                 })
                 return branch, branch_details
 
-            case_value = branch.get('value', '')
             is_matched = str(field_value) == str(case_value) if field_value is not None else (case_value == '')
             branch_details.append({
                 'id': branch.get('id'),
                 'type': branch_type,
                 'case_value': case_value,
                 'is_matched': is_matched,
-                'field_value': str(field_value) if field_value is not None else '',
+                'field_value': field_value,
+                'field_type': type(field_value).__name__,
             })
             if is_matched:
                 return branch, branch_details

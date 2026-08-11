@@ -975,7 +975,7 @@ export const menuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, switchNode, formNode, replyNode, loopNode],
+    list: [conditionNode, switchNode, replyNode, formNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1013,7 +1013,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, switchNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, switchNode, replyNode, formNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1097,7 +1097,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, switchNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, switchNode, replyNode, formNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1143,7 +1143,7 @@ const toolMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, switchNode, formNode, replyNode, loopNode],
+    list: [conditionNode, switchNode, replyNode, formNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
