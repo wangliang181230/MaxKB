@@ -1,0 +1,71 @@
+import SwitchNodeVue from './index.vue'
+import { cloneDeep, set } from 'lodash'
+import { AppNode, AppNodeModel } from '@/workflow/common/app-node'
+
+class SwitchNode extends AppNode {
+  constructor(props: any) {
+    super(props, SwitchNodeVue)
+  }
+}
+
+const get_up_index_height = (branch_list: Array<any>, index: number) => {
+  return branch_list
+    .filter((item, i) => i < index)
+    .map((item) => item.height + 8)
+    .reduce((x, y) => x + y, 0)
+}
+
+class SwitchNodeModel extends AppNodeModel {
+  refreshBranch() {
+    this.incoming.edges.forEach((edge: any) => {
+      edge.updatePathByAnchor()
+    })
+    this.outgoing.edges.forEach((edge: any) => {
+      edge.updatePathByAnchor()
+    })
+  }
+
+  getDefaultAnchor() {
+    const {
+      id,
+      x,
+      y,
+      width,
+      height,
+      properties: { branch_condition_list },
+    } = this
+    if (this.height === undefined) {
+      this.height = 200
+    }
+    const showNode = this.properties.showNode === undefined ? true : this.properties.showNode
+    const anchors: any = []
+    anchors.push({
+      x: x - width / 2 + 10,
+      y: showNode ? y : y - 15,
+      id: `${id}_left`,
+      edgeAddable: false,
+      type: 'left',
+    })
+
+    if (branch_condition_list) {
+      for (let index = 0; index < branch_condition_list.length; index++) {
+        const element = branch_condition_list[index]
+        const h = get_up_index_height(branch_condition_list, index)
+        anchors.push({
+          x: x + width / 2 - 10,
+          y: showNode ? y - height / 2 + 75 + h + element.height / 2 : y - 15,
+          id: `${id}_${element.id}_right`,
+          type: 'right',
+        })
+      }
+    }
+
+    return anchors
+  }
+}
+
+export default {
+  type: 'switch-node',
+  model: SwitchNodeModel,
+  view: SwitchNode,
+}

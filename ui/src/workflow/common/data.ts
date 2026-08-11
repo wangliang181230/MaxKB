@@ -395,6 +395,24 @@ export const conditionNode = {
     },
   },
 }
+export const switchNode = {
+  type: WorkflowType.Switch,
+  text: t('workflow.nodes.switchNode.text'),
+  label: t('workflow.nodes.switchNode.label'),
+  height: 175,
+  properties: {
+    width: 600,
+    stepName: t('workflow.nodes.switchNode.label'),
+    config: {
+      fields: [
+        {
+          label: t('workflow.nodes.switchNode.branch_name'),
+          value: 'branch_name',
+        },
+      ],
+    },
+  },
+}
 export const replyNode = {
   type: WorkflowType.Reply,
   text: t('workflow.nodes.replyNode.text'),
@@ -918,7 +936,7 @@ export const knowledgeMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopNode],
+    list: [conditionNode, switchNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -957,7 +975,7 @@ export const menuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode],
+    list: [conditionNode, switchNode, formNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -995,7 +1013,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, switchNode, formNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1037,7 +1055,7 @@ export const knowledgeLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, switchNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1079,7 +1097,7 @@ export const toolLoopMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopContinueNode, loopBreakNode],
+    list: [conditionNode, switchNode, formNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1125,7 +1143,7 @@ const toolMenuNodes = [
   },
   {
     label: t('workflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, replyNode, loopNode],
+    list: [conditionNode, switchNode, formNode, replyNode, loopNode],
   },
   {
     label: t('workflow.nodes.classify.dataProcessing'),
@@ -1287,6 +1305,7 @@ export const nodeDict: any = {
   [WorkflowType.SearchDocument]: searchDocumentNode,
   [WorkflowType.Question]: questionNode,
   [WorkflowType.Condition]: conditionNode,
+  [WorkflowType.Switch]: switchNode,
   [WorkflowType.Base]: baseNode,
   [WorkflowType.Start]: startNode,
   [WorkflowType.Reply]: replyNode,
@@ -1423,6 +1442,7 @@ const nodeLocaleBindings: Array<[any, string, string]> = [
     'workflow.nodes.parameterExtractionNode.label',
   ],
   [conditionNode, 'workflow.nodes.conditionNode.text', 'workflow.nodes.conditionNode.label'],
+  [switchNode, 'workflow.nodes.switchNode.text', 'workflow.nodes.switchNode.label'],
   [replyNode, 'workflow.nodes.replyNode.text', 'workflow.nodes.replyNode.label'],
   [emptyNode, 'workflow.nodes.emptyNode.text', 'workflow.nodes.emptyNode.label'],
   [readLongTermMemoryNode, 'workflow.nodes.readLongTermMemoryNode.text', 'workflow.nodes.readLongTermMemoryNode.label'],
@@ -1576,6 +1596,7 @@ ${t('workflow.nodes.formNode.form_content_format2')}`,
   [variableSplittingNode.properties.config.fields, ['common.result']],
   [parameterExtractionNode.properties.config.fields, ['common.result']],
   [conditionNode.properties.config.fields, ['workflow.nodes.conditionNode.branch_name']],
+  [switchNode.properties.config.fields, ['workflow.nodes.switchNode.branch_name']],
   [replyNode.properties.config.fields, ['common.content']],
   [
     rerankerNode.properties.config.fields,

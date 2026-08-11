@@ -108,6 +108,8 @@ export default {
     searchResult: '檢索結果',
     conditionResult: '判斷結果',
     branchEvaluationDetails: '分支判斷詳情',
+    switchResult: 'Switch 結果',
+    switchBranchDetails: '分支匹配詳情',
     currentChat: '本次對話',
     answer: 'AI 回答',
     replyContent: '回覆內容',
