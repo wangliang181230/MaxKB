@@ -61,4 +61,4 @@ jobs:
       - name: Docker Buildx (build-and-push)
         run: |
           sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches && free -m
-          docker buildx build --output "type=docker,push=true" ${{ steps.prepare.outputs.buildx_args }} -f installer/Dockerfile
+          docker buildx build --output "type=image,push=true" --provenance=false ${{ steps.prepare.outputs.buildx_args }} -f installer/Dockerfile
