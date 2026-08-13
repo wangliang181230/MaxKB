@@ -42,12 +42,12 @@ def convert_value(name: str, value, _type: str, is_required: bool, source, node)
         value = common_convert_value(_type, value, name)
     except Exception:
         raise Exception(
-            _('Field: {name} Type: {_type} Value: {value} Type conversion error')
-            .format(name=name, _type=_type, value=value)
+            _('Field: {name}, Type: {type}, Value: {value}, Type conversion error')
+            .format(name=name, type=_type, value=f"${value}({type(value).__name__})")
         )
     if value is None and is_required:
         raise Exception(_(
-            'Field: {name} Type: {_type} is required'
+            'Field: {name}, Type: {_type}, is required'
         ).format(name=name, _type=_type))
     return value
 

@@ -2,6 +2,8 @@
 import json
 from typing import List
 
+from django.utils.translation import gettext as _
+
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.variable_assign_node.i_variable_assign_node import IVariableAssignNode
 
@@ -38,47 +40,52 @@ class BaseVariableAssignNode(IVariableAssignNode):
         else:
             self.workflow_manage.out_context[variable['fields'][1]] = value
 
-    def convert(self, val, target_type):
-        if not target_type or val is None:
+    def convert(self, value, target_type):
+        if not target_type or value is None:
             return None
 
-        if isinstance(val, str) and val.strip():
+        if isinstance(value, str) and not value.strip():
+            return None
+        if isinstance(value, (list, dict)) and not value:
             return None
 
         try:
             if target_type == "json_object":
-                if isinstance(val, dict) or isinstance(val, list):
-                    return val
-                return json.loads(val)
+                if isinstance(value, dict) or isinstance(value, list):
+                    return value
+                return json.loads(value)
             elif target_type == "json_string":
-                if isinstance(val, str):
-                    return val
-                return json.dumps(val, ensure_ascii=False)
+                if isinstance(value, str):
+                    return value
+                return json.dumps(value, ensure_ascii=False)
             elif target_type == "string":
-                if isinstance(val, str):
-                    return val
-                return str(val)
+                if isinstance(value, str):
+                    return value
+                return str(value)
             elif target_type == "int":
-                if isinstance(val, int):
-                    return val
-                return int(val)
+                if isinstance(value, int):
+                    return value
+                return int(value)
             elif target_type == "float":
-                if isinstance(val, float):
-                    return val
-                return float(val)
+                if isinstance(value, float):
+                    return value
+                return float(value)
             elif target_type == "boolean":
-                if isinstance(val, str) and val.lower() in ('false', '0', '[]'):
+                if isinstance(value, str) and value.lower() in ('false', '0', '[]'):
                     return False
-                return bool(val)
+                return bool(value)
             else:
-                return val
-        except Exception as e:
+                return value
+        except Exception:
             try:
-                if len(val) == 0:
+                if len(value) == 0:
                     return None
             except Exception:
                 pass
-            raise e
+            raise Exception(
+                _('Type: {type}, Value: {value}, Type conversion error')
+                .format(type=target_type, value=f"${value}({type(value).__name__})")
+            )
 
     def handle(self, variable, evaluation):
         result = {

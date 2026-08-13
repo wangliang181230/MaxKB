@@ -460,7 +460,7 @@ def common_convert_value(_type, value, name):
     if value is None:
         return None
 
-    if isinstance(value, str) and value.strip():
+    if isinstance(value, str) and not value.strip():
         return None
     if isinstance(value, (list, dict)) and not value:
         return None
@@ -497,8 +497,8 @@ def common_convert_value(_type, value, name):
         except Exception:
             pass
         raise Exception(
-            _('Field: {name} Type: {_type} Value: {value} Type conversion error')
-            .format(name=name, _type=_type, value=value)
+            _('Field: {name}, Type: {type}, Value: {value}, Type conversion error')
+            .format(name=name, type=_type, value=f"${value}({type(value).__name__})")
         )
     return value
 

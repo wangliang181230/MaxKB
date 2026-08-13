@@ -3122,16 +3122,16 @@ msgid "Field: {name} No value set"
 msgstr ""
 
 #: apps/tools/serializers/tool.py:614
-msgid "Field: {name} Type: {type} Value: {value} Type conversion error"
+msgid "Field: {name}, Type: {type}, Value: {value}, Type conversion error"
+msgstr ""
+
+#: apps/tools/serializers/tool.py:614
+msgid "Type: {type}, Value: {value}, Type conversion error"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:99
 #: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:74
-msgid "Field: {name} Type: {_type} is required"
-msgstr ""
-
-#: no source
-msgid "Field: {name} Type: {_type} Value: {value} Type conversion error"
+msgid "Field: {name}, Type: {_type}, is required"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:82
@@ -3139,13 +3139,13 @@ msgstr ""
 #: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:57
 #: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:88
 #: apps/trigger/handler/impl/trigger/event_trigger.py:48
-msgid "Field: {name} Type: {_type} Value: {value} Type error"
+msgid "Field: {name}, Type: {_type}, Value: {value} Type error"
 msgstr ""
 
 #: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:77
 #: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:52
 #: apps/trigger/handler/impl/trigger/event_trigger.py:43
-msgid "Field: {name} Type: {_type} Value: {value} Unsupported this type"
+msgid "Field: {name}, Type: {_type}, Value: {value} Unsupported this type"
 msgstr ""
 
 #: apps/application/flow/step_node/condition_node/i_condition_node.py:21
