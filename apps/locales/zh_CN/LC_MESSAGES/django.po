@@ -719,8 +719,8 @@ msgstr ""
 #: apps/common/auth/handle/impl/chat_anonymous_user_token.py:44
 #: apps/common/auth/handle/impl/chat_anonymous_user_token.py:48
 #: apps/common/auth/handle/impl/user_token.py:317
-#: apps/trigger/handler/impl/trigger/event_trigger.py:120
-#: apps/trigger/handler/impl/trigger/event_trigger.py:123
+#: apps/trigger/handler/impl/trigger/event_trigger.py:97
+#: apps/trigger/handler/impl/trigger/event_trigger.py:100
 msgid "Authentication information is incorrect"
 msgstr "身份验证信息不正确"
 
@@ -1093,11 +1093,13 @@ msgstr "机器人用户令牌是必填项"
 
 #: apps/application/flow/step_node/condition_node/i_condition_node.py:25
 #: apps/application/flow/step_node/intent_node/i_intent_node.py:13
+#: apps/application/flow/step_node/switch_node/i_switch_node.py:19
 msgid "Branch id"
 msgstr "分支 ID"
 
 #: apps/application/flow/step_node/condition_node/i_condition_node.py:26
 #: apps/application/flow/step_node/intent_node/i_intent_node.py:15
+#: apps/application/flow/step_node/switch_node/i_switch_node.py:20
 msgid "Branch Type"
 msgstr "分支类型"
 
@@ -1207,6 +1209,10 @@ msgstr "CAS 认证失败"
 #: no source
 msgid "CAS Log in"
 msgstr "CAS 登录"
+
+#: apps/application/flow/step_node/switch_node/i_switch_node.py:21
+msgid "Case value"
+msgstr ""
 
 #: apps/models_provider/serializers/model_serializer.py:68
 #: apps/models_provider/serializers/model_serializer.py:258
@@ -1950,7 +1956,7 @@ msgstr "资源端创建触发器"
 #: apps/models_provider/serializers/model_serializer.py:367
 #: apps/models_provider/serializers/model_serializer.py:551
 #: apps/tools/serializers/tool.py:347
-#: apps/tools/serializers/tool.py:1724
+#: apps/tools/serializers/tool.py:1735
 msgid "create user"
 msgstr "创建用户"
 
@@ -2577,7 +2583,7 @@ msgstr ""
 msgid "Download"
 msgstr "下载"
 
-#: apps/tools/serializers/tool.py:1399
+#: apps/tools/serializers/tool.py:1410
 msgid "download callback url"
 msgstr ""
 
@@ -2598,7 +2604,7 @@ msgstr "下载源文件"
 msgid "Download system source file"
 msgstr "下载系统源文件"
 
-#: apps/tools/serializers/tool.py:1398
+#: apps/tools/serializers/tool.py:1409
 msgid "download url"
 msgstr ""
 
@@ -2884,9 +2890,9 @@ msgstr ""
 msgid "Error trigger type"
 msgstr "触发器类型错误"
 
-#: apps/trigger/handler/impl/trigger/event_trigger.py:80
-#: apps/trigger/handler/impl/trigger/event_trigger.py:81
-#: apps/trigger/handler/impl/trigger/event_trigger.py:82
+#: apps/trigger/handler/impl/trigger/event_trigger.py:57
+#: apps/trigger/handler/impl/trigger/event_trigger.py:58
+#: apps/trigger/handler/impl/trigger/event_trigger.py:59
 msgid "Event Trigger WebHook"
 msgstr ""
 
@@ -3121,30 +3127,22 @@ msgstr "字段名称"
 msgid "Field: {name} No value set"
 msgstr "字段：{name} 未设置值"
 
-#: apps/tools/serializers/tool.py:614
+#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:45
+#: apps/common/utils/common.py:500
+#: apps/tools/serializers/tool.py:616
 msgid "Field: {name}, Type: {type}, Value: {value}, Type conversion error"
 msgstr "字段：{name}, 类型：{type}, 值：{value}, 类型转换错误"
 
-#: apps/tools/serializers/tool.py:614
-msgid "Type: {type}, Value: {value}, Type conversion error"
-msgstr "类型：{type}, 值：{value}, 类型转换错误"
-
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:99
-#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:74
+#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:49
+#: apps/tools/serializers/tool.py:624
 msgid "Field: {name}, Type: {_type}, is required"
 msgstr ""
 
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:82
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:113
-#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:57
-#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:88
-#: apps/trigger/handler/impl/trigger/event_trigger.py:48
+#: no source
 msgid "Field: {name}, Type: {_type}, Value: {value} Type error"
 msgstr "字段：{name}, 类型：{_type}, 值：{value}, 类型转换错误"
 
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:77
-#: apps/application/flow/step_node/tool_node/impl/base_tool_node.py:52
-#: apps/trigger/handler/impl/trigger/event_trigger.py:43
+#: no source
 msgid "Field: {name}, Type: {_type}, Value: {value} Unsupported this type"
 msgstr "字段：{name}, 类型：{_type}, 值：{value}, 不支持该类型"
 
@@ -3166,8 +3164,8 @@ msgstr "字段仅支持字符串|整数|字典|数组|浮点数"
 #: apps/knowledge/serializers/knowledge.py:115
 #: apps/knowledge/serializers/knowledge_workflow.py:94
 #: apps/oss/serializers/file.py:259
-#: apps/tools/serializers/tool.py:923
-#: apps/tools/serializers/tool.py:1558
+#: apps/tools/serializers/tool.py:934
+#: apps/tools/serializers/tool.py:1569
 #: apps/tools/serializers/tool_workflow.py:128
 msgid "file"
 msgstr "文件"
@@ -3316,8 +3314,8 @@ msgstr "文件夹不存在"
 #: apps/knowledge/serializers/knowledge.py:884
 #: apps/tools/serializers/tool.py:319
 #: apps/tools/serializers/tool.py:342
-#: apps/tools/serializers/tool.py:926
-#: apps/tools/serializers/tool.py:1716
+#: apps/tools/serializers/tool.py:937
+#: apps/tools/serializers/tool.py:1727
 msgid "folder id"
 msgstr "文件夹 ID"
 
@@ -3339,7 +3337,7 @@ msgstr "文件夹名称已存在"
 
 #: apps/knowledge/serializers/knowledge.py:260
 #: apps/knowledge/serializers/knowledge.py:291
-#: apps/tools/serializers/tool.py:1732
+#: apps/tools/serializers/tool.py:1743
 msgid "Folder not found"
 msgstr "文件夹不存在"
 
@@ -3384,11 +3382,11 @@ msgstr "工具内容"
 msgid "function content"
 msgstr "工具内容"
 
-#: apps/tools/serializers/tool.py:1184
+#: apps/tools/serializers/tool.py:1195
 msgid "Function does not exist"
 msgstr "工具不存在"
 
-#: apps/tools/serializers/tool.py:1165
+#: apps/tools/serializers/tool.py:1176
 msgid "function ID"
 msgstr "工具 ID"
 
@@ -4651,7 +4649,7 @@ msgid "Icon"
 msgstr ""
 
 #: apps/models_provider/api/provide.py:19
-#: apps/tools/serializers/tool.py:1400
+#: apps/tools/serializers/tool.py:1411
 msgid "icon"
 msgstr "图标"
 
@@ -4769,8 +4767,8 @@ msgstr "讯飞许小宝"
 #: apps/knowledge/serializers/knowledge_workflow.py:409
 #: apps/knowledge/serializers/knowledge_workflow.py:657
 #: apps/tools/serializers/tool.py:497
-#: apps/tools/serializers/tool.py:1388
-#: apps/tools/serializers/tool.py:1447
+#: apps/tools/serializers/tool.py:1399
+#: apps/tools/serializers/tool.py:1458
 #: apps/tools/serializers/tool_workflow.py:375
 msgid "Illegal download callback url"
 msgstr ""
@@ -4780,8 +4778,8 @@ msgstr ""
 #: apps/knowledge/serializers/knowledge_workflow.py:394
 #: apps/knowledge/serializers/knowledge_workflow.py:642
 #: apps/tools/serializers/tool.py:481
-#: apps/tools/serializers/tool.py:1336
-#: apps/tools/serializers/tool.py:1407
+#: apps/tools/serializers/tool.py:1347
+#: apps/tools/serializers/tool.py:1418
 #: apps/tools/serializers/tool_workflow.py:358
 msgid "Illegal download url"
 msgstr ""
@@ -4920,7 +4918,7 @@ msgstr "印尼语"
 msgid "init field list"
 msgstr "内置字段列表"
 
-#: apps/tools/serializers/tool.py:1603
+#: apps/tools/serializers/tool.py:1614
 msgid "Init Field List"
 msgstr ""
 
@@ -4939,7 +4937,7 @@ msgstr "水墨画"
 msgid "input field list"
 msgstr "输入字段列表"
 
-#: apps/tools/serializers/tool.py:1604
+#: apps/tools/serializers/tool.py:1615
 msgid "Input Field List"
 msgstr ""
 
@@ -5856,7 +5854,7 @@ msgstr "消息类型错误"
 msgid "Message types not supported yet"
 msgstr "消息类型暂不支持"
 
-#: apps/tools/serializers/tool.py:1601
+#: apps/tools/serializers/tool.py:1612
 msgid "Messages"
 msgstr ""
 
@@ -5985,7 +5983,7 @@ msgid "Model does not exist"
 msgstr "模型不存在"
 
 #: apps/chat/serializers/chat.py:272
-#: apps/tools/serializers/tool.py:1631
+#: apps/tools/serializers/tool.py:1642
 msgid "Model does not exists or is not an LLM model"
 msgstr ""
 
@@ -6019,7 +6017,7 @@ msgstr "模型ID"
 msgid "model id"
 msgstr "模型ID"
 
-#: apps/tools/serializers/tool.py:1599
+#: apps/tools/serializers/tool.py:1610
 msgid "Model ID"
 msgstr ""
 
@@ -6086,7 +6084,7 @@ msgstr "模型参数设置"
 msgid "Model parameters"
 msgstr "模型参数"
 
-#: apps/tools/serializers/tool.py:1602
+#: apps/tools/serializers/tool.py:1613
 msgid "Model Params Setting"
 msgstr ""
 
@@ -6574,7 +6572,7 @@ msgid "Only shared tools can be deleted"
 msgstr "仅限共享工具可以被删除"
 
 #: apps/application/serializers/application.py:1108
-#: apps/common/utils/tool_code.py:385
+#: apps/common/utils/tool_code.py:422
 #: apps/knowledge/serializers/knowledge_workflow.py:695
 #: apps/tools/serializers/tool_workflow.py:409
 msgid "Only support transport=sse or transport=streamable_http"
@@ -6925,7 +6923,7 @@ msgstr "摄影"
 #: apps/application/flow/step_node/application_node/i_application_node.py:21
 #: apps/application/flow/step_node/image_understand_step_node/i_image_understand_node.py:29
 #: apps/chat/serializers/chat.py:174
-#: apps/tools/serializers/tool.py:1168
+#: apps/tools/serializers/tool.py:1179
 msgid "picture"
 msgstr "图片"
 
@@ -7044,7 +7042,7 @@ msgstr "问题 ID 列表"
 msgid "problem list"
 msgstr "问题列表"
 
-#: apps/common/utils/tool_code.py:379
+#: apps/common/utils/tool_code.py:416
 msgid "Process execution timed out after {} seconds."
 msgstr ""
 
@@ -7061,7 +7059,7 @@ msgstr "项目网址"
 msgid "prompt"
 msgstr "提示词"
 
-#: apps/tools/serializers/tool.py:1600
+#: apps/tools/serializers/tool.py:1611
 msgid "Prompt"
 msgstr ""
 
@@ -7294,8 +7292,8 @@ msgstr "实时语音识别-Fun-ASR/Paraformer"
 msgid "Record ID"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:1456
-#: apps/tools/serializers/tool.py:1462
+#: apps/tools/serializers/tool.py:1467
+#: apps/tools/serializers/tool.py:1473
 msgid "record id"
 msgstr ""
 
@@ -7691,7 +7689,7 @@ msgstr "科幻风格"
 #: apps/knowledge/serializers/knowledge.py:1136
 #: apps/knowledge/serializers/knowledge_workflow.py:347
 #: apps/tools/serializers/tool.py:345
-#: apps/tools/serializers/tool.py:1719
+#: apps/tools/serializers/tool.py:1730
 msgid "scope"
 msgstr "范围"
 
@@ -7965,7 +7963,7 @@ msgstr "由于Llama2本身的中文对齐较弱，我们采用中文指令集，
 msgid "sketch"
 msgstr "素描"
 
-#: apps/tools/serializers/tool.py:1591
+#: apps/tools/serializers/tool.py:1602
 msgid "Skill file does not exist"
 msgstr ""
 
@@ -8043,12 +8041,12 @@ msgstr "源文件 ID"
 msgid "source id"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:1457
+#: apps/tools/serializers/tool.py:1468
 msgid "source name"
 msgstr ""
 
 #: apps/oss/serializers/file.py:265
-#: apps/tools/serializers/tool.py:1458
+#: apps/tools/serializers/tool.py:1469
 #: apps/trigger/serializers/task_source_trigger.py:62
 #: apps/trigger/serializers/task_source_trigger.py:183
 msgid "source type"
@@ -8272,7 +8270,7 @@ msgstr "开始--->向量知识库: {knowledge_id}"
 msgid "State"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:1459
+#: apps/tools/serializers/tool.py:1470
 msgid "state"
 msgstr ""
 
@@ -9454,13 +9452,13 @@ msgstr "工具数据聚合"
 msgid "tool description"
 msgstr "工具描述"
 
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:119
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:124
+#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:63
+#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:68
 #: apps/application/flow/step_node/tool_workflow_lib_node/impl/base_tool_workflow_lib_node.py:123
 #: apps/application/flow/step_node/tool_workflow_lib_node/impl/base_tool_workflow_lib_node.py:128
-#: apps/tools/serializers/tool.py:1237
-#: apps/tools/serializers/tool.py:1412
-#: apps/tools/serializers/tool.py:1588
+#: apps/tools/serializers/tool.py:1248
+#: apps/tools/serializers/tool.py:1423
+#: apps/tools/serializers/tool.py:1599
 msgid "Tool does not exist"
 msgstr "工具不存在"
 
@@ -9470,13 +9468,13 @@ msgstr "工具不存在"
 msgid "Tool ID"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:620
-#: apps/tools/serializers/tool.py:1226
-#: apps/tools/serializers/tool.py:1326
-#: apps/tools/serializers/tool.py:1397
-#: apps/tools/serializers/tool.py:1455
-#: apps/tools/serializers/tool.py:1463
-#: apps/tools/serializers/tool.py:1575
+#: apps/tools/serializers/tool.py:631
+#: apps/tools/serializers/tool.py:1237
+#: apps/tools/serializers/tool.py:1337
+#: apps/tools/serializers/tool.py:1408
+#: apps/tools/serializers/tool.py:1466
+#: apps/tools/serializers/tool.py:1474
+#: apps/tools/serializers/tool.py:1586
 #: apps/tools/serializers/tool_workflow.py:150
 msgid "tool id"
 msgstr "工具 ID"
@@ -9485,9 +9483,9 @@ msgstr "工具 ID"
 msgid "Tool id"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:633
-#: apps/tools/serializers/tool.py:642
-#: apps/tools/serializers/tool.py:1177
+#: apps/tools/serializers/tool.py:644
+#: apps/tools/serializers/tool.py:653
+#: apps/tools/serializers/tool.py:1188
 #: apps/tools/serializers/tool_version.py:80
 #: apps/tools/serializers/tool_workflow.py:159
 #: apps/tools/serializers/tool_workflow.py:400
@@ -9498,7 +9496,7 @@ msgstr ""
 msgid "Tool IDs"
 msgstr ""
 
-#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:126
+#: apps/application/flow/step_node/tool_lib_node/impl/base_tool_lib_node.py:70
 #: apps/application/flow/step_node/tool_workflow_lib_node/impl/base_tool_workflow_lib_node.py:130
 msgid "Tool is not active"
 msgstr ""
@@ -9509,15 +9507,15 @@ msgstr ""
 #: apps/tools/serializers/tool.py:299
 #: apps/tools/serializers/tool.py:318
 #: apps/tools/serializers/tool.py:343
-#: apps/tools/serializers/tool.py:1209
-#: apps/tools/serializers/tool.py:1272
-#: apps/tools/serializers/tool.py:1717
+#: apps/tools/serializers/tool.py:1220
+#: apps/tools/serializers/tool.py:1283
+#: apps/tools/serializers/tool.py:1728
 #: apps/tools/serializers/tool_workflow.py:426
 msgid "tool name"
 msgstr "工具名称"
 
-#: apps/tools/serializers/tool.py:656
-#: apps/tools/serializers/tool.py:722
+#: apps/tools/serializers/tool.py:667
+#: apps/tools/serializers/tool.py:733
 msgid "Tool not found"
 msgstr "工具不存在"
 
@@ -9526,16 +9524,16 @@ msgid "Tool parameters"
 msgstr "工具参数"
 
 #: apps/chat/serializers/chat_record.py:240
-#: apps/tools/serializers/tool.py:1494
+#: apps/tools/serializers/tool.py:1505
 msgid "Tool record does not exist"
 msgstr ""
 
 #: apps/tools/serializers/tool.py:346
-#: apps/tools/serializers/tool.py:1720
+#: apps/tools/serializers/tool.py:1731
 msgid "tool type"
 msgstr ""
 
-#: apps/tools/serializers/tool.py:1722
+#: apps/tools/serializers/tool.py:1733
 msgid "tool type list"
 msgstr ""
 
@@ -9652,7 +9650,7 @@ msgstr "试听"
 
 #: apps/application/serializers/application_chat.py:295
 #: apps/common/constants/permission_constants.py:346
-#: apps/trigger/handler/impl/trigger/event_trigger.py:91
+#: apps/trigger/handler/impl/trigger/event_trigger.py:68
 #: apps/trigger/views/trigger.py:63
 #: apps/trigger/views/trigger.py:84
 #: apps/trigger/views/trigger.py:110
@@ -9793,10 +9791,14 @@ msgstr "类型"
 msgid "Type"
 msgstr "类型"
 
-#: apps/common/utils/common.py:477
-#: apps/common/utils/common.py:484
+#: apps/common/utils/common.py:483
+#: apps/common/utils/common.py:490
 msgid "type error"
 msgstr "类型错误"
+
+#: apps/application/flow/step_node/variable_assign_node/impl/base_variable_assign_node.py:86
+msgid "Type: {type}, Value: {value}, Type conversion error"
+msgstr "类型：{type}, 值：{value}, 类型转换错误"
 
 #: apps/users/serializers/user.py:490
 msgid "Unable to delete administrator"
@@ -9851,9 +9853,9 @@ msgstr "未发布应用数量"
 #: apps/knowledge/serializers/document.py:1161
 #: apps/knowledge/serializers/document.py:1183
 #: apps/knowledge/serializers/knowledge_workflow.py:433
-#: apps/tools/serializers/tool.py:1085
-#: apps/tools/serializers/tool.py:1107
-#: apps/tools/serializers/tool.py:1566
+#: apps/tools/serializers/tool.py:1096
+#: apps/tools/serializers/tool.py:1118
+#: apps/tools/serializers/tool.py:1577
 msgid "Unsupported file format"
 msgstr "不支持的文件格式"
 
@@ -10101,15 +10103,15 @@ msgstr "用户组关系 IDs 不能为空"
 #: apps/models_provider/impl/volcanic_engine_model_provider/credential/bigModel_stt.py:15
 #: apps/models_provider/impl/volcanic_engine_model_provider/credential/stt.py:14
 #: apps/models_provider/serializers/model_serializer.py:362
-#: apps/tools/serializers/tool.py:924
-#: apps/tools/serializers/tool.py:1167
-#: apps/tools/serializers/tool.py:1208
-#: apps/tools/serializers/tool.py:1224
-#: apps/tools/serializers/tool.py:1271
-#: apps/tools/serializers/tool.py:1324
-#: apps/tools/serializers/tool.py:1395
-#: apps/tools/serializers/tool.py:1559
-#: apps/tools/serializers/tool.py:1573
+#: apps/tools/serializers/tool.py:935
+#: apps/tools/serializers/tool.py:1178
+#: apps/tools/serializers/tool.py:1219
+#: apps/tools/serializers/tool.py:1235
+#: apps/tools/serializers/tool.py:1282
+#: apps/tools/serializers/tool.py:1335
+#: apps/tools/serializers/tool.py:1406
+#: apps/tools/serializers/tool.py:1570
+#: apps/tools/serializers/tool.py:1584
 #: apps/tools/serializers/tool_workflow.py:390
 #: apps/tools/serializers/tool_workflow.py:425
 #: apps/trigger/serializers/task_source_trigger.py:40
@@ -10146,7 +10148,7 @@ msgstr "用户 ID"
 #: apps/tools/serializers/tool.py:344
 #: apps/tools/serializers/tool.py:464
 #: apps/tools/serializers/tool.py:564
-#: apps/tools/serializers/tool.py:1718
+#: apps/tools/serializers/tool.py:1729
 #: apps/tools/serializers/tool_workflow.py:148
 #: apps/users/serializers/user.py:1196
 msgid "user id"
@@ -10291,6 +10293,10 @@ msgstr "蒸汽波"
 
 #: apps/application/flow/step_node/variable_aggregation_node/i_variable_aggregation_node.py:15
 msgid "Variable"
+msgstr ""
+
+#: apps/application/flow/step_node/switch_node/i_switch_node.py:25
+msgid "Variable field"
 msgstr ""
 
 #: apps/application/flow/step_node/variable_aggregation_node/i_variable_aggregation_node.py:13
@@ -10496,7 +10502,7 @@ msgstr "验证令牌是必填项"
 msgid "Version Name"
 msgstr "版本名称"
 
-#: apps/tools/serializers/tool.py:1401
+#: apps/tools/serializers/tool.py:1412
 msgid "versions"
 msgstr ""
 
@@ -10788,7 +10794,7 @@ msgstr "工作空间不存在"
 #: apps/knowledge/serializers/tag.py:93
 #: apps/knowledge/serializers/tag.py:169
 #: apps/knowledge/serializers/tag.py:203
-#: apps/tools/serializers/tool.py:1598
+#: apps/tools/serializers/tool.py:1609
 #: apps/tools/serializers/tool_version.py:40
 #: apps/tools/serializers/tool_version.py:43
 #: apps/tools/serializers/tool_version.py:68
@@ -10865,18 +10871,18 @@ msgstr "工作空间 ID"
 #: apps/tools/serializers/tool.py:465
 #: apps/tools/serializers/tool.py:551
 #: apps/tools/serializers/tool.py:565
-#: apps/tools/serializers/tool.py:621
-#: apps/tools/serializers/tool.py:925
-#: apps/tools/serializers/tool.py:1166
-#: apps/tools/serializers/tool.py:1225
-#: apps/tools/serializers/tool.py:1325
-#: apps/tools/serializers/tool.py:1396
-#: apps/tools/serializers/tool.py:1454
-#: apps/tools/serializers/tool.py:1464
-#: apps/tools/serializers/tool.py:1560
-#: apps/tools/serializers/tool.py:1574
-#: apps/tools/serializers/tool.py:1657
-#: apps/tools/serializers/tool.py:1715
+#: apps/tools/serializers/tool.py:632
+#: apps/tools/serializers/tool.py:936
+#: apps/tools/serializers/tool.py:1177
+#: apps/tools/serializers/tool.py:1236
+#: apps/tools/serializers/tool.py:1336
+#: apps/tools/serializers/tool.py:1407
+#: apps/tools/serializers/tool.py:1465
+#: apps/tools/serializers/tool.py:1475
+#: apps/tools/serializers/tool.py:1571
+#: apps/tools/serializers/tool.py:1585
+#: apps/tools/serializers/tool.py:1668
+#: apps/tools/serializers/tool.py:1726
 #: apps/tools/serializers/tool_workflow.py:149
 #: apps/trigger/serializers/task_source_trigger.py:39
 #: apps/trigger/serializers/task_source_trigger.py:61
