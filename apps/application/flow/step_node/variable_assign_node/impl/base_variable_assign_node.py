@@ -42,7 +42,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
 
     def convert(self, value, target_type):
         if not target_type or value is None:
-            return None
+            return value
 
         if isinstance(value, str) and not value.strip():
             return None
