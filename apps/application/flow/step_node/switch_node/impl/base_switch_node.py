@@ -40,24 +40,7 @@ class BaseSwitchNode(ISwitchNode):
 
         for branch in branch_list:
             branch_type = branch.get('type')
-
             case_value = self.workflow_manage.generate_field_value(str(branch.get('value', '')))
-            if isinstance(case_value, str) and case_value.lower().strip() in ('[none]', '[null]', '为空'):
-                try:
-                    is_matched = True if field_value is None or len(field_value) == 0 else False
-                    branch_details.append({
-                        'id': branch.get('id'),
-                        'type': branch_type,
-                        'match_type': '为空',
-                        'is_matched': is_matched,
-                        'field_value': field_value,
-                        'field_type': type(field_value).__name__,
-                    })
-                    if not is_matched:
-                        continue
-                    return branch, branch_details
-                except TypeError:
-                    pass
 
             # DEFAULT branch always matches last
             if branch_type == 'DEFAULT':
@@ -72,6 +55,25 @@ class BaseSwitchNode(ISwitchNode):
                 return branch, branch_details
 
             is_matched = str(field_value) == str(case_value) if field_value is not None else (case_value == '')
+
+            if not is_matched \
+                    and isinstance(case_value, str) \
+                    and case_value.lower().strip() in ('none', 'null', '为空'):
+                try:
+                    is_matched = True if field_value is None or len(field_value) == 0 else False
+                    if is_matched:
+                        branch_details.append({
+                            'id': branch.get('id'),
+                            'type': branch_type,
+                            'match_type': '为空',
+                            'is_matched': is_matched,
+                            'field_value': field_value,
+                            'field_type': type(field_value).__name__,
+                        })
+                        return branch, branch_details
+                except TypeError:
+                    pass
+
             branch_details.append({
                 'id': branch.get('id'),
                 'type': branch_type,
