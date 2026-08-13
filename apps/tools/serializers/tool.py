@@ -604,13 +604,11 @@ class ToolSerializer(serializers.Serializer):
 
         @staticmethod
         def convert_value(name: str, value: str, _type: str, is_required: bool):
-            print(f"---- Field3: {name}, Type: {_type}, Value: {value}, Required: {is_required}")
             if value is None and not is_required:
                 return None
             try:
                 value = common_convert_value(_type, value, name)
-            except Exception as e:
-                print(f"---- Field3-error: {name}, Type: {_type}, Value: {value}, Required: {is_required}, error: {e}")
+            except Exception:
                 raise AppApiException(
                     500,
                     _("Field: {name}, Type: {type}, Value: {value}, Type conversion error").format(
@@ -618,7 +616,6 @@ class ToolSerializer(serializers.Serializer):
                     ),
                 )
             if value is None and is_required:
-                print(f"---- Field3-error is required: {name}, Type: {_type}, Value: {value}, Required: {is_required}")
                 raise AppApiException(
                     500,
                     _('Field: {name}, Type: {_type}, is required').format(
