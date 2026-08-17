@@ -96,9 +96,9 @@ def clean_method(query_conditions, clean_log=True):
                     id__in=chat_ids,
                 )
 
-                user_ids = list(chats.values_list("user_id", flat=True).distinct())
+                chat_user_ids = list(chats.values_list("chat_user_id", flat=True).distinct())
 
-                ApplicationChatUserStats.objects.filter(chat_user_id__in=user_ids).delete()
+                ApplicationChatUserStats.objects.filter(chat_user_id__in=chat_user_ids).delete()
 
                 chats.delete()
             File.objects.filter(loid__in=[file.loid for file in files_to_delete]).delete()
