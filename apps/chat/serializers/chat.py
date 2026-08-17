@@ -12,7 +12,7 @@ from gettext import gettext
 from typing import List, Dict
 
 import uuid_utils.compat as uuid
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from rest_framework import serializers
@@ -76,6 +76,16 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
                 existing_user.save()
 
             if username and not existing_user.username.startswith(username):
+                # 检查username是否已存在，如果存在则添加数字
+                if QuerySet(ChatUser).filter((Q(nick_name=username) | Q(username=username)) & ~Q(id=chat_user_id)).exists():
+                    counter = 1
+                    username_bak = username
+                    username = f"{username}_{counter}"
+                    counter += 1
+                    while QuerySet(ChatUser).filter((Q(nick_name=username) | Q(username=username)) & ~Q(id=chat_user_id)).exists():
+                        username = f"{username_bak}_{counter}"
+                        counter += 1
+                # 判断昵称是否需要一起修改（如果昵称为空或等于用户名时，需要）
                 if not existing_user.nick_name or existing_user.nick_name == existing_user.username:
                     existing_user.nick_name = username
                 existing_user.username = username
@@ -90,7 +100,6 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
     user_username = username or f"user_{chat_user_id}"
 
     # 检查username是否已存在，如果存在则添加数字
-    from django.db.models import Q
     counter = 1
     username_bak = user_username
     while QuerySet(ChatUser).filter(Q(nick_name=user_username) | Q(username=user_username)).exists():
