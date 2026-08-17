@@ -19,11 +19,11 @@
               v-model="search_form[search_type]"
               @change="getList"
               :placeholder="$t('common.search')"
-              class="w-240"
+              class="w-360"
               clearable
             />
           </div>
-          <el-select v-model="history_day" class="ml-12 w-180" @change="changeDayHandle">
+          <el-select v-model="history_day" class="ml-12 w-140" @change="changeDayHandle">
             <el-option
               v-for="item in dayOptions"
               :key="item.value"
@@ -40,8 +40,8 @@
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             @change="changeDayRangeHandle"
-            style="width: 240px"
-            class="mr-12"
+            style="width: 220px"
+            class="ml-4"
           />
         </div>
         <div style="display: flex; align-items: center" class="float-right">
