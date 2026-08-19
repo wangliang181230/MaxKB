@@ -130,9 +130,17 @@ onUnmounted(() => {
 })
 
 function zoomIn() {
+  if (props.lf?.scheduleZoom) {
+    props.lf.scheduleZoom(true, [0, 0])
+    return
+  }
   props.lf?.zoom(true, [0, 0])
 }
 function zoomOut() {
+  if (props.lf?.scheduleZoom) {
+    props.lf.scheduleZoom(false, [0, 0])
+    return
+  }
   props.lf?.zoom(false, [0, 0])
 }
 function fitView() {
