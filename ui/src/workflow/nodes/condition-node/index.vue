@@ -221,6 +221,10 @@ const resizeCondition = (wh: any, row: any, index: number) => {
       ? props.nodeModel.properties.branch_condition_list
       : [],
   )
+  const currentItem = branch_condition_list.find((item: any) => item.id === row.id)
+  if (currentItem?.height === wh.height && currentItem?.index === index) {
+    return
+  }
   const new_branch_condition_list = branch_condition_list.map((item: any) => {
     if (item.id === row.id) {
       return { ...item, height: wh.height, index: index }
