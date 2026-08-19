@@ -16,16 +16,34 @@ const lastMouse = {
 }
 let selected: any | null = null
 const bindMousePosition = (lf: any) => {
-  const updateMouse = (e: MouseEvent) => {
-    lastMouse.x = e.clientX
-    lastMouse.y = e.clientY
+  let frameId = 0
+  let pendingMouseEvent: MouseEvent | null = null
+
+  const flushMouse = () => {
+    frameId = 0
+    if (!pendingMouseEvent) {
+      return
+    }
+    lastMouse.x = pendingMouseEvent.clientX
+    lastMouse.y = pendingMouseEvent.clientY
     lastMouse.hasValue = true
+    pendingMouseEvent = null
+  }
+
+  const updateMouse = (e: MouseEvent) => {
+    pendingMouseEvent = e
+    if (!frameId) {
+      frameId = window.requestAnimationFrame(flushMouse)
+    }
   }
 
   // 推荐直接监听容器，这样鼠标在节点上移动也能拿到
   lf.container.addEventListener('mousemove', updateMouse)
 
   return () => {
+    if (frameId) {
+      window.cancelAnimationFrame(frameId)
+    }
     lf.container.removeEventListener('mousemove', updateMouse)
   }
 }

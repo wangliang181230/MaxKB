@@ -401,6 +401,9 @@ const deleteNode = () => {
 const resizeStepContainer = (wh: any) => {
   if (wh.height) {
     if (!props.nodeModel.virtual) {
+      if (height.value.stepContainerHeight === wh.height) {
+        return
+      }
       height.value.stepContainerHeight = wh.height
       props.nodeModel.setHeight(height.value.stepContainerHeight)
     }
@@ -534,7 +537,7 @@ const keyWord = ref('')
 const currentKeyWord = ref(false)
 const selectOn = (kw: string) => {
   keyWord.value = kw
-  props.nodeModel.isSelected = false
+  set(props.nodeModel, 'isSelected', false)
   currentKeyWord.value = false
 }
 /**
@@ -574,7 +577,11 @@ const highlightedStepName = (contentText: string) => {
 }
 onMounted(() => {
   set(props.nodeModel, 'openNodeMenu', (anchorData: any) => {
-    showAnchor.value ? closeNodeMenu() : openNodeMenu(anchorData)
+    if (showAnchor.value) {
+      closeNodeMenu()
+    } else {
+      openNodeMenu(anchorData)
+    }
   })
   set(props.nodeModel, 'selectOn', selectOn)
   set(props.nodeModel, 'focusOn', focusOn)

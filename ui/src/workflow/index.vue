@@ -44,10 +44,88 @@ const props = defineProps({
 })
 
 const lf = ref()
+let removeZoomListener: null | (() => void) = null
+
+const createZoomScheduler = (instance: any, container: HTMLElement) => {
+  let frameId = 0
+  let isApplying = false
+  let pendingZoom: null | { zoomSize: any; point?: [number, number]; clientX?: number; clientY?: number } =
+    null
+
+  const scheduleNextFrame = () => {
+    if (frameId) {
+      return
+    }
+    frameId = window.requestAnimationFrame(() => {
+      frameId = 0
+      if (!pendingZoom) {
+        isApplying = false
+        return
+      }
+      isApplying = true
+      const currentZoom = pendingZoom
+      pendingZoom = null
+      let point = currentZoom.point
+      if (!point && currentZoom.clientX !== undefined && currentZoom.clientY !== undefined) {
+        const canvasPoint = instance.graphModel.getPointByClient({
+          x: currentZoom.clientX,
+          y: currentZoom.clientY,
+        }).canvasOverlayPosition
+        point = [canvasPoint.x, canvasPoint.y]
+      }
+      instance.zoom(currentZoom.zoomSize, point || [0, 0])
+      if (pendingZoom) {
+        scheduleNextFrame()
+      } else {
+        isApplying = false
+      }
+    })
+  }
+
+  const scheduleZoom = (zoomSize: any, point?: [number, number], event?: WheelEvent) => {
+    pendingZoom = point
+      ? { zoomSize, point }
+      : event
+        ? {
+            zoomSize,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }
+        : { zoomSize }
+    if (!frameId && !isApplying) {
+      scheduleNextFrame()
+    }
+  }
+
+  const handleWheel = (event: WheelEvent) => {
+    if (!(event.ctrlKey || event.metaKey)) {
+      return
+    }
+    event.preventDefault()
+    scheduleZoom(event.deltaY < 0, undefined, event)
+  }
+
+  container.addEventListener('wheel', handleWheel, { passive: false })
+
+  return {
+    scheduleZoom,
+    cleanup: () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+      frameId = 0
+      pendingZoom = null
+      isApplying = false
+      container.removeEventListener('wheel', handleWheel)
+    },
+  }
+}
+
 onMounted(() => {
   renderGraphData()
 })
 onUnmounted(() => {
+  removeZoomListener?.()
   disconnectAll()
 })
 const render = (data: any) => {
@@ -57,11 +135,13 @@ const render = (data: any) => {
 const renderGraphData = (data?: any) => {
   const container: any = document.querySelector('#container')
   if (container) {
+    removeZoomListener?.()
     lf.value = new LogicFlow({
       plugins: [Dagre, SelectionSelect],
       textEdit: false,
       adjustEdge: false,
       adjustEdgeStartAndEnd: false,
+      stopZoomGraph: true,
       background: {
         backgroundColor: '#f5f6f7',
       },
@@ -79,6 +159,9 @@ const renderGraphData = (data?: any) => {
       isSilentMode: false,
       container: container,
     })
+    const { scheduleZoom, cleanup } = createZoomScheduler(lf.value, container)
+    removeZoomListener = cleanup
+    lf.value.scheduleZoom = scheduleZoom
     lf.value.setTheme({
       bezier: {
         stroke: '#afafaf',
@@ -198,6 +281,7 @@ defineExpose({
   width: 100%;
   height: 100%;
   position: relative;
+  will-change: transform;
 }
 
 .workflow-control {
