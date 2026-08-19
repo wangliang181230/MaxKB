@@ -401,6 +401,9 @@ const deleteNode = () => {
 const resizeStepContainer = (wh: any) => {
   if (wh.height) {
     if (!props.nodeModel.virtual) {
+      if (height.value.stepContainerHeight === wh.height) {
+        return
+      }
       height.value.stepContainerHeight = wh.height
       props.nodeModel.setHeight(height.value.stepContainerHeight)
     }
@@ -525,16 +528,16 @@ const closeNodeMenu = () => {
   showAnchor.value = false
   anchorData.value = undefined
 }
+
 /**
  * 检索选中时候触发
  * @param kw
  */
-
 const keyWord = ref('')
 const currentKeyWord = ref(false)
 const selectOn = (kw: string) => {
   keyWord.value = kw
-  props.nodeModel.isSelected = false
+  set(props.nodeModel, 'isSelected', false)
   currentKeyWord.value = false
 }
 /**
@@ -553,28 +556,26 @@ const clearSelectOn = () => {
   currentKeyWord.value = false
 }
 
-// 高亮选中关键字
-
+/**
+ * 高亮选中关键字
+ * @param contentText 需要高亮的内容
+ */
 const highlightedStepName = (contentText: string) => {
-  let res = contentText
   if (keyWord.value === '') {
-    return res
-  } else {
-    const wordsArray = contentText.split('')
-    for (let i = 0; i < wordsArray.length; i++) {
-      if (keyWord.value.includes(wordsArray[i])) {
-        wordsArray[i] = currentKeyWord.value
-          ? `<span style='background: #FF8800;'>${wordsArray[i]}</span>`
-          : `<span style='background: #FFC60A;'>${wordsArray[i]}</span>`
-      }
-    }
-    res = wordsArray.join('')
-    return res
+    return contentText
   }
+  const escaped = keyWord.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escaped})`, 'g')
+  const color = currentKeyWord.value ? '#FF8800' : '#FFC60A'
+  return contentText.replace(regex, `<span style='background: ${color};'>$1</span>`)
 }
 onMounted(() => {
   set(props.nodeModel, 'openNodeMenu', (anchorData: any) => {
-    showAnchor.value ? closeNodeMenu() : openNodeMenu(anchorData)
+    if (showAnchor.value) {
+      closeNodeMenu()
+    } else {
+      openNodeMenu(anchorData)
+    }
   })
   set(props.nodeModel, 'selectOn', selectOn)
   set(props.nodeModel, 'focusOn', focusOn)

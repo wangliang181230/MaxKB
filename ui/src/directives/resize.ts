@@ -2,29 +2,71 @@ import type { App } from 'vue'
 export default {
   install: (app: App) => {
     app.directive('resize', {
-      created(el: any, binding: any) {
-        // 记录长宽
-        let width = ''
-        let height = ''
-        function getSize() {
-          const style = (document.defaultView as any).getComputedStyle(el)
-          // 如果当前长宽和历史长宽不同
-          if (width !== style.width || height !== style.height) {
-            // binding.value在这里就是下面的resizeChart函数
+      mounted(el: any, binding: any) {
+        let width = 0
+        let height = 0
+        let frameId = 0
+        let pendingSize: null | { width: number; height: number } = null
 
-            binding.value({
-              width: parseFloat(style.width),
-              height: parseFloat(style.height)
-            })
+        const emitSize = (size: { width: number; height: number }) => {
+          if (width === size.width && height === size.height) {
+            return
           }
-          width = style.width
-          height = style.height
+          width = size.width
+          height = size.height
+          binding.value(size)
         }
 
-        ;(el as any).__vueDomResize__ = setInterval(getSize, 500)
+        const flushSize = () => {
+          frameId = 0
+          if (!pendingSize) {
+            return
+          }
+          const size = pendingSize
+          pendingSize = null
+          emitSize(size)
+        }
+
+        const scheduleEmit = (size: { width: number; height: number }) => {
+          pendingSize = size
+          if (!frameId) {
+            frameId = window.requestAnimationFrame(flushSize)
+          }
+        }
+
+        const observer = new ResizeObserver((entries) => {
+          const entry = entries[0]
+          if (!entry) {
+            return
+          }
+          scheduleEmit({
+            width: entry.contentRect.width,
+            height: entry.contentRect.height,
+          })
+        })
+
+        observer.observe(el)
+        const rect = el.getBoundingClientRect()
+        scheduleEmit({
+          width: rect.width,
+          height: rect.height,
+        })
+
+        ;(el as any).__vueDomResize__ = {
+          observer,
+          cancel: () => {
+            if (frameId) {
+              window.cancelAnimationFrame(frameId)
+            }
+            frameId = 0
+            pendingSize = null
+          },
+        }
       },
-      unmounted(el: any, binding: any) {
-        clearInterval((el as any).__vueDomResize__)
+      unmounted(el: any) {
+        ;(el as any).__vueDomResize__?.cancel?.()
+        ;(el as any).__vueDomResize__?.observer?.disconnect?.()
+        delete (el as any).__vueDomResize__
       }
     })
   }
