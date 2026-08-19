@@ -383,6 +383,9 @@ class AppNodeModel extends HtmlResize.model {
   setHeight(height: number) {
     const sourceHeight = this.height
     const targetHeight = height + 100
+    if (targetHeight === sourceHeight) {
+      return
+    }
     this.height = targetHeight
     this.properties['height'] = targetHeight
     this.move(0, (targetHeight - sourceHeight) / 2)
