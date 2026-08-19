@@ -115,13 +115,15 @@ class CustomEdge2 extends BezierEdge {
       height: customHeight,
     }
 
-    setTimeout(() => {
-      const s = document.getElementById(id)
-      if (s && !this.isMounted) {
-        this.isMounted = true
-        this.renderVueComponent(s)
-      }
-    }, 0)
+    if (!this.isMounted) {
+      setTimeout(() => {
+        const s = document.getElementById(id)
+        if (s && !this.isMounted) {
+          this.isMounted = true
+          this.renderVueComponent(s)
+        }
+      }, 0)
+    }
 
     delete style.stroke
 
