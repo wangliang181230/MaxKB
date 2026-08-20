@@ -15,8 +15,7 @@ from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import TokenAuthentication
 
 from common import signing
-from common.exception.app_exception import AppAuthenticationFailed, AppEmbedIdentityFailed, AppChatNumOutOfBoundsFailed, \
-    AppApiException
+from common.exception.app_exception import AppAuthenticationFailed
 from common.utils.logger import maxkb_logger
 
 token_cache = cache.caches['default']
@@ -89,12 +88,13 @@ class TokenAuth(TokenAuthentication):
                 if handle.support(request, token, token_details.get_token_details):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+        except AppAuthenticationFailed as e:
+            maxkb_logger.error(f'Invalid Token: {e.status_code} - {e}')
+            raise
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
-            if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
-                                                                                                                 AppApiException):
-                raise e
-            raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+            # 不抛出 AppAuthenticationFailed 1002，避免运行时异常导致跳转到登录页面
+            maxkb_logger.error(f'TokenAuth.authenticate Exception: {e}', exc_info=True)
+            raise Exception(_('Unknown exception occurred while verifying token-auth'))
 
 
 class ChatTokenAuth(TokenAuthentication):
@@ -115,12 +115,13 @@ class ChatTokenAuth(TokenAuthentication):
                 if handle.support(request, token, token_details.get_token_details):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+        except AppAuthenticationFailed as e:
+            maxkb_logger.error(f'Invalid ChatToken: {e.status_code} - {e}')
+            raise
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
-            if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
-                                                                                                                 AppApiException):
-                raise e
-            raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+            # 不抛出 AppAuthenticationFailed 1002，避免运行时异常导致跳转到登录页面
+            maxkb_logger.error(f'ChatTokenAuth.authenticate Exception: {e}', exc_info=True)
+            raise Exception(_('Unknown exception occurred while verifying chat-token-auth'))
 
 
 class AllTokenAuth(TokenAuthentication):
@@ -141,12 +142,13 @@ class AllTokenAuth(TokenAuthentication):
                 if handle.support(request, token, token_details.get_token_details):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+        except AppAuthenticationFailed as e:
+            maxkb_logger.error(f'Invalid AllToken: {e.status_code} - {e}')
+            raise
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
-            if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
-                                                                                                                 AppApiException):
-                raise e
-            raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
+            # 不抛出 AppAuthenticationFailed 1002，避免运行时异常导致跳转到登录页面
+            maxkb_logger.error(f'AllTokenAuth.authenticate Exception: {e}', exc_info=True)
+            raise Exception(_('Unknown exception occurred while verifying all-token-auth'))
 
 
 class WebhookAuth(TokenAuthentication):
