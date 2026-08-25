@@ -122,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive, watch, computed, nextTick } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { useRoute } from 'vue-router'
 import DynamicsForm from '@/components/dynamics-form/index.vue'
@@ -200,8 +200,62 @@ const open = (data: any) => {
   }
   form.value.code = data.code
   form.value.input_field_list = data.input_field_list
-  form.value.init_field_list = data.init_field_list
+  form.value.init_field_list = (data.init_field_list || []).map((item: any) => {
+    if (item.input_type === 'PasswordInput') {
+      return {
+        ...item,
+        default_value: undefined, // 清除密码框的默认值
+        attrs: { ...(item.attrs || {}), autocomplete: 'new-password' }, // 添加 autocomplete 属性到 PasswordInput，屏蔽浏览器的密码自动填充功能
+      }
+    }
+    return item
+  })
+  const password_fields = (data.init_field_list || [])
+    .filter((item: any) => item.input_type === 'PasswordInput')
+    .map((item: any) => item.field)
+  const init_params = (data.init_field_list || [])
+    .map((item: any) => {
+      if (password_fields.includes(item.field)) {
+        return { [item.field]: undefined }
+      }
+      if (item.show_default_value === false) {
+        return { [item.field]: undefined }
+      }
+      return { [item.field]: item.default_value }
+    })
+    .reduce((x: any, y: any) => ({ ...x, ...y }), {})
+  const data_init_params = { ...(data.init_params || {}) }
+  password_fields.forEach((field: string) => {
+    delete data_init_params[field]
+  })
+  form.value.init_params = { ...init_params, ...data_init_params }
   debugVisible.value = true
+  nextTick(() => {
+    setTimeout(() => {
+      const containers: Array<{ el: HTMLElement; requiredOnly: boolean }> = []
+      if (dynamicsFormRef.value?.$el) {
+        containers.push({ el: dynamicsFormRef.value.$el as HTMLElement, requiredOnly: true })
+      }
+      if (FormRef.value?.$el) {
+        containers.push({ el: FormRef.value.$el as HTMLElement, requiredOnly: true })
+      }
+      if (dynamicsFormRef.value?.$el) {
+        containers.push({ el: dynamicsFormRef.value.$el as HTMLElement, requiredOnly: false })
+      }
+      if (FormRef.value?.$el) {
+        containers.push({ el: FormRef.value.$el as HTMLElement, requiredOnly: false })
+      }
+      for (const { el, requiredOnly } of containers) {
+        const inputs = el.querySelectorAll<HTMLInputElement>(`${requiredOnly ? '.is-required' : '.el-form-item'} input`)
+        for (const input of inputs) {
+          if (input && !input.value) {
+            input.focus()
+            return
+          }
+        }
+      }
+    }, 300)
+  })
 }
 
 defineExpose({
