@@ -16,7 +16,7 @@ INIT_FIELD_TYPES = (
 )
 RULE_KEYS = {"required", "type", "min", "max", "len", "enum", "pattern", "whitespace", "message", "trigger"}
 ATTR_KEYS = {
-    "maxlength", "minlength", "show-word-limit", "rows", "type", "show-password",
+    "maxlength", "minlength", "show-word-limit", "rows", "type", "show-password", "autocomplete",
     "min", "max", "step", "precision", "show-input-controls", "show-input", "format", "value-format",
     "accept", "limit", "multiple", "data", "filterable", "provider_list", "knowledge_list",
     "placeholder", "disabled", "clearable", "style", "class",
