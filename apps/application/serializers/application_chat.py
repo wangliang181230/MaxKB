@@ -51,7 +51,7 @@ class ApplicationChatRecordExportRequest(serializers.Serializer):
 
 class ApplicationChatQuerySerializers(serializers.Serializer):
     workspace_id = serializers.CharField(required=False, allow_null=True, allow_blank=True, label=_("Workspace ID"))
-    abstract = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("summary"))
+    abstract = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("keyword"))
     username = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("username"))
     start_time = serializers.DateField(format='%Y-%m-%d', label=_("Start time"))
     end_time = serializers.DateField(format='%Y-%m-%d', label=_("End time"))
@@ -102,8 +102,54 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                            'application_chat.update_time__gte': start_time,
                            'application_chat.update_time__lte': end_time,
                            }
+        abstract_condition = None
         if 'abstract' in self.data and self.data.get('abstract') is not None:
-            base_query_dict['application_chat.abstract__icontains'] = self.data.get('abstract')
+            abstract_keyword = self.data.get('abstract')
+            if '&' in abstract_keyword:
+                keywords = [kw.strip() for kw in abstract_keyword.split('&') if kw.strip()]
+                match_mode = 'and'
+            elif '|' in abstract_keyword:
+                keywords = [kw.strip() for kw in abstract_keyword.split('|') if kw.strip()]
+                match_mode = 'or'
+            else:
+                keywords = [abstract_keyword.strip()] if abstract_keyword.strip() else []
+                match_mode = 'and'
+            if keywords:
+                matched_chat_ids_sets = []
+                for keyword in keywords:
+                    keyword_chat_ids = set(
+                        QuerySet(ChatRecord).filter(
+                            chat__application_id=self.data.get("application_id"),
+                            create_time__gte=start_time,
+                            create_time__lte=end_time,
+                        ).filter(
+                            Q(problem_text__icontains=keyword) | Q(answer_text__icontains=keyword)
+                        ).values_list('chat_id', flat=True).distinct()
+                    )
+                    abstract_match_ids = set(
+                        QuerySet(Chat).filter(
+                            application_id=self.data.get("application_id"),
+                            abstract__icontains=keyword,
+                        ).values_list('id', flat=True)
+                    )
+                    matched_chat_ids_sets.append(keyword_chat_ids | abstract_match_ids)
+                if match_mode == 'and':
+                    final_chat_ids = set.intersection(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
+                else:
+                    final_chat_ids = set.union(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
+                if final_chat_ids:
+                    # 分片构造 IN 条件，避免命中 id 过多时超出数据库单语句绑定参数上限
+                    chat_id_list = list(final_chat_ids)
+                    chunk_size = 500
+                    abstract_condition = None
+                    for i in range(0, len(chat_id_list), chunk_size):
+                        chunk_condition = Q(**{'application_chat.id__in': chat_id_list[i:i + chunk_size]})
+                        if abstract_condition is None:
+                            abstract_condition = chunk_condition
+                        else:
+                            abstract_condition = abstract_condition | chunk_condition
+                else:
+                    abstract_condition = Q(pk__isnull=True)
         if select_ids is not None and len(select_ids) > 0:
             base_query_dict['application_chat.id__in'] = select_ids
         base_condition = Q(**base_query_dict)
@@ -113,6 +159,8 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                 Q(**{'application_chat.asker__username__icontains': username}) |
                 Q(**{'application_chat.asker__nick_name__icontains': username})
             )
+        if abstract_condition is not None:
+            base_condition = base_condition & abstract_condition
         min_star_query = None
         min_trample_query = None
         if 'min_star' in self.data and self.data.get('min_star') is not None:
