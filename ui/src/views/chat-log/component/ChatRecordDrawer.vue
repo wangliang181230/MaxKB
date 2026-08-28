@@ -1,7 +1,8 @@
 <template>
   <el-drawer v-model="visible" size="60%" @close="closeHandle" class="chat-record-drawer">
     <template #header>
-      <h4 class="single-line">{{ currentAbstract }}</h4>
+      <h4 class="single-line" v-if="!highlightKeywords?.length">{{ currentAbstract }}</h4>
+      <h4 class="single-line highlight-keyword" v-else v-html="highlightedAbstract"></h4>
     </template>
     <div
       v-loading="paginationConfig.current_page === 1 && loading"
@@ -31,10 +32,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, nextTick, computed } from 'vue'
+import { ref, reactive, watch, nextTick, computed, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { type ApplicationFormType, type chatType } from '@/api/type/application'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { highlightTextHtml } from '@/utils/highlight'
 const AiChatRef = ref()
 const props = withDefaults(
   defineProps<{
@@ -59,9 +61,17 @@ const props = withDefaults(
     pre_disable: boolean
 
     next_disable: boolean
+
+    highlightKeywords?: string[]
   }>(),
   {},
 )
+
+provide('highlightKeywords', computed(() => props.highlightKeywords || []))
+
+const highlightedAbstract = computed(() => {
+  return highlightTextHtml(props.currentAbstract || '', props.highlightKeywords)
+})
 
 const emit = defineEmits(['update:chatId', 'update:currentAbstract', 'refresh'])
 
@@ -165,5 +175,12 @@ defineExpose({
     background: var(--app-layout-bg-color);
     padding: 0;
   }
+}
+
+.highlight-keyword mark {
+  background: #fff3cd;
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 </style>

@@ -61,7 +61,7 @@ class ApplicationChatQueryAPI(APIMixin):
             ),
             OpenApiParameter(
                 name="abstract",
-                description="summary",
+                description="keyword",
                 type=OpenApiTypes.STR,
                 required=False,
             ),
