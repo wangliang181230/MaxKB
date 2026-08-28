@@ -246,24 +246,11 @@ const open = (data: any) => {
         containers.push({ el: FormRef.value.$el as HTMLElement, requiredOnly: false })
       }
       for (const { el, requiredOnly } of containers) {
-        const items = el.querySelectorAll(':scope > .el-form-item')
-        if (requiredOnly) {
-          const requiredItem = el.querySelector('.is-required')
-          if (requiredItem === null) {
-            continue
-          }
-          const input = requiredItem.querySelector('input') as HTMLInputElement | null
+        const inputs = el.querySelectorAll<HTMLInputElement>(`${requiredOnly ? '.is-required' : '.el-form-item'} input`)
+        for (const input of inputs) {
           if (input && !input.value) {
             input.focus()
             return
-          }
-        } else {
-          for (const item of items) {
-            const input = item.querySelector('input') as HTMLInputElement | null
-            if (input && !input.value) {
-              input.focus()
-              return
-            }
           }
         }
       }
