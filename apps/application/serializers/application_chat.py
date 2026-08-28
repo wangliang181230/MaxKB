@@ -105,18 +105,31 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
         abstract_condition = None
         if 'abstract' in self.data and self.data.get('abstract') is not None:
             abstract_keyword = self.data.get('abstract')
-            matched_chat_ids = list(
-                QuerySet(ChatRecord).filter(
-                    chat__application_id=self.data.get("application_id"),
-                    create_time__gte=start_time,
-                    create_time__lte=end_time,
-                ).filter(
-                    Q(problem_text__icontains=abstract_keyword) | Q(answer_text__icontains=abstract_keyword)
-                ).values_list('chat_id', flat=True).distinct()
-            )
-            abstract_condition = Q(**{'application_chat.abstract__icontains': abstract_keyword})
-            if matched_chat_ids:
-                abstract_condition = abstract_condition | Q(**{'application_chat.id__in': matched_chat_ids})
+            keywords = [kw.strip() for kw in re.split(r'[,，;；]', abstract_keyword) if kw.strip()]
+            if keywords:
+                matched_chat_ids_sets = []
+                for keyword in keywords:
+                    keyword_chat_ids = set(
+                        QuerySet(ChatRecord).filter(
+                            chat__application_id=self.data.get("application_id"),
+                            create_time__gte=start_time,
+                            create_time__lte=end_time,
+                        ).filter(
+                            Q(problem_text__icontains=keyword) | Q(answer_text__icontains=keyword)
+                        ).values_list('chat_id', flat=True).distinct()
+                    )
+                    abstract_match_ids = set(
+                        QuerySet(Chat).filter(
+                            application_id=self.data.get("application_id"),
+                            abstract__icontains=keyword,
+                        ).values_list('id', flat=True)
+                    )
+                    matched_chat_ids_sets.append(keyword_chat_ids | abstract_match_ids)
+                final_chat_ids = set.intersection(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
+                if final_chat_ids:
+                    abstract_condition = Q(**{'application_chat.id__in': list(final_chat_ids)})
+                else:
+                    abstract_condition = Q(**{'application_chat.id__in': []})
 
         if 'username' in self.data and self.data.get('username') is not None:
             base_query_dict['application_chat.asker__username__icontains'] = self.data.get('username')
