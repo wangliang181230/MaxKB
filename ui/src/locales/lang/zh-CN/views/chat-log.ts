@@ -10,6 +10,7 @@ export default {
   },
   table: {
     abstract: '摘要',
+    searchKeyword: '关键字',
     chat_record_count: '对话提问数',
     user: '用户',
     feedback: {
