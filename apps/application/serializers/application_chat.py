@@ -102,14 +102,30 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                            'application_chat.update_time__gte': start_time,
                            'application_chat.update_time__lte': end_time,
                            }
+        abstract_condition = None
         if 'abstract' in self.data and self.data.get('abstract') is not None:
-            base_query_dict['application_chat.abstract__icontains'] = self.data.get('abstract')
+            abstract_keyword = self.data.get('abstract')
+            matched_chat_ids = list(
+                QuerySet(ChatRecord).filter(
+                    chat__application_id=self.data.get("application_id"),
+                    create_time__gte=start_time,
+                    create_time__lte=end_time,
+                ).filter(
+                    Q(problem_text__icontains=abstract_keyword) | Q(answer_text__icontains=abstract_keyword)
+                ).values_list('chat_id', flat=True).distinct()
+            )
+            abstract_condition = Q(**{'application_chat.abstract__icontains': abstract_keyword})
+            if matched_chat_ids:
+                abstract_condition = abstract_condition | Q(**{'application_chat.id__in': matched_chat_ids})
+
         if 'username' in self.data and self.data.get('username') is not None:
             base_query_dict['application_chat.asker__username__icontains'] = self.data.get('username')
 
         if select_ids is not None and len(select_ids) > 0:
             base_query_dict['application_chat.id__in'] = select_ids
         base_condition = Q(**base_query_dict)
+        if abstract_condition is not None:
+            base_condition = base_condition & abstract_condition
         min_star_query = None
         min_trample_query = None
         if 'min_star' in self.data and self.data.get('min_star') is not None:
