@@ -10,9 +10,9 @@
               v-model="search_type"
               class="complex-search__left"
               @change="search_type_change"
-              style="width: 75px"
+              style="width: 86px"
             >
-              <el-option :label="$t('views.chatLog.table.abstract')" value="abstract" />
+              <el-option :label="$t('views.chatLog.table.searchKeyword')" value="abstract" />
               <el-option :label="$t('views.chatLog.table.user')" value="username" />
             </el-select>
             <el-input

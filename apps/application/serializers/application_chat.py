@@ -51,7 +51,7 @@ class ApplicationChatRecordExportRequest(serializers.Serializer):
 
 class ApplicationChatQuerySerializers(serializers.Serializer):
     workspace_id = serializers.CharField(required=False, allow_null=True, allow_blank=True, label=_("Workspace ID"))
-    abstract = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("summary"))
+    abstract = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("keyword"))
     username = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("username"))
     start_time = serializers.DateField(format='%Y-%m-%d', label=_("Start time"))
     end_time = serializers.DateField(format='%Y-%m-%d', label=_("End time"))
