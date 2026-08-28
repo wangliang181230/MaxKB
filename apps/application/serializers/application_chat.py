@@ -105,7 +105,15 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
         abstract_condition = None
         if 'abstract' in self.data and self.data.get('abstract') is not None:
             abstract_keyword = self.data.get('abstract')
-            keywords = [kw.strip() for kw in re.split(r'[,，;；]', abstract_keyword) if kw.strip()]
+            if '&' in abstract_keyword:
+                keywords = [kw.strip() for kw in abstract_keyword.split('&') if kw.strip()]
+                match_mode = 'and'
+            elif '|' in abstract_keyword:
+                keywords = [kw.strip() for kw in abstract_keyword.split('|') if kw.strip()]
+                match_mode = 'or'
+            else:
+                keywords = [abstract_keyword.strip()] if abstract_keyword.strip() else []
+                match_mode = 'and'
             if keywords:
                 matched_chat_ids_sets = []
                 for keyword in keywords:
@@ -125,7 +133,10 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                         ).values_list('id', flat=True)
                     )
                     matched_chat_ids_sets.append(keyword_chat_ids | abstract_match_ids)
-                final_chat_ids = set.intersection(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
+                if match_mode == 'and':
+                    final_chat_ids = set.intersection(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
+                else:
+                    final_chat_ids = set.union(*matched_chat_ids_sets) if matched_chat_ids_sets else set()
                 if final_chat_ids:
                     abstract_condition = Q(**{'application_chat.id__in': list(final_chat_ids)})
                 else:
