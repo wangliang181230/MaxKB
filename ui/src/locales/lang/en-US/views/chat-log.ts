@@ -10,6 +10,7 @@ export default {
   },
   table: {
     abstract: 'Title',
+    searchKeyword: 'Keyword',
     chat_record_count: 'Total Messages',
     user: 'User',
     feedback: {

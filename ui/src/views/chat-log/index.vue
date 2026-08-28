@@ -10,20 +10,20 @@
               v-model="search_type"
               class="complex-search__left"
               @change="search_type_change"
-              style="width: 75px"
+              style="width: 86px"
             >
-              <el-option :label="$t('views.chatLog.table.abstract')" value="abstract" />
+              <el-option :label="$t('views.chatLog.table.searchKeyword')" value="abstract" />
               <el-option :label="$t('views.chatLog.table.user')" value="username" />
             </el-select>
             <el-input
               v-model="search_form[search_type]"
               @change="getList"
               :placeholder="$t('common.search')"
-              class="w-240"
+              class="w-360"
               clearable
             />
           </div>
-          <el-select v-model="history_day" class="ml-12 w-180" @change="changeDayHandle">
+          <el-select v-model="history_day" class="ml-12 w-140" @change="changeDayHandle">
             <el-option
               v-for="item in dayOptions"
               :key="item.value"
@@ -40,8 +40,8 @@
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             @change="changeDayRangeHandle"
-            style="width: 240px"
-            class="mr-12"
+            style="width: 220px"
+            class="ml-4"
           />
         </div>
         <div style="display: flex; align-items: center" class="float-right">
@@ -74,10 +74,13 @@
       >
         <el-table-column type="selection" width="55" />
         <el-table-column
-          prop="abstract"
           :label="$t('views.chatLog.table.abstract')"
-          show-overflow-tooltip
-        />
+        >
+          <template #default="{ row }">
+            <span v-if="!highlightKeywords?.length" class="table-abstract">{{ row.abstract }}</span>
+            <span v-else class="table-abstract highlight-keyword" v-html="highlightAbstract(row.abstract)"></span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="chat_record_count"
           :label="$t('views.chatLog.table.chat_record_count')"
@@ -199,6 +202,7 @@
       :application="detail"
       :pre_disable="pre_disable"
       :next_disable="next_disable"
+      :highlight-keywords="highlightKeywords"
       @refresh="refresh"
     />
     <el-dialog
@@ -293,6 +297,7 @@ import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import { Permission } from '@/utils/permission/type'
 import { hasPermission } from '@/utils/permission'
 import { PermissionConst, RoleConst } from '@/utils/permission/data'
+import { extractKeywords, highlightTextHtml } from '@/utils/highlight'
 
 const route = useRoute()
 
@@ -408,6 +413,16 @@ const detail = ref<any>(null)
 const currentChatId = ref<string>('')
 const currentAbstract = ref<string>('')
 const popoverVisible = ref(false)
+
+const highlightKeywords = computed(() => {
+  const searchText = search_form.value[search_type.value]
+  return extractKeywords(searchText || '')
+})
+
+function highlightAbstract(text: string) {
+  return highlightTextHtml(text || '', highlightKeywords.value)
+}
+
 const defaultFilter = {
   min_star: 0,
   min_trample: 0,
@@ -668,5 +683,19 @@ onMounted(() => {
   :deep(tr) {
     cursor: pointer;
   }
+}
+
+.table-abstract {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.highlight-keyword :deep(mark) {
+  background: #fff3cd;
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 </style>
