@@ -162,6 +162,8 @@ const renderGraphData = (data?: any) => {
     const { scheduleZoom, cleanup } = createZoomScheduler(lf.value, container)
     removeZoomListener = cleanup
     lf.value.scheduleZoom = scheduleZoom
+    // Set flowId immediately so TeleportContainer can filter items from the very first render
+    flowId.value = lf.value.graphModel.flowId
     lf.value.setTheme({
       bezier: {
         stroke: '#afafaf',
