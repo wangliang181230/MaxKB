@@ -93,7 +93,8 @@
               </template>
             </el-space>
           </div>
-          <span> {{ chatRecord.problem_text }}</span>
+          <span v-if="!highlightKeywords?.length">{{ chatRecord.problem_text }}</span>
+          <span v-else class="highlight-keyword" v-html="highlightedProblemText"></span>
         </div>
       </div>
       <div class="question-content__operate" v-else>
@@ -184,9 +185,10 @@
 import { type chatType } from '@/api/type/application'
 import { getImgUrl, downloadByURL } from '@/utils/common'
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted, computed, ref, nextTick } from 'vue'
+import { onMounted, computed, ref, nextTick, inject, type ComputedRef } from 'vue'
 import { getAttrsArray } from '@/utils/array'
 import { copyClick } from '@/utils/clipboard'
+import { highlightTextHtml } from '@/utils/highlight'
 const route = useRoute()
 const {
   query: { mode },
@@ -200,6 +202,12 @@ const props = defineProps<{
   isLast: boolean
   selection?: boolean
 }>()
+
+const highlightKeywords = inject<ComputedRef<string[]>>('highlightKeywords', computed(() => []))
+
+const highlightedProblemText = computed(() => {
+  return highlightTextHtml(props.chatRecord?.problem_text || '', highlightKeywords.value)
+})
 
 const showIcon = ref<boolean>(false)
 const isReQuestion = ref<boolean>(false)
@@ -505,5 +513,12 @@ onMounted(() => {})
       width: 300px;
     }
   }
+}
+
+.highlight-keyword :deep(mark) {
+  background: #fff3cd;
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 </style>
