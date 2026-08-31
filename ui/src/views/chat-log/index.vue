@@ -74,10 +74,13 @@
       >
         <el-table-column type="selection" width="55" />
         <el-table-column
-          prop="abstract"
           :label="$t('views.chatLog.table.abstract')"
-          show-overflow-tooltip
-        />
+        >
+          <template #default="{ row }">
+            <span v-if="!highlightKeywords?.length" class="table-abstract">{{ row.abstract }}</span>
+            <span v-else class="table-abstract highlight-keyword" v-html="highlightAbstract(row.abstract)"></span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="chat_record_count"
           :label="$t('views.chatLog.table.chat_record_count')"
@@ -294,7 +297,7 @@ import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import { Permission } from '@/utils/permission/type'
 import { hasPermission } from '@/utils/permission'
 import { PermissionConst, RoleConst } from '@/utils/permission/data'
-import { extractKeywords } from '@/utils/highlight'
+import { extractKeywords, highlightTextHtml } from '@/utils/highlight'
 
 const route = useRoute()
 
@@ -415,6 +418,10 @@ const highlightKeywords = computed(() => {
   const searchText = search_form.value[search_type.value]
   return extractKeywords(searchText || '')
 })
+
+function highlightAbstract(text: string) {
+  return highlightTextHtml(text || '', highlightKeywords.value)
+}
 
 const defaultFilter = {
   min_star: 0,
@@ -676,5 +683,19 @@ onMounted(() => {
   :deep(tr) {
     cursor: pointer;
   }
+}
+
+.table-abstract {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.highlight-keyword :deep(mark) {
+  background: #fff3cd;
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 </style>
