@@ -9,7 +9,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'root',
-    redirect: '/home',
+    redirect: '/application',
     children: [
       ...rolesRoutes,
       {
