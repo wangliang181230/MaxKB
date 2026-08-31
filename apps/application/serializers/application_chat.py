@@ -140,7 +140,7 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                 if final_chat_ids:
                     abstract_condition = Q(**{'application_chat.id__in': list(final_chat_ids)})
                 else:
-                    abstract_condition = Q(**{'application_chat.id__in': []})
+                    abstract_condition = Q(pk__isnull=True)
 
         if 'username' in self.data and self.data.get('username') is not None:
             base_query_dict['application_chat.asker__username__icontains'] = self.data.get('username')
