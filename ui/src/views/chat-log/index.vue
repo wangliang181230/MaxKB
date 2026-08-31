@@ -199,6 +199,7 @@
       :application="detail"
       :pre_disable="pre_disable"
       :next_disable="next_disable"
+      :highlight-keywords="highlightKeywords"
       @refresh="refresh"
     />
     <el-dialog
@@ -293,6 +294,7 @@ import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import { Permission } from '@/utils/permission/type'
 import { hasPermission } from '@/utils/permission'
 import { PermissionConst, RoleConst } from '@/utils/permission/data'
+import { extractKeywords } from '@/utils/highlight'
 
 const route = useRoute()
 
@@ -408,6 +410,12 @@ const detail = ref<any>(null)
 const currentChatId = ref<string>('')
 const currentAbstract = ref<string>('')
 const popoverVisible = ref(false)
+
+const highlightKeywords = computed(() => {
+  const searchText = search_form.value[search_type.value]
+  return extractKeywords(searchText || '')
+})
+
 const defaultFilter = {
   min_star: 0,
   min_trample: 0,
