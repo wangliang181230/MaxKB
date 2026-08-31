@@ -194,7 +194,7 @@ const loginHandle = () => {
           .asyncLdapLogin(loginForm.value)
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
-            router.push({ name: 'home' })
+            router.push({ name: 'application' })
           })
           .catch(() => {
             loading.value = false
@@ -212,7 +212,7 @@ const loginHandle = () => {
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
             localStorage.setItem('workspace_id', 'default')
-            router.push({ name: 'home' })
+            router.push({ name: 'application' })
           })
           .catch(() => {
             const username = loginForm.value.username
@@ -440,7 +440,7 @@ onMounted(() => {
       dd.runtime.permission.requestAuthCode({ corpId: code }).then((res) => {
         console.log('DingTalk client request success:', res)
         login.dingOauth2Callback(res.code).then(() => {
-          router.push({ name: 'home' })
+          router.push({ name: 'application' })
         })
       })
     }
@@ -453,7 +453,7 @@ onMounted(() => {
         appId: appId,
         success: (res: any) => {
           login.larkCallback(res.code).then(() => {
-            router.push({ name: 'home' })
+            router.push({ name: 'application' })
           })
         },
         fail: (error: any) => {
@@ -473,7 +473,7 @@ onMounted(() => {
             scopeList: [],
             success: (res: any) => {
               login.larkCallback(res.code).then(() => {
-                router.push({ name: 'home' })
+                router.push({ name: 'application' })
               })
             },
             fail: (error: any) => {
