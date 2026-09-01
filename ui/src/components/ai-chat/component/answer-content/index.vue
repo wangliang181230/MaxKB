@@ -99,7 +99,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, inject, watch, nextTick, onBeforeUnmount, type ComputedRef } from 'vue'
+import { computed } from 'vue'
 import KnowledgeSourceComponent from '@/components/ai-chat/component/knowledge-source-component/index.vue'
 import MdRenderer from '@/components/markdown/MdRenderer.vue'
 import OperationButton from '@/components/ai-chat/component/operation-button/index.vue'
@@ -107,7 +107,6 @@ import { type chatType } from '@/api/type/application'
 import bus from '@/bus'
 import { iconComponent } from '@/workflow/icons/utils'
 import { t } from '@/locales'
-import { highlightDomTextNodes } from '@/utils/highlight'
 const props = defineProps<{
   chatRecord: chatType
   application: any
@@ -118,38 +117,6 @@ const props = defineProps<{
   executionIsRightPanel?: boolean
   selection?: boolean
 }>()
-
-const highlightKeywords = inject<ComputedRef<string[]>>('highlightKeywords', computed(() => []))
-
-let highlightTimer: ReturnType<typeof setTimeout> | null = null
-
-function applyHighlight() {
-  if (highlightTimer) clearTimeout(highlightTimer)
-  highlightTimer = setTimeout(() => {
-    const keywords = highlightKeywords.value
-    if (!keywords || keywords.length === 0) return
-    const containers = document.querySelectorAll('.md-editor-previewOnly')
-    containers.forEach((container) => {
-      highlightDomTextNodes(container as HTMLElement, keywords)
-    })
-  }, 150)
-}
-
-watch(
-  () => props.chatRecord?.answer_text_list,
-  () => {
-    nextTick(() => applyHighlight())
-  },
-  { deep: true },
-)
-
-watch(highlightKeywords, () => {
-  nextTick(() => applyHighlight())
-})
-
-onBeforeUnmount(() => {
-  if (highlightTimer) clearTimeout(highlightTimer)
-})
 
 const emit = defineEmits([
   'update:chatRecord',
@@ -244,11 +211,4 @@ const startChat = (chat: chatType) => {
   props.chatManagement.write(chat.id)
 }
 </script>
-<style lang="scss" scoped>
-:deep(.highlight-keyword) {
-  background: #fff3cd;
-  color: inherit;
-  padding: 1px 2px;
-  border-radius: 2px;
-}
-</style>
+<style lang="scss" scoped></style>
