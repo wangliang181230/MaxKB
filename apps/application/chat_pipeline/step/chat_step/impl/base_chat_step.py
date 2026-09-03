@@ -739,6 +739,8 @@ class BaseChatStep(IChatStep):
         workspace_id=None,
         mcp_output_enable=True,
     ):
+        if model_setting is None:
+            model_setting = {}
         reasoning_content_enable = model_setting.get("reasoning_content_enable", False)
         reasoning_content_start = model_setting.get("reasoning_content_start", "<think>")
         reasoning_content_end = model_setting.get("reasoning_content_end", "</think>")
