@@ -13,7 +13,7 @@ from hashlib import sha1
 from typing import Type, Dict, List
 
 from django.core import cache
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError, ErrorDetail
 
@@ -27,6 +27,15 @@ from tools.models import ToolRecord
 
 chat_cache = cache
 
+def add_access_num(chat_user_id=None, chat_user_type=None, application_id=None):
+    if chat_user_type in [ChatUserType.ANONYMOUS_USER.value, ChatUserType.CHAT_USER.value] \
+            and application_id is not None:
+        QuerySet(ApplicationChatUserStats).filter(
+            chat_user_id=chat_user_id, chat_user_type=chat_user_type, application_id=application_id
+        ).update(
+            access_num=F('access_num') + 1,
+            intraday_access_num=F('intraday_access_num') + 1
+        )
 
 def write_context(step_variable: Dict, global_variable: Dict, node, workflow):
     if step_variable is not None:
@@ -91,16 +100,12 @@ class WorkFlowPostHandler:
         self.chat_info.append_chat_record(chat_record)
         self.chat_info.set_cache()
 
-        if not self.chat_info.debug and [ChatUserType.ANONYMOUS_USER.value, ChatUserType.CHAT_USER.value].__contains__(
-                workflow_body.get('chat_user_type')):
-            application_public_access_client = (QuerySet(ApplicationChatUserStats)
-                                                .filter(chat_user_id=workflow_body.get('chat_user_id'),
-                                                        chat_user_type=workflow_body.get('chat_user_type'),
-                                                        application_id=self.chat_info.application_id).first())
-            if application_public_access_client is not None:
-                application_public_access_client.access_num = application_public_access_client.access_num + 1
-                application_public_access_client.intraday_access_num = application_public_access_client.intraday_access_num + 1
-                application_public_access_client.save()
+        if not self.chat_info.debug:
+            add_access_num(
+                workflow_body.get('chat_user_id'),
+                workflow_body.get('chat_user_type'),
+                self.chat_info.application_id
+            )
         self.chat_info = None
 
         extract_long_term_memory.apply_async(
