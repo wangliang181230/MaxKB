@@ -9,6 +9,7 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+from django.db import connection
 from django.db.models import QuerySet
 from django.utils.translation import get_language
 
@@ -55,7 +56,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
         language = get_language()
         self.run_chain_async(self.start_node, None, language)
         while self.is_run():
-            pass
+            time.sleep(0.05)
         self.work_flow_post_handler.handler(self)
 
     @staticmethod
@@ -109,7 +110,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
             maxkb_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
-            self.answer += str(e)
+            self.append_answer(str(e))
             if self.is_the_task_interrupted():
                 current_node.status = 201
                 return None
@@ -124,6 +125,8 @@ class KnowledgeWorkflowManage(WorkflowManage):
             current_node.node_chunk.end()
             QuerySet(KnowledgeAction).filter(id=self.params.get('knowledge_action_id')).update(
                 details=self.get_runtime_details())
+            # 手动关闭数据库连接
+            connection.close()
 
     def get_source_type(self):
         return "KNOWLEDGE"
