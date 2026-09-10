@@ -19,8 +19,9 @@ from application.flow.step_node import get_node
 from application.flow.workflow_manage import WorkflowManage
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
+from common.utils.common import get_workflow_max_workers, has_jinja_syntax
 
-executor = ThreadPoolExecutor(max_workers=200)
+executor = ThreadPoolExecutor(max_workers=get_workflow_max_workers())
 
 
 class NodeResultFuture:

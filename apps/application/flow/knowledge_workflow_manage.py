@@ -18,9 +18,11 @@ from application.flow.i_step_node import WorkFlowPostHandler, KnowledgeFlowParam
 from application.flow.workflow_manage import WorkflowManage
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
+from common.utils.common import get_workflow_max_workers
+from common.utils.logger import maxkb_logger
 from knowledge.models.knowledge_action import KnowledgeAction, State
 
-executor = ThreadPoolExecutor(max_workers=200)
+executor = ThreadPoolExecutor(max_workers=get_workflow_max_workers())
 
 
 class KnowledgeWorkflowManage(WorkflowManage):
