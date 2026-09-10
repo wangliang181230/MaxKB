@@ -61,18 +61,21 @@ class NodeChunkManage:
         return self.node_chunk_list.__contains__(node_chunk)
 
     def pop(self):
-        while True:
+        max_iterations = 100
+        iteration = 0
+        while iteration < max_iterations:
+            iteration += 1
             if self.current_node_chunk is None:
                 try:
                     current_node_chunk = self.node_chunk_list.pop(0)
                     self.current_node_chunk = current_node_chunk
-                except IndexError as e:
-                    pass
+                except IndexError:
+                    return None
             if self.current_node_chunk is not None:
                 try:
                     chunk = self.current_node_chunk.chunk_list.pop(0)
                     return chunk
-                except IndexError as e:
+                except IndexError:
                     if self.current_node_chunk.is_end():
                         self.current_node_chunk = None
                         if self.work_flow.answer_is_not_empty():
@@ -83,7 +86,10 @@ class NodeChunkManage:
                             self.work_flow.append_answer('\n\n')
                             return chunk
                         continue
+                    else:
+                        return None
             return None
+        return None
 
 
 class LoopWorkflowManage(WorkflowManage):
