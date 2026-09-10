@@ -16,15 +16,14 @@ import uuid_utils.compat as uuid
 from application.chat_pipeline.I_base_chat_pipeline import ParagraphPipelineModel
 from application.chat_pipeline.pipeline_manage import PipelineManage
 from application.chat_pipeline.step.chat_step.i_chat_step import IChatStep, PostResponseHandler
+from application.flow.i_step_node import add_access_num
 from application.flow.tools import Reasoning, get_tools, mcp_response_generator
 from application.long_term_memory import extract_long_term_memory
 from application.models import (
     Application,
     ApplicationAccessToken,
     ApplicationApiKey,
-    ApplicationChatUserStats,
     ApplicationLongTermMemory,
-    ChatUserType,
 )
 from common.exception.app_exception import AppApiException
 from common.utils.logger import maxkb_logger
@@ -39,23 +38,6 @@ from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, Huma
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from rest_framework import status
 from tools.models import Tool, ToolType
-
-
-def add_access_num(chat_user_id=None, chat_user_type=None, application_id=None):
-    if [ChatUserType.ANONYMOUS_USER.value, ChatUserType.CHAT_USER.value].__contains__(
-        chat_user_type
-    ) and application_id is not None:
-        application_public_access_client = (
-            QuerySet(ApplicationChatUserStats)
-            .filter(chat_user_id=chat_user_id, chat_user_type=chat_user_type, application_id=application_id)
-            .first()
-        )
-        if application_public_access_client is not None:
-            application_public_access_client.access_num = application_public_access_client.access_num + 1
-            application_public_access_client.intraday_access_num = (
-                application_public_access_client.intraday_access_num + 1
-            )
-            application_public_access_client.save()
 
 
 def write_context(step, manage, request_token, response_token, all_text):
