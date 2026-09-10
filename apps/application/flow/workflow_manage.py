@@ -8,6 +8,7 @@
 """
 import concurrent
 import json
+import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
@@ -27,7 +28,7 @@ from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from common.utils.logger import maxkb_logger
 
-executor = ThreadPoolExecutor(max_workers=200)
+executor = ThreadPoolExecutor(max_workers=min(int(os.environ.get('WORKFLOW_MAX_WORKERS', '50')), 200))
 
 
 class NodeResultFuture:
