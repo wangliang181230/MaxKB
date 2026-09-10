@@ -10,6 +10,7 @@ import concurrent
 import json
 import os
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 from typing import List, Dict
@@ -68,18 +69,21 @@ class NodeChunkManage:
         return self.node_chunk_list.__contains__(node_chunk)
 
     def pop(self):
-        while True:
+        max_iterations = 100
+        iteration = 0
+        while iteration < max_iterations:
+            iteration += 1
             if self.current_node_chunk is None:
                 try:
                     current_node_chunk = self.node_chunk_list.pop(0)
                     self.current_node_chunk = current_node_chunk
-                except IndexError as e:
-                    pass
+                except IndexError:
+                    return None
             if self.current_node_chunk is not None:
                 try:
                     chunk = self.current_node_chunk.chunk_list.pop(0)
                     return chunk
-                except IndexError as e:
+                except IndexError:
                     if self.current_node_chunk.is_end():
                         self.current_node_chunk = None
                         if self.work_flow.answer_is_not_empty():
@@ -90,7 +94,10 @@ class NodeChunkManage:
                             self.work_flow.append_answer('\n\n')
                             return chunk
                         continue
+                    else:
+                        return None
             return None
+        return None
 
 
 class WorkflowManage:
@@ -180,8 +187,13 @@ class WorkflowManage:
         self.chat_field_list = chat_field_list
 
     def append_answer(self, content):
-        self.answer += content
-        self.answer_list[-1] += content
+        if self.lock:
+            with self.lock:
+                self.answer += content
+                self.answer_list[-1] += content
+        else:
+            self.answer += content
+            self.answer_list[-1] += content
 
     def answer_is_not_empty(self):
         return len(self.answer_list[-1]) > 0
@@ -243,7 +255,7 @@ class WorkflowManage:
             self.params['stream'] = True
             self.run_chain_async(None, None, language)
             while self.is_run():
-                pass
+                time.sleep(0.01)
             details = self.get_runtime_details()
             message_tokens = sum([row.get('message_tokens') for row in details.values() if
                                   'message_tokens' in row and row.get('message_tokens') is not None])
@@ -319,7 +331,7 @@ class WorkflowManage:
                     return False
                 else:
                     return True
-        except Exception as e:
+        except Exception:
             return True
 
     def await_result(self, is_cleanup=True):
@@ -338,18 +350,22 @@ class WorkflowManage:
                 yield chunk
         finally:
             while self.is_run():
-                pass
+                time.sleep(0.01)
+            if self.params is None:
+                return  # 已清理
             details = self.get_runtime_details()
             message_tokens = sum([row.get('message_tokens') for row in details.values() if
                                   'message_tokens' in row and row.get('message_tokens') is not None])
             answer_tokens = sum([row.get('answer_tokens') for row in details.values() if
                                  'answer_tokens' in row and row.get('answer_tokens') is not None])
-            self.work_flow_post_handler.handler(self)
-            yield self.base_to_response.to_stream_chunk_response(self.params.get('chat_id'),
-                                                                 self.params.get('chat_record_id'),
-                                                                 '',
-                                                                 [],
-                                                                 '', True, message_tokens, answer_tokens, {})
+            if self.work_flow_post_handler is not None:
+                self.work_flow_post_handler.handler(self)
+            if self.base_to_response is not None and self.params is not None:
+                yield self.base_to_response.to_stream_chunk_response(self.params.get('chat_id'),
+                                                                     self.params.get('chat_record_id'),
+                                                                     '',
+                                                                     [],
+                                                                     '', True, message_tokens, answer_tokens, {})
             if is_cleanup:
                 self._cleanup()
 
