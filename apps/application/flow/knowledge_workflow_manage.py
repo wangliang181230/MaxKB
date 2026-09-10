@@ -6,6 +6,7 @@
     @date：2025/11/13 19:02
     @desc:
 """
+import os
 import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -20,7 +21,7 @@ from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from knowledge.models.knowledge_action import KnowledgeAction, State
 
-executor = ThreadPoolExecutor(max_workers=200)
+executor = ThreadPoolExecutor(max_workers=min(int(os.environ.get('WORKFLOW_MAX_WORKERS', '50')), 200))
 
 
 class KnowledgeWorkflowManage(WorkflowManage):
