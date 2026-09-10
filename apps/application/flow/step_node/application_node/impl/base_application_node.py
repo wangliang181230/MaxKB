@@ -252,6 +252,20 @@ class BaseApplicationNode(IApplicationNode):
                 data = json.loads(response.content)
                 return NodeResult({'result': data, 'question': message}, {},
                                   _write_context=write_context, _is_interrupt=_is_interrupt_exec)
+        else:
+            # 非200状态码时返回错误NodeResult，避免上层收到None导致AttributeError
+            error_content = response.content.decode('utf-8') if hasattr(response.content, 'decode') else str(response.content)
+            self.status = response.status_code
+            self.err_message = f'Application request failed with status {response.status_code}: {error_content[:500]}'
+
+            def _write_error_context(nv, wv, n, w):
+                n.context['run_time'] = time.time() - n.context.get('start_time', time.time())
+                n.context['result'] = self.err_message
+                n.context['answer'] = self.err_message
+                n.context['question'] = message
+
+            return NodeResult({'result': self.err_message, 'question': message}, {},
+                              _write_context=_write_error_context, _is_interrupt=lambda n, s, g: False)
 
     def get_details(self, index: int, **kwargs):
         global_fields = []
