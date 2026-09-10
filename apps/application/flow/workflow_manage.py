@@ -25,9 +25,10 @@ from application.flow.i_step_node import INode, WorkFlowPostHandler, NodeResult,
 from application.flow.step_node import get_node
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
+from common.utils.common import get_workflow_max_workers, has_jinja_syntax
 from common.utils.logger import maxkb_logger
 
-executor = ThreadPoolExecutor(max_workers=200)
+executor = ThreadPoolExecutor(max_workers=get_workflow_max_workers())
 
 
 class NodeResultFuture:
