@@ -100,8 +100,12 @@ def dev():
 
 
 if __name__ == '__main__':
-    os.environ['HF_HOME'] = '/opt/maxkb-app/model/base'
-    os.environ['TMPDIR'] = '/opt/maxkb-app/tmp'
+    os.environ['HF_HOME'] = os.path.join(BASE_DIR, 'model', 'base')
+    os.environ['TMPDIR'] = os.path.join(BASE_DIR, 'tmp')
+    # Windows 上 tempfile 仅识别 TEMP/TMP，TMPDIR 不生效
+    if os.name == 'nt':
+        os.environ['TEMP'] = os.environ['TMP'] = os.path.join(BASE_DIR, 'tmp')
+    os.makedirs(os.path.join(BASE_DIR, 'tmp'), exist_ok=True)
     if not os.environ.get('MAXKB_SECRET_KEY'):
         os.environ['MAXKB_SECRET_KEY'] = get_random_secret_key()
     parser = argparse.ArgumentParser(
