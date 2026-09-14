@@ -76,8 +76,7 @@ def pro():
     )
 
 
-if not settings.DEBUG:
-    pro()
+pro()
 
 
 def get_index_html(index_path):

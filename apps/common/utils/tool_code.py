@@ -5,9 +5,15 @@ import getpass
 import gzip
 import json
 import os
-import pwd
+try:
+    import pwd
+except ImportError:
+    pwd = None
 import random
-import resource
+try:
+    import resource
+except ImportError:
+    resource = None
 import socket
 import subprocess
 import sys
@@ -23,8 +29,12 @@ from maxkb.const import BASE_DIR, CONFIG, PROJECT_DIR
 from common.mcp.config import InternalMCPConfig, validate_mcp_servers
 from common.utils.logger import maxkb_logger
 
-_enable_sandbox = bool(int(CONFIG.get("SANDBOX", 1)))
-_run_user = "sandbox" if _enable_sandbox else getpass.getuser()
+IS_WINDOWS = sys.platform.startswith('win')
+
+_enable_sandbox = bool(int(CONFIG.get("SANDBOX", 1))) and sys.platform.startswith("linux")
+if bool(int(CONFIG.get("SANDBOX", 1))) and not _enable_sandbox:
+    maxkb_logger.warning("Python sandbox is Linux-only, disabled on %s.", sys.platform)
+_run_user = "sandbox" if _enable_sandbox and pwd else getpass.getuser()
 _sandbox_path = (
     CONFIG.get("SANDBOX_HOME", "/opt/maxkb-app/sandbox")
     if _enable_sandbox
@@ -47,12 +57,16 @@ class ToolExecutor:
     @staticmethod
     def init_sandbox_dir():
         if not _enable_sandbox:
-            # 不启用sandbox就不初始化目录
+            # 不启用sandbox时仅确保本地沙箱目录存在（作为子进程/MCP 工作目录），其余初始化跳过
+            with suppress(OSError):
+                os.makedirs(_sandbox_path, exist_ok=True)
             return
         try:
             # 只初始化一次
+            lock_dir = os.path.join(PROJECT_DIR, "tmp")
+            os.makedirs(lock_dir, exist_ok=True)
             fd = os.open(
-                os.path.join(PROJECT_DIR, "tmp", "tool_executor_init_dir.lock"), os.O_CREAT | os.O_EXCL | os.O_WRONLY
+                os.path.join(lock_dir, "tool_executor_init_dir.lock"), os.O_CREAT | os.O_EXCL | os.O_WRONLY
             )
             os.close(fd)
         except FileExistsError:
@@ -110,7 +124,7 @@ class ToolExecutor:
         )
         set_run_user = (
             f"os.setgid({pwd.getpwnam(_run_user).pw_gid});os.setuid({pwd.getpwnam(_run_user).pw_uid});"
-            if _enable_sandbox
+            if _enable_sandbox and pwd
             else ""
         )
         _exec_code = f"""
@@ -141,11 +155,28 @@ sys.stdout.write("\\n" + _id + "__END__\\n")
 sys.stdout.flush()
 """
         maxkb_logger.debug(f"Tool execution({_id}) execute code: {_exec_code}")
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as f:
-            f.write(_exec_code)
-            f.flush()
-            with execution_timer(_id):
-                subprocess_result = self._exec(f.name, _id)
+
+        # Windows 需要特殊处理临时文件
+        if IS_WINDOWS:
+            # 在 Windows 上，创建临时文件后需要关闭才能被 subprocess 访问
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as temp_file:
+                temp_file.write(_exec_code)
+                temp_file.flush()
+                temp_file_name = temp_file.name
+            # with 退出时已关闭句柄（delete=False 不会自动删除），确保异常路径也能清理临时文件
+            try:
+                with execution_timer(_id):
+                    subprocess_result = self._exec(temp_file_name, _id)
+            finally:
+                with suppress(OSError):
+                    os.unlink(temp_file_name)
+        else:
+            # 其他环境，直接执行
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True, encoding='utf-8') as f:
+                f.write(_exec_code)
+                f.flush()
+                with execution_timer(_id):
+                    subprocess_result = self._exec(f.name, _id)
         if subprocess_result.returncode != 0:
             raise Exception(subprocess_result.stderr or subprocess_result.stdout or "Unknown exception occurred")
         lines = subprocess_result.stdout.splitlines()
@@ -309,7 +340,7 @@ sys.stdout.flush()
         code = self._generate_mcp_server_code(code_str, params, name, description, tool_id)
         set_run_user = (
             f"os.setgid({pwd.getpwnam(_run_user).pw_gid});os.setuid({pwd.getpwnam(_run_user).pw_uid});"
-            if _enable_sandbox
+            if _enable_sandbox and pwd
             else ""
         )
         return f"""
@@ -392,26 +423,47 @@ exec({dedent(code)!a})
             "env": {
                 "LD_PRELOAD": f"{_sandbox_path}/lib/sandbox.so",
                 "_ID": _id,
+                "PYTHONIOENCODING": "utf-8",
             },
         }
-
-        def _set_resource_limit():
-            if not _enable_sandbox or not sys.platform.startswith("linux"):
-                return
-            with suppress(Exception):
-                resource.setrlimit(resource.RLIMIT_AS, (_process_limit_mem_mb * 1024 * 1024,) * 2)
-            with suppress(Exception):
-                os.sched_setaffinity(0, set(random.sample(list(os.sched_getaffinity(0)), _process_limit_cpu_cores)))
+        if IS_WINDOWS:
+            # Windows 子进程需要 SystemRoot/TEMP 等环境变量，否则 ssl/tempfile 等模块可能异常
+            for _env_key in ("SYSTEMROOT", "SYSTEMDRIVE", "WINDIR", "TEMP", "TMP", "PATH"):
+                if _env_key in os.environ:
+                    kwargs["env"][_env_key] = os.environ[_env_key]
 
         try:
-            subprocess_result = subprocess.run(
-                [sys.executable, execute_file],
-                timeout=_process_limit_timeout_seconds,
-                text=True,
-                capture_output=True,
-                **kwargs,
-                preexec_fn=_set_resource_limit,
-            )
+            # Windows 不支持 preexec_fn 参数
+            if IS_WINDOWS:
+                subprocess_result = subprocess.run(
+                    [sys.executable, execute_file],
+                    timeout=_process_limit_timeout_seconds,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    capture_output=True,
+                    **kwargs
+                )
+            else:
+                def _set_resource_limit():
+                    if not _enable_sandbox or not sys.platform.startswith("linux"):
+                        return
+                    with suppress(Exception):
+                        resource.setrlimit(resource.RLIMIT_AS, (_process_limit_mem_mb * 1024 * 1024,) * 2)
+                    with suppress(Exception):
+                        cores = random.sample(list(os.sched_getaffinity(0)), _process_limit_cpu_cores)
+                        os.sched_setaffinity(0, set(cores))
+
+                subprocess_result = subprocess.run(
+                    [sys.executable, execute_file],
+                    timeout=_process_limit_timeout_seconds,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    capture_output=True,
+                    **kwargs,
+                    preexec_fn=_set_resource_limit,
+                )
             return subprocess_result
         except subprocess.TimeoutExpired:
             raise Exception(_("Process execution timed out after {} seconds.").format(_process_limit_timeout_seconds))
