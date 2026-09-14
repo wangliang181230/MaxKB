@@ -214,7 +214,7 @@
                         class="flex align-center mt-8"
                       >
                         <el-avatar shape="square" :size="20" style="background: none" class="mr-8">
-                          <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+                          <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
                         </el-avatar>
                         <span class="ellipsis-1" :title="item.name">{{ item.name }}</span>
                       </div>
@@ -246,7 +246,7 @@
                           style="background: none"
                           class="mr-8"
                         >
-                          <img :src="resetUrl(item?.icon)" alt="" />
+                          <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
                         </el-avatar>
                         <ToolIcon v-else :size="20" :type="item?.tool_type" class="mr-8" />
                         <span class="ellipsis-1" :title="item.name">{{ item.name }}</span>

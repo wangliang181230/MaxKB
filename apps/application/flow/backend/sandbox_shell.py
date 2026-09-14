@@ -2,6 +2,7 @@ import getpass
 import os
 import re
 import shlex
+import sys
 
 from deepagents.backends import LocalShellBackend
 from deepagents.backends.protocol import ExecuteResponse
@@ -9,7 +10,10 @@ from deepagents.backends.protocol import ExecuteResponse
 from common.utils.logger import maxkb_logger
 from maxkb.const import CONFIG
 
-_enable_sandbox = bool(int(CONFIG.get("SANDBOX", 1)))
+# gosu/LD_PRELOAD 沙箱仅支持 Linux，其他平台自动禁用并提示
+_enable_sandbox = bool(int(CONFIG.get("SANDBOX", 1))) and sys.platform.startswith("linux")
+if bool(int(CONFIG.get("SANDBOX", 1))) and not _enable_sandbox:
+    maxkb_logger.warning("Shell sandbox is Linux-only, disabled on %s.", sys.platform)
 _run_user = "sandbox" if _enable_sandbox else getpass.getuser()
 _sandbox_python_sys_path = CONFIG.get_sandbox_python_package_paths().replace(",", ":")
 
