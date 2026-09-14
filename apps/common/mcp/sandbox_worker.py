@@ -9,7 +9,6 @@ import ipaddress
 import json
 import os
 from pathlib import Path
-import pwd
 import resource
 import signal
 import socket
@@ -130,6 +129,7 @@ class SandboxNetworkCheck:
 def enter_sandbox(settings):
     if not sys.platform.startswith("linux"):
         raise RuntimeError("MCP sandbox requires Linux")
+    import pwd
     account = pwd.getpwnam("sandbox")
     if settings["uid"] != account.pw_uid or settings["gid"] != account.pw_gid or account.pw_uid == 0:
         raise RuntimeError("Invalid MCP sandbox identity")
