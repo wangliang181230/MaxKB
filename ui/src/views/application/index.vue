@@ -201,7 +201,7 @@
                   >
                     <template #icon>
                       <el-avatar shape="square" :size="32" style="background: none">
-                        <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+                        <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
                       </el-avatar>
                     </template>
                     <template #subTitle>

@@ -29,7 +29,7 @@
               :size="20"
               style="background: none"
             >
-              <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+              <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
             </el-avatar>
 
             <ToolIcon
@@ -52,7 +52,7 @@
                 :size="20"
                 style="background: none"
               >
-                <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+                <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
               </el-avatar>
               <el-avatar
                 v-else
