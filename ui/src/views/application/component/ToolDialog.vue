@@ -72,7 +72,7 @@
                           style="background: none"
                           class="mr-8"
                         >
-                          <img :src="resetUrl(item?.icon)" alt="" />
+                          <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
                         </el-avatar>
                         <ToolIcon v-else :size="32" :type="item?.tool_type" />
                       </template>
@@ -94,7 +94,7 @@
                           :size="32"
                           style="background: none"
                         >
-                          <img :src="resetUrl(item?.icon)" alt="" />
+                          <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
                         </el-avatar>
                         <ToolIcon v-else :size="32" :type="item?.tool_type" />
                       </template>
