@@ -1,7 +1,6 @@
 """Build fixed stdio worker connections; user configuration never selects code."""
 
 import json
-import pwd
 import sys
 from datetime import timedelta
 from importlib.machinery import PathFinder
@@ -21,6 +20,8 @@ def sandbox_settings():
         raise ValueError("MCP sandbox is disabled")
     if not sys.platform.startswith("linux"):
         raise ValueError("MCP sandbox requires Linux; set SANDBOX=0 for local development")
+    import pwd
+
     account = pwd.getpwnam("sandbox")
     sandbox_home = Path(CONFIG.get("SANDBOX_HOME", "/opt/maxkb-app/sandbox"))
     library = sandbox_home / "lib/sandbox.so"

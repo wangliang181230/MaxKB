@@ -6,12 +6,12 @@
     style="background: none"
     class="mr-8"
   >
-    <img :src="item?.icon" alt="" />
+    <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
   </el-avatar>
   <LogoIcon v-else :height="`${size}px`" />
 </template>
 <script setup lang="ts">
-import { isAppIcon } from '@/utils/common'
+import { isAppIcon, resetUrl } from '@/utils/common'
 const props = defineProps<{
   item: {
     name: string
