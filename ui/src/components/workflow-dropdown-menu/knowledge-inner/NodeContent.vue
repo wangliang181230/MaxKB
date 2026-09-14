@@ -29,7 +29,7 @@
               :size="20"
               style="background: none"
             >
-              <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+              <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
             </el-avatar>
             <ToolIcon v-else :size="20" :type="item?.tool_type" />
             <span class="ml-8 ellipsis" :title="item.name">{{ item.name }}</span>
@@ -45,7 +45,7 @@
                 :size="20"
                 style="background: none"
               >
-                <img :src="resetUrl(item?.icon, resetUrl('./favicon.ico'))" alt="" />
+                <img :src="resetUrl(item?.icon || '', resetUrl('./favicon.ico'))" alt="" />
               </el-avatar>
               <ToolIcon v-else :size="20" :type="item?.tool_type" />
               <span class="font-medium ml-8 break-all" :title="item.name">{{ item.name }}</span>

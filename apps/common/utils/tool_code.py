@@ -50,8 +50,10 @@ class ToolExecutor:
             return
         try:
             # 只初始化一次
+            lock_dir = os.path.join(PROJECT_DIR, "tmp")
+            os.makedirs(lock_dir, exist_ok=True)
             fd = os.open(
-                os.path.join(PROJECT_DIR, "tmp", "tool_executor_init_dir.lock"), os.O_CREAT | os.O_EXCL | os.O_WRONLY
+                os.path.join(lock_dir, "tool_executor_init_dir.lock"), os.O_CREAT | os.O_EXCL | os.O_WRONLY
             )
             os.close(fd)
         except FileExistsError:
