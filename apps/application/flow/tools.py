@@ -645,7 +645,7 @@ async def _yield_mcp_response(
                                     else parsed_args
                                 )
                                 normalized_id = _extract_tool_id(entry["id"])
-                                info = {"name": entry["name"], "input": json.dumps(filtered_args, ensure_ascii=False), 'start_time': time.time()}
+                                info = {"name": entry["name"], "input": filtered_args, 'start_time': time.time()}
                                 tool_calls_info[entry["id"]] = info
                                 if normalized_id and normalized_id != entry["id"]:
                                     tool_calls_info[normalized_id] = info
@@ -732,7 +732,15 @@ async def _yield_mcp_response(
                             tool_record_id = text_result.pop("tool_record_id", None)
                         run_time = time.time() - tool_info.get('start_time', time.time())
                         if tool_lib_id:
-                            await save_tool_record(tool_lib_id, tool_info, tool_result, source_id, source_type, run_time)
+                            if tool_record_id:
+                                # 工作流工具: ToolWorkflowPostHandler 已保存完整记录(含 details),
+                                # 此处仅获取 icon 用于前端展示, 不再覆盖已有记录
+                                _tool = await sync_to_async(lambda: QuerySet(Tool).filter(id=tool_lib_id).first())()
+                                if _tool:
+                                    tool_info["icon"] = _tool.icon
+                            else:
+                                # MCP/非工作流工具: 需要新建记录
+                                await save_tool_record(tool_lib_id, tool_info, tool_result, source_id, source_type, run_time)
                         tool_result = json.dumps(text_result, ensure_ascii=False)
                     except Exception as e:
                         tool_result = chunk[0].content
