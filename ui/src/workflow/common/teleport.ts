@@ -5,6 +5,19 @@ let active = false
 const items: { [key: string]: any } = {}
 const renderItems = shallowRef<Array<any>>([])
 let syncHandle = 0
+const scheduleFrame = (callback: FrameRequestCallback) => {
+  if (typeof requestAnimationFrame === 'function') {
+    return requestAnimationFrame(callback)
+  }
+  return setTimeout(() => callback(Date.now()), 0)
+}
+const cancelFrame = (handle: number) => {
+  if (typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(handle)
+    return
+  }
+  clearTimeout(handle)
+}
 
 function syncItems() {
   syncHandle = 0
@@ -15,7 +28,7 @@ function scheduleSyncItems() {
   if (syncHandle) {
     return
   }
-  syncHandle = window.requestAnimationFrame(syncItems)
+  syncHandle = scheduleFrame(syncItems)
 }
 
 export function connect(
@@ -66,7 +79,7 @@ export function disconnectAll() {
     delete items[key]
   })
   if (syncHandle) {
-    window.cancelAnimationFrame(syncHandle)
+    cancelFrame(syncHandle)
     syncHandle = 0
   }
   renderItems.value = []
