@@ -421,7 +421,7 @@ class WorkflowManage:
             maxkb_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
-            self.answer += str(e)
+            self.append_answer(str(e))
         finally:
             current_node.node_chunk.end()
 

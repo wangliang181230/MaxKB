@@ -109,7 +109,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
             traceback.print_exc()
             self.status = 500
             current_node.get_write_error_context(e)
-            self.answer += str(e)
+            self.append_answer(str(e))
             if self.is_the_task_interrupted():
                 current_node.status = 201
                 return None
