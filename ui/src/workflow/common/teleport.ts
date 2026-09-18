@@ -1,8 +1,22 @@
 import { BaseEdgeModel, BaseNodeModel, GraphModel } from '@logicflow/core'
-import { defineComponent, h, reactive, isVue3, Teleport, markRaw, Fragment } from 'vue-demi'
+import { defineComponent, h, isVue3, Teleport, markRaw, Fragment, shallowRef } from 'vue-demi'
 
 let active = false
-const items = reactive<{ [key: string]: any }>({})
+const items: { [key: string]: any } = {}
+const renderItems = shallowRef<Array<any>>([])
+let syncHandle = 0
+
+function syncItems() {
+  syncHandle = 0
+  renderItems.value = Object.values(items)
+}
+
+function scheduleSyncItems() {
+  if (!active || syncHandle) {
+    return
+  }
+  syncHandle = window.requestAnimationFrame(syncItems)
+}
 
 export function connect(
   id: string,
@@ -31,12 +45,14 @@ export function connect(
         provide: () => get_provide(node, graph),
       }),
     )
+    scheduleSyncItems()
   }
 }
 
 export function disconnect(id: string) {
   if (active) {
     delete items[id]
+    scheduleSyncItems()
   }
 }
 export function disconnectByFlow(flowId: string) {
@@ -45,11 +61,17 @@ export function disconnectByFlow(flowId: string) {
       delete items[key]
     }
   })
+  scheduleSyncItems()
 }
 export function disconnectAll() {
   Object.keys(items).forEach((key) => {
     delete items[key]
   })
+  if (syncHandle) {
+    window.cancelAnimationFrame(syncHandle)
+    syncHandle = 0
+  }
+  renderItems.value = []
 }
 
 export function isActive() {
@@ -69,25 +91,12 @@ export function getTeleport(): any {
         required: true,
       },
     },
-    setup(props) {
+    setup() {
       return () => {
-        const children: Record<string, any>[] = []
-        Object.keys(items).forEach((id) => {
-          // https://github.com/didi/LogicFlow/issues/1768
-          // 多个不同的VueNodeView都会connect注册到items中，因此items存储了可能有多个flowId流程图的数据
-          // 当使用多个LogicFlow时，会创建多个flowId + 同时使用KeepAlive
-          // 每一次items改变，会触发不同flowId持有的setup()执行，由于每次setup()执行就是遍历items，因此存在多次重复渲染元素的问题
-          // 即items[0]会在Page1的setup()执行，items[0]也会在Page2的setup()执行，从而生成两个items[0]
-
-          // 比对当前界面显示的flowId，只更新items[当前页面flowId:nodeId]的数据
-          // 比如items[0]属于Page1的数据，那么Page2无论active=true/false，都无法执行items[0]
-
-          children.push(items[id])
-        })
         return h(
           Fragment,
           {},
-          children.map((item) => h(item)),
+          renderItems.value.map((item) => h(item)),
         )
       }
     },
