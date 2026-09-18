@@ -50,10 +50,8 @@ export function connect(
 }
 
 export function disconnect(id: string) {
-  if (active) {
-    delete items[id]
-    scheduleSyncItems()
-  }
+  delete items[id]
+  scheduleSyncItems()
 }
 export function disconnectByFlow(flowId: string) {
   Object.keys(items).forEach((key) => {
