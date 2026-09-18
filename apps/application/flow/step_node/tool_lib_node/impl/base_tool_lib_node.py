@@ -12,7 +12,6 @@ import io
 import json
 import mimetypes
 import time
-import traceback
 from typing import Dict
 
 import uuid_utils.compat as uuid
@@ -225,7 +224,7 @@ class BaseToolLibNodeNode(IToolLibNode):
 
             return result
         except Exception as e:
-            maxkb_logger.error(f"Tool execution error: {traceback.format_exc()}")
+            maxkb_logger.error(f"Tool execution error: {e}", exc_info=True)
             QuerySet(ToolRecord).filter(id=task_record_id).update(
                 state=State.FAILURE,
                 run_time=time.time() - start_time,

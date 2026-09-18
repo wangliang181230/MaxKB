@@ -7,8 +7,6 @@
     @desc:
 """
 import io
-import traceback
-from functools import reduce
 from io import BytesIO
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
@@ -110,7 +108,7 @@ def handle_images(deps, archive: ZipFile) -> []:
             image_io = archive.read(dep.target)
             image = openpyxl_Image(BytesIO(image_io))
         except Exception as e:
-            maxkb_logger.error(f"Error reading image {dep.target}: {e}, {traceback.format_exc()}")
+            maxkb_logger.error(f"Error reading image {dep.target}: {e}", exc_info=True)
             continue
         image.embed = dep.id  # 文件rId
         image.target = dep.target  # 文件地址
@@ -176,6 +174,6 @@ def xlsx_embed_cells_images(buffer) -> {}:
                         image = File(id=uuid.uuid7(), file_name=img.path, meta={'debug': False, 'content': img_byte.getvalue()})
                         result['=' + image_excel_id] = image
                     except Exception as e:
-                        maxkb_logger.error(f"Error decoding image {img.target}: {e}, {traceback.format_exc()}")
+                        maxkb_logger.error(f"Error decoding image {img.target}: {e}", exc_info=True)
                         continue
     return result
