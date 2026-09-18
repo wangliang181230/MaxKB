@@ -92,9 +92,18 @@ class BaseReadChatHistoryNode(IReadChatHistoryNode):
                     "deleted": True,
                 }
 
-            # 查询该对话的所有历史对话记录
-            chat_records = QuerySet(ChatRecord).filter(chat_id=chat_id).order_by('index', 'create_time')
-            total_count = chat_records.count()
+            # 查询该对话的所有历史对话记录（仅加载需要的字段，限制最多500条防止内存溢出）
+            chat_records = QuerySet(ChatRecord).filter(chat_id=chat_id).only(
+                # 'id',
+                'problem_text',
+                'answer_text',
+                # 'message_tokens',
+                # 'answer_tokens',
+                # 'run_time',
+                'index',  # order_by 中写了该字段，它肯定会读取出来，所以这里明示有该字段
+                'create_time',  # order_by 中写了该字段，它肯定会读取出来，所以这里明示有该字段
+            ).order_by('index', 'create_time')[:500]
+            total_count = len(chat_records)
 
             # 构建历史对话列表
             for record in chat_records:
