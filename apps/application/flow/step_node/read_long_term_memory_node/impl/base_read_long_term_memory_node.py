@@ -78,7 +78,7 @@ class BaseReadLongTermMemoryNode(IReadLongTermMemoryNode):
             if days and days > 0:
                 cutoff_date = datetime.now() - timedelta(days=float(days))
                 qs = qs.filter(update_time__gte=cutoff_date)
-            long_term_memories = qs.only("memory")
+            long_term_memories = qs.only("memory")[:200]
 
             # 构建返回结果
             memories = []
