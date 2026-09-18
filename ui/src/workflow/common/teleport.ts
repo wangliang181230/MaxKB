@@ -12,7 +12,7 @@ function syncItems() {
 }
 
 function scheduleSyncItems() {
-  if (!active || syncHandle) {
+  if (syncHandle) {
     return
   }
   syncHandle = window.requestAnimationFrame(syncItems)
@@ -83,6 +83,7 @@ export function getTeleport(): any {
     throw new Error('teleport is only available in Vue3')
   }
   active = true
+  syncItems()
 
   return defineComponent({
     props: {
