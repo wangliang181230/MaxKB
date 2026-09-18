@@ -40,7 +40,6 @@ class IReadLongTermMemoryNode(INode):
     def _run(self):
         # 通过引用路径获取实际的 chat_user_id 值
         chat_user_id_ref = self.node_params_serializer.data.get('chat_user_id')
-        print(f"\n{chat_user_id_ref}   ({type(chat_user_id_ref)})\n")
         if chat_user_id_ref and len(chat_user_id_ref) >= 2:
             chat_user_id = self.workflow_manage.get_reference_field(
                 chat_user_id_ref[0],
@@ -51,7 +50,6 @@ class IReadLongTermMemoryNode(INode):
 
         # 通过引用路径获取实际的 chat_user_type 值
         chat_user_type_ref = self.node_params_serializer.data.get('chat_user_type')
-        print(f"\n{chat_user_type_ref}   ({type(chat_user_type_ref)})\n")
         if chat_user_type_ref and len(chat_user_type_ref) >= 2:
             chat_user_type = self.workflow_manage.get_reference_field(
                 chat_user_type_ref[0],
