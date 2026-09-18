@@ -55,7 +55,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
         language = get_language()
         self.run_chain_async(self.start_node, None, language)
         while self.is_run():
-            time.sleep(0.01)
+            time.sleep(0.05)
         self.work_flow_post_handler.handler(self)
 
     @staticmethod

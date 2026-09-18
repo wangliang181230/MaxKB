@@ -255,7 +255,7 @@ class WorkflowManage:
             self.params['stream'] = True
             self.run_chain_async(None, None, language)
             while self.is_run():
-                time.sleep(0.01)
+                time.sleep(0.05)
             details = self.get_runtime_details()
             message_tokens = sum([row.get('message_tokens') for row in details.values() if
                                   'message_tokens' in row and row.get('message_tokens') is not None])
@@ -350,19 +350,23 @@ class WorkflowManage:
                 yield chunk
         finally:
             while self.is_run():
-                time.sleep(0.01)
-            if self.params is None:
+                time.sleep(0.05)
+            # 本地引用快照，避免在检查与使用之间被其他线程清理
+            params = self.params
+            work_flow_post_handler = self.work_flow_post_handler
+            base_to_response = self.base_to_response
+            if params is None:
                 return  # 已清理
             details = self.get_runtime_details()
             message_tokens = sum([row.get('message_tokens') for row in details.values() if
                                   'message_tokens' in row and row.get('message_tokens') is not None])
             answer_tokens = sum([row.get('answer_tokens') for row in details.values() if
                                  'answer_tokens' in row and row.get('answer_tokens') is not None])
-            if self.work_flow_post_handler is not None:
-                self.work_flow_post_handler.handler(self)
-            if self.base_to_response is not None and self.params is not None:
-                yield self.base_to_response.to_stream_chunk_response(self.params.get('chat_id'),
-                                                                     self.params.get('chat_record_id'),
+            if work_flow_post_handler is not None:
+                work_flow_post_handler.handler(self)
+            if base_to_response is not None and params is not None:
+                yield base_to_response.to_stream_chunk_response(params.get('chat_id'),
+                                                                     params.get('chat_record_id'),
                                                                      '',
                                                                      [],
                                                                      '', True, message_tokens, answer_tokens, {})
