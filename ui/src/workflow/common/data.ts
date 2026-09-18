@@ -2,7 +2,6 @@ import { WorkflowKind } from './../../enums/application'
 import { WorkflowType, WorkflowMode } from '@/enums/application'
 import i18n, { t } from '@/locales'
 import { watch } from 'vue'
-import call$ from 'dingtalk-jsapi/api/biz/telephone/call'
 
 export const startNode = {
   id: WorkflowType.Start,

@@ -8,7 +8,6 @@
 """
 import os
 import time
-import traceback
 from concurrent.futures import ThreadPoolExecutor
 
 from django.db.models import QuerySet
@@ -19,6 +18,7 @@ from application.flow.i_step_node import WorkFlowPostHandler, KnowledgeFlowParam
 from application.flow.workflow_manage import WorkflowManage
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
+from common.utils.logger import maxkb_logger
 from knowledge.models.knowledge_action import KnowledgeAction, State
 
 executor = ThreadPoolExecutor(max_workers=min(int(os.environ.get('WORKFLOW_MAX_WORKERS', '50')), 200))
@@ -81,7 +81,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
             result = self.hand_node_result(current_node, node_result_future)
             return result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
         return None
 
     def hand_node_result(self, current_node, node_result_future):
@@ -106,7 +106,7 @@ class KnowledgeWorkflowManage(WorkflowManage):
                 return None
             return current_result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
             self.append_answer(str(e))
