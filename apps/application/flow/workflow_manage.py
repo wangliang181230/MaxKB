@@ -428,6 +428,8 @@ class WorkflowManage:
             self.append_answer(str(e))
         finally:
             current_node.node_chunk.end()
+            # 归还链接到连接池
+            connection.close()
 
     def append_node(self, current_node):
         for index in range(len(self.node_context)):

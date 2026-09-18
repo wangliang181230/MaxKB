@@ -10,6 +10,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+from django.db import connection
 from django.db.models import QuerySet
 from django.utils.translation import get_language
 
@@ -122,6 +123,8 @@ class KnowledgeWorkflowManage(WorkflowManage):
             QuerySet(KnowledgeAction).filter(id=self.params.get('knowledge_action_id')).update(state=State.FAILURE)
         finally:
             current_node.node_chunk.end()
+            # 手动关闭数据库连接
+            connection.close()
             QuerySet(KnowledgeAction).filter(id=self.params.get('knowledge_action_id')).update(
                 details=self.get_runtime_details())
 
