@@ -71,7 +71,7 @@
                 new ComplexPermission(
                   [RoleConst.ADMIN],
                   [PermissionConst.OPERATION_LOG_EXPORT],
-                  [EditionConst.IS_EE, EditionConst.IS_PE],
+                  [],
                   'OR',
                 )
               "
@@ -83,7 +83,7 @@
                 new ComplexPermission(
                   [RoleConst.ADMIN],
                   [PermissionConst.OPERATION_LOG_CLEAR_POLICY],
-                  [EditionConst.IS_EE, EditionConst.IS_PE],
+                  [],
                   'OR',
                 )
               "
