@@ -218,7 +218,7 @@
               <template #default="{ row }">
                 {{
                   row.source === 'LOCAL'
-                    ? $t('views.userManage.source.local')
+                    ? $t('views.userManage.source.localCreate')
                     : row.source === 'wecom'
                       ? $t('views.userManage.source.wecom')
                       : row.source === 'lark'
@@ -227,7 +227,9 @@
                           ? $t('views.userManage.source.dingtalk')
                           : row.source === 'OAUTH2' || row.source === 'OAuth2'
                             ? 'OAuth2'
-                            : row.source
+                            : row.source === 'BUSINESS'
+                              ? '业务系统'
+                              : row.source
                 }}
               </template>
             </el-table-column>

@@ -195,10 +195,10 @@
                     : row.source === 'dingtalk'
                       ? $t('views.userManage.source.dingtalk')
                       : row.source === 'OAUTH2' || row.source === 'OAuth2'
-                        ? $t('views.userManage.source.dingtalk')
-                          : row.source === 'BUSINESS'
-                            ? '业务系统'
-                            : row.source
+                        ? 'OAuth2'
+                        : row.source === 'BUSINESS'
+                          ? '业务系统'
+                          : row.source
             }}
           </template>
         </el-table-column>
