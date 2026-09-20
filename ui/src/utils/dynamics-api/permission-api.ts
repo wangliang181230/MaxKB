@@ -1,5 +1,5 @@
 import {PermissionConst, EditionConst, RoleConst} from '@/utils/permission/data'
-import {hasPermission} from '@/utils/permission/index'
+import {hasPermission} from '@/utils/permission'
 import roleSystemApi from '@/api/system/role'
 import roleWorkspaceApi from '@/api/workspace/role'
 import systemWorkspaceApi from '@/api/system/workspace'
@@ -44,15 +44,16 @@ const workspacePermissionMap = {
 }
 
 export function loadPermissionApi(type: string) {
+  // 系统管理员 API（社区版/专业版/企业版的管理员均可使用）
+  if (hasPermission(systemPermissionMap[type as keyof typeof systemPermissionMap], 'OR')) {
+    return systemApiMap[type]
+  }
+  // 企业版/专业版工作空间管理员 API
   if (hasPermission([EditionConst.IS_EE, EditionConst.IS_PE], 'OR')) {
     user.getHasPermissionWorkspaceManage()
-    if (hasPermission(systemPermissionMap[type as keyof typeof systemPermissionMap], 'OR')) {
-      // 加载系统管理员 API
-      return systemApiMap[type]
-    } else if (
+    if (
       hasPermission(workspacePermissionMap[type as keyof typeof workspacePermissionMap], 'OR')
     ) {
-      // 加载企业版工作空间管理员 API
       return workspaceApiMap[type]
     }
   }
