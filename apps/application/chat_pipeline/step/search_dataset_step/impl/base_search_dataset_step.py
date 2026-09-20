@@ -73,16 +73,24 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
                                       exclude_paragraph_id_list, True, top_n, similarity, SearchMode(search_mode))
         if embedding_list is None:
             return []
-        paragraph_list = self.list_paragraph(embedding_list, vector)
-        result = [self.reset_paragraph(paragraph, embedding_list) for paragraph in paragraph_list]
+        embedding_map = self._build_embedding_map(embedding_list)
+        paragraph_list = self.list_paragraph(embedding_list, embedding_map, vector)
+        result = [self.reset_paragraph(paragraph, embedding_map) for paragraph in paragraph_list]
         return result
 
     @staticmethod
-    def reset_paragraph(paragraph: Dict, embedding_list: List) -> ParagraphPipelineModel:
-        filter_embedding_list = [embedding for embedding in embedding_list if
-                                 str(embedding.get('paragraph_id')) == str(paragraph.get('id'))]
-        if filter_embedding_list is not None and len(filter_embedding_list) > 0:
-            find_embedding = filter_embedding_list[-1]
+    def _build_embedding_map(embedding_list):
+        """预构建 paragraph_id -> embedding 的映射，避免 O(N*M) 的列表遍历"""
+        result = {}
+        for embedding in embedding_list:
+            pid = str(embedding.get('paragraph_id'))
+            result[pid] = embedding
+        return result
+
+    @staticmethod
+    def reset_paragraph(paragraph: Dict, embedding_map: Dict) -> ParagraphPipelineModel:
+        find_embedding = embedding_map.get(str(paragraph.get('id')))
+        if find_embedding is not None:
             return (ParagraphPipelineModel.builder()
                     .add_paragraph(paragraph)
                     .add_similarity(find_embedding.get('similarity'))
@@ -96,16 +104,14 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
                     .build())
 
     @staticmethod
-    def get_similarity(paragraph, embedding_list: List):
-        filter_embedding_list = [embedding for embedding in embedding_list if
-                                 str(embedding.get('paragraph_id')) == str(paragraph.get('id'))]
-        if filter_embedding_list is not None and len(filter_embedding_list) > 0:
-            find_embedding = filter_embedding_list[-1]
+    def get_similarity(paragraph, embedding_map: Dict):
+        find_embedding = embedding_map.get(str(paragraph.get('id')))
+        if find_embedding is not None:
             return find_embedding.get('comprehensive_score')
         return 0
 
     @staticmethod
-    def list_paragraph(embedding_list: List, vector):
+    def list_paragraph(embedding_list: List, embedding_map: Dict, vector):
         paragraph_id_list = [row.get('paragraph_id') for row in embedding_list]
         if not paragraph_id_list:
             return []
@@ -116,20 +122,20 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
                                        with_table_name=True)
         # 如果向量库中存在脏数据 直接删除
         if len(paragraph_list) != len(paragraph_id_list):
-            exist_paragraph_list = [row.get('id') for row in paragraph_list]
+            exist_paragraph_set = {str(row.get('id')) for row in paragraph_list}
             for paragraph_id in paragraph_id_list:
-                if not exist_paragraph_list.__contains__(paragraph_id):
+                if str(paragraph_id) not in exist_paragraph_set:
                     vector.delete_by_paragraph_id(paragraph_id)
         # 如果存在直接返回的则取直接返回段落
         hit_handling_method_paragraph = [paragraph for paragraph in paragraph_list if
                                          (paragraph.get(
                                              'hit_handling_method') == 'directly_return' and BaseSearchDatasetStep.get_similarity(
-                                             paragraph, embedding_list) >= paragraph.get(
+                                             paragraph, embedding_map) >= paragraph.get(
                                              'directly_return_similarity'))]
         if len(hit_handling_method_paragraph) > 0:
             # 找到评分最高的
             return [sorted(hit_handling_method_paragraph,
-                           key=lambda p: BaseSearchDatasetStep.get_similarity(p, embedding_list))[-1]]
+                           key=lambda p: BaseSearchDatasetStep.get_similarity(p, embedding_map))[-1]]
         return paragraph_list
 
     def get_details(self, manage, **kwargs):

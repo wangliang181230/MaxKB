@@ -119,8 +119,9 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
         connection.close()
         if embedding_list is None:
             return get_none_result(question)
-        paragraph_list = self.list_paragraph(embedding_list, vector)
-        result = [self.reset_paragraph(paragraph, embedding_list) for paragraph in paragraph_list]
+        embedding_map = self._build_embedding_map(embedding_list)
+        paragraph_list = self.list_paragraph(embedding_list, embedding_map, vector)
+        result = [self.reset_paragraph(paragraph, embedding_map) for paragraph in paragraph_list]
         result = [r for r in result if r is not None]  # 去除None
         result = sorted(result, key=lambda p: p.get('similarity'), reverse=True)
         return NodeResult({'paragraph_list': result,
@@ -137,11 +138,18 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
                           {})
 
     @staticmethod
-    def reset_paragraph(paragraph: Dict, embedding_list: List):
-        filter_embedding_list = [embedding for embedding in embedding_list if
-                                 str(embedding.get('paragraph_id')) == str(paragraph.get('id'))]
-        if filter_embedding_list is not None and len(filter_embedding_list) > 0:
-            find_embedding = filter_embedding_list[-1]
+    def _build_embedding_map(embedding_list):
+        """预构建 paragraph_id -> embedding 的映射，避免 O(N*M) 的列表遍历"""
+        result = {}
+        for embedding in embedding_list:
+            pid = str(embedding.get('paragraph_id'))
+            result[pid] = embedding
+        return result
+
+    @staticmethod
+    def reset_paragraph(paragraph: Dict, embedding_map: Dict):
+        find_embedding = embedding_map.get(str(paragraph.get('id')))
+        if find_embedding is not None:
             return {
                 **paragraph,
                 'similarity': find_embedding.get('similarity'),
@@ -156,20 +164,23 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
             }
 
     @staticmethod
-    def list_paragraph(embedding_list: List, vector):
+    def list_paragraph(embedding_list: List, embedding_map: Dict, vector):
         paragraph_id_list = [row.get('paragraph_id') for row in embedding_list]
         if not paragraph_id_list:
             return []
-        paragraph_list = native_search(QuerySet(Paragraph).filter(id__in=paragraph_id_list),
-                                       get_file_content(
-                                           os.path.join(PROJECT_DIR, "apps", "application", 'sql',
-                                                        'list_knowledge_paragraph_by_paragraph_id.sql')),
-                                       with_table_name=True)
+        paragraph_list = native_search(
+            QuerySet(Paragraph).filter(id__in=paragraph_id_list),
+            get_file_content(
+                os.path.join(PROJECT_DIR, "apps", "application", 'sql',
+                             'list_knowledge_paragraph_by_paragraph_id.sql')
+            ),
+            with_table_name=True
+        )
         # 如果向量库中存在脏数据 直接删除
         if len(paragraph_list) != len(paragraph_id_list):
-            exist_paragraph_list = [row.get('id') for row in paragraph_list]
+            exist_paragraph_set = {str(row.get('id')) for row in paragraph_list}
             for paragraph_id in paragraph_id_list:
-                if not exist_paragraph_list.__contains__(paragraph_id):
+                if str(paragraph_id) not in exist_paragraph_set:
                     vector.delete_by_paragraph_id(paragraph_id)
         return paragraph_list
 
