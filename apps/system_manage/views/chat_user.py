@@ -262,20 +262,23 @@ class UserGroupView(APIView):
         data = request.data
         group_id = data.get('id')
         name = data.get('name')
+        # 用户组ID必须由前端填写（业务系统通过角色代码关联），不由后端生成
+        if not group_id:
+            raise AppApiException(1004, _('User group id is required'))
         if not name:
             raise AppApiException(1004, _('User group name is required'))
-        if group_id:
-            group = QuerySet(UserGroup).filter(id=group_id).first()
-            if group is None:
-                raise AppApiException(1004, _('User group does not exist'))
+        group = QuerySet(UserGroup).filter(id=group_id).first()
+        if group is not None:
+            # 已存在则重命名
             if QuerySet(UserGroup).filter(name=name).exclude(id=group_id).exists():
                 raise AppApiException(1004, _('User group name is already in use'))
             group.name = name
             group.save()
             return result.success({'id': group.id, 'name': group.name})
+        # 不存在则使用前端传入的ID创建
         if QuerySet(UserGroup).filter(name=name).exists():
             raise AppApiException(1004, _('User group name is already in use'))
-        group = UserGroup(id=str(uuid.uuid7()), name=name)
+        group = UserGroup(id=str(group_id), name=name)
         group.save()
         return result.success({'id': group.id, 'name': group.name})
 

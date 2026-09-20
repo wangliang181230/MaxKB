@@ -43,7 +43,7 @@ from knowledge.models import Document, Paragraph
 from maxkb.conf import PROJECT_DIR
 from models_provider.models import Model, Status
 from models_provider.tools import get_model_instance_by_model_workspace_id
-from system_manage.models import UserGroupRelation
+from system_manage.models import UserGroupRelation, UserGroup
 from system_manage.models.chat_user import ChatUser
 from system_manage.models.resource_mapping import ResourceMapping
 
@@ -124,6 +124,10 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
     # 创建用户组关联数据：表 UserGroupRelation
     try:
         group_id = group_id or "common_user"
+        # 如果用户组不存在，则自动创建一条用户组数据（业务系统通过角色代码关联）
+        if not QuerySet(UserGroup).filter(id=group_id).exists():
+            UserGroup(id=group_id, name=group_id).save()
+            maxkb_logger.info(f"用户组不存在，自动创建用户组：group_id={group_id}")
         new_user_group = UserGroupRelation(
             id=str(uuid.uuid7()),
             group_id=group_id,  # 默认：common_user=公众用户（对应业务系统的登录体系角色枚举值）
