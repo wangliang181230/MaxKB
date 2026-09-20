@@ -36,9 +36,5 @@ urlpatterns = [
     path('system/group/<str:user_group_id>/remove_member', views.UserGroupView.RemoveMember.as_view()),
     path('system/group/<str:user_group_id>/user_list/<int:current_page>/<int:page_size>', views.UserGroupView.UserList.as_view()),
     path('system/group/<str:user_group_id>', views.UserGroupView.Operate.as_view()),
-    path('system/group', views.UserGroupView.as_view()),
-    # 系统(个人) API Key
-    path('system/api_key/<int:current_page>/<int:page_size>', views.SystemApiKeyView.Page.as_view()),
-    path('system/api_key/<str:api_key_id>', views.SystemApiKeyView.Operate.as_view()),
-    path('system/api_key', views.SystemApiKeyView.as_view())
+    path('system/group', views.UserGroupView.as_view())
 ]
