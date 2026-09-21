@@ -34,15 +34,30 @@ def _set_user_groups(user_id, group_ids):
     重置对话用户所属用户组
     """
     QuerySet(UserGroupRelation).filter(user_id=user_id).delete()
-    for group_id in group_ids or []:
-        if QuerySet(UserGroup).filter(id=group_id).exists():
-            UserGroupRelation(id=uuid.uuid7(), user_id=user_id, group_id=group_id).save()
+    if not group_ids:
+        return
+    # 一次性验证所有 group_id 是否存在，避免 N 次 exists() 查询
+    valid_group_ids = set(
+        QuerySet(UserGroup).filter(id__in=group_ids).values_list('id', flat=True)
+    )
+    # 批量创建和保存关联数据
+    relations = [
+        UserGroupRelation(id=uuid.uuid7(), user_id=user_id, group_id=gid)
+        for gid in group_ids if gid in valid_group_ids
+    ]
+    if relations:
+        QuerySet(UserGroupRelation).bulk_create(relations)
 
 
 def _to_chat_user_row(chat_user: ChatUser):
-    relations = QuerySet(UserGroupRelation).filter(user_id=chat_user.id)
-    group_ids = [relation.group_id for relation in relations]
-    group_names = [group.name for group in QuerySet(UserGroup).filter(id__in=group_ids)]
+    # 使用 select_related 一次性获取 group 信息，避免 N+1 查询
+    relations = QuerySet(UserGroupRelation).select_related('group').filter(user_id=chat_user.id)
+    group_ids = []
+    group_names = []
+    for relation in relations:
+        group_ids.append(relation.group_id)
+        if relation.group:
+            group_names.append(relation.group.name)
     return {
         'id': chat_user.id,
         'username': chat_user.username,
@@ -211,14 +226,30 @@ class ChatUserView(APIView):
             ids = data.get('ids', [])
             user_group_ids = data.get('user_group_ids', [])
             is_append = data.get('is_append', True)
-            for user_id in ids:
-                if is_append:
-                    existing = {str(relation.group_id) for relation in
-                                QuerySet(UserGroupRelation).filter(user_id=user_id)}
-                    for group_id in user_group_ids:
-                        if str(group_id) not in existing and QuerySet(UserGroup).filter(id=group_id).exists():
-                            UserGroupRelation(id=uuid.uuid7(), user_id=user_id, group_id=group_id).save()
-                else:
+            if not ids:
+                return result.success(True)
+
+            if is_append:
+                # 一次性验证所有 group_id 是否存在
+                valid_group_ids = set(
+                    QuerySet(UserGroup).filter(id__in=user_group_ids).values_list('id', flat=True)
+                ) if user_group_ids else set()
+                # 一次性获取所有用户的已有关联，避免 N 次查询
+                existing_relations = QuerySet(UserGroupRelation).filter(
+                    user_id__in=ids, group_id__in=valid_group_ids
+                ).values_list('user_id', 'group_id')
+                existing_set = {(str(uid), str(gid)) for uid, gid in existing_relations}
+                # 批量创建新关联
+                new_relations = [
+                    UserGroupRelation(id=uuid.uuid7(), user_id=user_id, group_id=group_id)
+                    for user_id in ids
+                    for group_id in valid_group_ids
+                    if (str(user_id), str(group_id)) not in existing_set
+                ]
+                if new_relations:
+                    QuerySet(UserGroupRelation).bulk_create(new_relations, ignore_conflicts=True)
+            else:
+                for user_id in ids:
                     _set_user_groups(user_id, user_group_ids)
             return result.success(True)
 
@@ -299,11 +330,22 @@ class UserGroupView(APIView):
         @transaction.atomic
         def post(self, request: Request, user_group_id):
             user_ids = request.data.get('user_ids', [])
-            existing = {str(relation.user_id) for relation in
-                        QuerySet(UserGroupRelation).filter(group_id=user_group_id)}
-            for user_id in user_ids:
-                if str(user_id) not in existing:
-                    UserGroupRelation(id=uuid.uuid7(), user_id=user_id, group_id=user_group_id).save()
+            if not user_ids:
+                return result.success(True)
+            # 只查询相关 user_id 的已有关联，避免加载全组数据
+            existing = set(
+                str(uid) for uid in
+                QuerySet(UserGroupRelation).filter(
+                    group_id=user_group_id, user_id__in=user_ids
+                ).values_list('user_id', flat=True)
+            )
+            # 批量创建新关联，避免 N 次 save()
+            new_relations = [
+                UserGroupRelation(id=uuid.uuid7(), user_id=uid, group_id=user_group_id)
+                for uid in user_ids if str(uid) not in existing
+            ]
+            if new_relations:
+                QuerySet(UserGroupRelation).bulk_create(new_relations, ignore_conflicts=True)
             return result.success(True)
 
     class RemoveMember(APIView):
