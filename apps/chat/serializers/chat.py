@@ -71,9 +71,6 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
             if existing_user.uid is None:
                 existing_user.uid = uuid_to_long(existing_user.id)
                 need_update = True
-            # 更新用户数据
-            if need_update:
-                existing_user.save()
 
             if username and not existing_user.username.startswith(username):
                 # 检查username是否已存在，如果存在则添加数字
@@ -89,6 +86,10 @@ def ensure_chat_user_exists(chat_user_id, username, email=None, phone="", group_
                 if not existing_user.nick_name or existing_user.nick_name == existing_user.username:
                     existing_user.nick_name = username
                 existing_user.username = username
+                need_update = True
+
+            # 统一保存，避免多次 save() 产生多条 UPDATE 语句
+            if need_update:
                 existing_user.save()
         except Exception as e:
             maxkb_logger.error(f"保存对话用户数据失败：chat_user_id={chat_user_id}, username={username}, email={email}, phone={phone}, error: {e}", exc_info=True)
