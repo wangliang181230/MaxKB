@@ -75,14 +75,20 @@ class BaseReadLongTermMemoryNode(IReadLongTermMemoryNode):
                 qs = qs.filter(application_id__in=application_ids)
                 applications = QuerySet(Application).filter(id__in=application_ids).only("id", "name")
                 application_list = [{"id": str(app.id), "name": app.name} for app in applications]
-            if days and days > 0:
-                cutoff_date = datetime.now() - timedelta(days=float(days))
+            # days 可能从外部传入字符串，安全转换为 int，避免 str > int 比较报 TypeError
+            try:
+                days_int = int(days) if days else 0
+            except (TypeError, ValueError):
+                days_int = 0
+            if days_int > 0:
+                cutoff_date = datetime.now() - timedelta(days=days_int)
                 qs = qs.filter(update_time__gte=cutoff_date)
-            long_term_memories = qs.only("memory")[:200]
+            # 按更新时间倒序，优先返回最近的长期记忆；最多取200条。
+            long_term_memories = qs.only("memory").order_by("-update_time")[:200]
 
             # 构建返回结果
             memories = []
-            for idx, memory_record in enumerate(list(long_term_memories)):
+            for idx, memory_record in enumerate(long_term_memories):
                 memories.append(
                     f"### 长期记忆 {idx + 1}：\n"
                     f"{memory_record.memory.replace('### ', '#### ')}"
