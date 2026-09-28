@@ -11,6 +11,7 @@ import json
 from io import BytesIO
 
 from django.db.models import QuerySet
+from django.utils import timezone
 from django.http import StreamingHttpResponse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.request import Request
@@ -152,8 +153,8 @@ class OperateLog(APIView):
             SystemSettingModel.objects.update_or_create(
                 type=SettingType.LOG.value,
                 defaults={'meta': {'clean_time': clean_time}})
-            # 清理 clean_time 天前的日志
-            deadline = datetime.datetime.now() - datetime.timedelta(days=clean_time)
+            # 清理 clean_time 天前的日志（使用 timezone.now() 保证与 USE_TZ=True 下的时间比较正确）
+            deadline = timezone.now() - datetime.timedelta(days=clean_time)
             QuerySet(Log).filter(create_time__lt=deadline).delete()
             return result.success(True)
 
