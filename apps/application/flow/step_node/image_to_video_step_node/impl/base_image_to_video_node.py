@@ -68,7 +68,7 @@ class BaseImageToVideoNode(IImageToVideoNode):
             return NodeResult({'answer': gettext('Failed to generate video')}, {})
         file_name = 'generated_video.mp4'
         if isinstance(video_url, str) and video_url.startswith('http'):
-            res = requests.get(video_url)
+            res = requests.get(video_url, timeout=(10, 300))
             res.raise_for_status()
             video_url = res.content
         file = bytes_to_uploaded_file(video_url, file_name)

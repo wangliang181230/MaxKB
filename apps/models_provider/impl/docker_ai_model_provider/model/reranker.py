@@ -48,7 +48,7 @@ class DockerAIReranker(MaxKBBaseModel, BaseDocumentCompressor):
             "top_n": self.top_n,
         }
 
-        response = requests.post(f"{self.api_base}/rerank", data=json.dumps(payload), headers=headers)
+        response = requests.post(f"{self.api_base}/rerank", data=json.dumps(payload), headers=headers, timeout=(10, 60))
 
         if response.status_code != 200:
             raise RuntimeError(f"Docker AI API 请求失败: {response.text}")
