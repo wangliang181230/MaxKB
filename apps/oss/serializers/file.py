@@ -370,13 +370,18 @@ def get_url_content(url, application_id: str):
     if application.file_upload_setting and application.file_upload_setting.get('fileLimit'):
         file_limit = application.file_upload_setting.get('fileLimit') * 1024 * 1024
     try:
+        # 验证 URL 安全性，防止 SSRF 及 URL 解析绕过攻击
+        url = validate_and_normalize_url(url)
+    except ValueError as e:
+        raise AppApiException(500, str(e))
+    try:
         from common.utils.tool_code import ToolExecutor
         response = ToolExecutor().exec_code(
             """
     def get_url_content(url):
         import requests
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(url, verify=False, allow_redirects=False)
+        response = requests.get(url, verify=False, allow_redirects=False, timeout=(10, 30))
         content_type = response.headers.get('Content-Type', '')
         if 'text' in content_type or 'json' in content_type:
             content = response.text
@@ -394,12 +399,18 @@ def get_url_content(url, application_id: str):
         )
     except Exception as e:
         raise AppApiException(500, str(e))
-    if int(response.get('Content-Length')) > file_limit:
+    # Content-Length 可能缺失（如 chunked 传输），此时用实际下载内容大小判断，避免 int('') 报 500
+    content_length_raw = response.get('Content-Length')
+    try:
+        content_length = int(content_length_raw)
+    except (TypeError, ValueError):
+        content_length = len(response.get('content') or '')
+    if content_length > file_limit:
         raise AppApiException(500, _('File size exceeds limit'))
     return {
         'status_code': response.get('status_code'),
         'Content-Type': response.get('Content-Type'),
-        'Content-Length': response.get('Content-Length'),
+        'Content-Length': content_length,
         'content': response.get('content'),
     }
 
