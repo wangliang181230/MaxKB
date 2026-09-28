@@ -235,6 +235,8 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
     def _safe_call(self, method, url, **kwargs):
         """带重试的请求封装"""
         headers = {"Authorization": f"Bearer {self.api_key}"}
+        # 默认加上连接/读取超时，避免远端无响应时 worker 线程长期挂起
+        kwargs.setdefault('timeout', (10, 60))
 
         for attempt in range(self.max_retries):
             try:

@@ -57,7 +57,7 @@ class SiliconCloudReranker(MaxKBBaseModel, BaseDocumentCompressor):
             "return_documents": True,
         }
 
-        response = requests.post(f"{self.api_base}/rerank", json=payload, headers=headers)
+        response = requests.post(f"{self.api_base}/rerank", json=payload, headers=headers, timeout=(10, 60))
 
         if response.status_code != 200:
             raise RuntimeError(f"SiliconCloud API 请求失败: {response.text}")
