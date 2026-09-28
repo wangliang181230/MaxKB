@@ -56,7 +56,7 @@ class MiniMaxTextToImageModel(MaxKBBaseModel, BaseTextToImage):
             **self.params,
         }
         try:
-            response = requests.post(f'{self.api_base}/image_generation', headers=headers, json=payload)
+            response = requests.post(f'{self.api_base}/image_generation', headers=headers, json=payload, timeout=(10, 300))
             response.raise_for_status()
             file_urls = []
             data = response.json().get("data", {})
