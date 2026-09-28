@@ -6,9 +6,10 @@
     @date：2026/07/14
     @desc: 读取长期记忆节点实现
 """
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.db.models import QuerySet
+from django.utils import timezone
 
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.read_long_term_memory_node.i_read_long_term_memory_node import IReadLongTermMemoryNode
@@ -81,7 +82,7 @@ class BaseReadLongTermMemoryNode(IReadLongTermMemoryNode):
             except (TypeError, ValueError):
                 days_int = 0
             if days_int > 0:
-                cutoff_date = datetime.now() - timedelta(days=days_int)
+                cutoff_date = timezone.now() - timedelta(days=days_int)
                 qs = qs.filter(update_time__gte=cutoff_date)
             # 按更新时间倒序，优先返回最近的长期记忆；最多取200条。
             long_term_memories = qs.only("memory").order_by("-update_time")[:200]
