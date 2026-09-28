@@ -62,7 +62,7 @@ class AliyunBaiLianTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
             )
             # 这个的接口返回格式和上面两个不太一样，直接返回了一个url地址，下载后就是音频文件
             audio_url = response.output.audio.url
-            res = requests.get(audio_url)
+            res = requests.get(audio_url, timeout=(10, 60))
             audio = res.content
         elif 'MiniMax' in self.model:
             import requests
@@ -79,7 +79,7 @@ class AliyunBaiLianTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
                     **self.params
                 }
             }
-            response = requests.post(api_url, headers=headers, json=payload)
+            response = requests.post(api_url, headers=headers, json=payload, timeout=(10, 300))
             response.raise_for_status()
             audio_hex = response.json().get("output", {}).get("data", {}).get("audio")
             if audio_hex:
