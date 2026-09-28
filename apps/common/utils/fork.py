@@ -240,7 +240,7 @@ def fetch_url(url, headers):
     import requests
 
     requests.packages.urllib3.disable_warnings()
-    response = requests.get(url, verify=False, headers=headers)
+    response = requests.get(url, verify=False, headers=headers, timeout=(10, 30))
     return {
         "status_code": response.status_code,
         "content": base64.b64encode(response.content).decode("ascii"),
