@@ -6,9 +6,10 @@
     @date：2025/7/9
     @desc: 长期记忆相关序列化器
 """
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 from django.db.models import QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -59,7 +60,7 @@ class LongTermMemoryQuerySerializer(serializers.Serializer):
         except (TypeError, ValueError):
             days_int = 0
         if days_int > 0:
-            cutoff_date = datetime.now() - timedelta(days=days_int)
+            cutoff_date = timezone.now() - timedelta(days=days_int)
             qs = qs.filter(update_time__gte=cutoff_date)
 
         # 按更新时间倒序，优先返回最近的长期记忆；最多取200条。
