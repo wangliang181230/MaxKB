@@ -49,7 +49,7 @@ class SiliconCloudEmbeddingModel(MaxKBBaseModel):
             "Content-Type": "application/json"
         }
 
-        response = requests.post(self.base_url + '/embeddings', json=payload, headers=headers)
+        response = requests.post(self.base_url + '/embeddings', json=payload, headers=headers, timeout=(10, 60))
         data = response.json()
         if isinstance(data, dict):
             if data['data'] is None or 'code' in data:
