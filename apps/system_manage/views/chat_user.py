@@ -364,7 +364,7 @@ class UserGroupView(APIView):
         @has_permissions(PermissionConstants.USER_GROUP_READ, RoleConstants.ADMIN)
         def get(self, request: Request, user_group_id, current_page, page_size):
             query = request.query_params
-            relation_query_set = QuerySet(UserGroupRelation).filter(group_id=user_group_id)
+            relation_query_set = QuerySet(UserGroupRelation).select_related('user').filter(group_id=user_group_id)
             username = query.get('username')
             nick_name = query.get('nick_name')
             source = query.get('source')
