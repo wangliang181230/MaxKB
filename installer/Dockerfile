@@ -3,7 +3,7 @@ COPY ui ui
 RUN cd ui && ls -la && if [ -d "dist" ]; then exit 0; fi && \
     npm install --prefer-offline --no-audit && \
     npm install -D concurrently && \
-    NODE_OPTIONS="--max-old-space-size=4096" npx concurrently "npm run build" "npm run build-chat" && \
+    NODE_OPTIONS="--max-old-space-size=4096" npx concurrently "npm run build-only" "npm run build-only-chat" && \
     find . -maxdepth 1 ! -name '.' ! -name 'dist' ! -name 'public' -exec rm -rf {} +
 
 FROM ghcr.io/1panel-dev/maxkb-base:python3.11-pg17.11-20260903 AS stage-build
