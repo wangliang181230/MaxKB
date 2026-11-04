@@ -147,6 +147,7 @@ const close = () => {
   form.value = {
     field: '',
     label: '',
+    expression: '',
   }
 }
 
