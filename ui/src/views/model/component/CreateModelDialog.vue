@@ -439,7 +439,7 @@ function refresh(data: any, index: any) {
       return
     }
   }
-  if (index !== null) {
+  if (![undefined, null].includes(index)) {
     base_form_data.value.model_params_form.splice(index, 1, data)
   } else {
     base_form_data.value.model_params_form.push(data)

@@ -427,9 +427,7 @@ function deleteField(index: any) {
 }
 
 function openAddDialog(data?: any, index?: any) {
-  if (typeof index !== 'undefined') {
-    currentIndex.value = index
-  }
+  currentIndex.value = typeof index !== 'undefined' ? index : null
 
   FieldFormDialogRef.value.open(data)
 }
@@ -444,9 +442,7 @@ function refreshFieldList(data: any) {
 }
 
 function openAddInitDialog(data?: any, index?: any) {
-  if (typeof index !== 'undefined') {
-    currentIndex.value = index
-  }
+  currentIndex.value = typeof index !== 'undefined' ? index : null
 
   UserFieldFormDialogRef.value.open(data)
 }

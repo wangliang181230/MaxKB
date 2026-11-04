@@ -1,4 +1,8 @@
-FROM node:24-alpine AS web-build
+# Use a glibc (Debian) based Node image for the frontend build stage.
+# On node:*-alpine (musl libc), Rollup's native swc parser (from @rollup/rollup-linux-*-musl)
+# runs with a much smaller default thread stack and fails to parse @element-plus/icons-vue
+# with "Code is nested too deeply, reduce nesting or split the expression into smaller parts".
+FROM node:24-slim AS web-build
 COPY ui ui
 RUN cd ui && ls -la && if [ -d "dist" ]; then exit 0; fi && \
     npm install --prefer-offline --no-audit && \

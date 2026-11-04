@@ -153,7 +153,7 @@ function refresh(data: any, index: any) {
       return
     }
   }
-  if (index !== null) {
+  if (![undefined, null].includes(index)) {
     modelParamsForm.value.splice(index, 1, data)
   } else {
     modelParamsForm.value.push(data)
