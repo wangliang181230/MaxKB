@@ -82,6 +82,9 @@ const inputFieldConfig = ref({ title: t('aiChat.userInput') })
 function openAddDialog(data?: any, index?: any) {
   if (index !== undefined) {
     currentIndex.value = index
+  } else {
+    // 新增参数时清空上一次编辑残留的行号，否则会覆盖已有参数
+    currentIndex.value = null
   }
   inputFieldFormDialogRef.value?.open(data)
 }
