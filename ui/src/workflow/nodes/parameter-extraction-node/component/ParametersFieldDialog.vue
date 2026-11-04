@@ -156,6 +156,8 @@ const close = () => {
   form.value = {
     field: '',
     label: '',
+    parameter_type: '',
+    desc: '',
   }
 }
 

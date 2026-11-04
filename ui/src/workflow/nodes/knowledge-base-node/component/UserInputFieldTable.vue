@@ -128,7 +128,7 @@ function refreshFieldList(data: any, index: any) {
       return
     }
   }
-  if (index !== null) {
+  if (![undefined, null].includes(index)) {
     inputFieldList.value.splice(index, 1, data)
   } else {
     inputFieldList.value.push(data)
