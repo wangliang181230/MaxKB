@@ -33,7 +33,7 @@ from django.db.models import QuerySet
 from django.http import StreamingHttpResponse
 from django.utils.translation import gettext as _
 from langchain.chat_models.base import BaseChatModel
-from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage, SystemMessage, ToolMessage
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from rest_framework import status
 from tools.models import Tool, ToolType
@@ -78,6 +78,10 @@ def event_content(
     try:
         response_reasoning_content = False
         for chunk in response:
+            # ToolMessage 是工具调用结果（包含 <tool_calls_render> 渲染标记），
+            # 不应混入回答文本，否则 answer 被工具标记污染并保存到数据库
+            if isinstance(chunk, ToolMessage):
+                continue
             reasoning_chunk = reasoning.get_reasoning_content(chunk)
             content_chunk = reasoning_chunk.get("content")
             if "reasoning_content" in chunk.additional_kwargs:
@@ -698,7 +702,26 @@ class BaseChatStep(IChatStep):
                 runtime_user_id,
             )
             if mcp_result:
-                return mcp_result, True
+                # 非流式模式：消费 MCP generator，收集完整回答并构建 AIMessage。
+                # mcp_result 是 mcp_response_generator 返回的同步生成器，
+                # 产出 AIMessageChunk（模型输出）和 ToolMessage（工具结果）。
+                # execute_block 需要带 .content / .response_metadata 的消息对象，
+                # 不能直接接收生成器，因此在此处完成消费。
+                collected_text = ""
+                collected_reasoning = ""
+                for chunk in mcp_result:
+                    if isinstance(chunk, ToolMessage):
+                        continue
+                    if hasattr(chunk, "content") and chunk.content:
+                        collected_text += chunk.content
+                    if hasattr(chunk, "additional_kwargs"):
+                        rc = chunk.additional_kwargs.get("reasoning_content", "")
+                        if rc:
+                            collected_reasoning += rc
+                return AIMessage(
+                    content=collected_text,
+                    response_metadata={"reasoning_content": collected_reasoning},
+                ), True
             if user_system_prompt:
                 filtered_message_list.insert(0, SystemMessage(content=user_system_prompt))
             return chat_model.invoke(filtered_message_list), True

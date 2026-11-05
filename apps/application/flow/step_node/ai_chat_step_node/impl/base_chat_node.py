@@ -23,7 +23,7 @@ from django.db import connection
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
 from knowledge.models import File
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
 from models_provider.models import Model
 from models_provider.tools import get_model_credential, get_model_instance_by_model_workspace_id
 from tools.models import Tool, ToolType
@@ -74,6 +74,10 @@ def write_context_stream(node_variable: Dict, workflow_variable: Dict, node: INo
     for chunk in response:
         if workflow.is_the_task_interrupted():
             break
+        # ToolMessage 是工具调用结果（包含 <tool_calls_render> 渲染标记），
+        # 不应混入回答文本，否则 answer 被工具标记污染并保存到数据库
+        if isinstance(chunk, ToolMessage):
+            continue
         reasoning_chunk = reasoning.get_reasoning_content(chunk)
         content_chunk = reasoning_chunk.get("content")
         if "reasoning_content" in chunk.additional_kwargs:
