@@ -1247,12 +1247,14 @@ def get_workflow_args(tool, qv):
 
 def get_workflow_func(source_type, source_id, tool, qv, workspace_id, user_id=None):
     tool_id = tool.id
-    tool_record_id = str(uuid.uuid7())
-    took_execute = ToolExecute(tool_id, tool_record_id, workspace_id, source_type, source_id, False)
 
     def inner(**kwargs):
         from application.flow.tool_workflow_manage import ToolWorkflowManage
 
+        # 执行记录id按每次调用生成：闭包每次节点执行只生成一个的话，同一次对话内多次调用同一个工作流工具
+        # 会共用同一条 tool_record，后一次覆盖前一次，前端点开的执行详情不是本次调用的内容
+        tool_record_id = str(uuid.uuid7())
+        took_execute = ToolExecute(tool_id, tool_record_id, workspace_id, source_type, source_id, False)
         work_flow_manage = ToolWorkflowManage(
             Workflow.new_instance(qv.work_flow, WorkflowMode.TOOL),
             {
