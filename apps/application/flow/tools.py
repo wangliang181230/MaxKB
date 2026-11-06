@@ -714,6 +714,7 @@ async def _yield_mcp_response(
                 tool_id = chunk[0].tool_call_id
                 normalized_tool_id = _extract_tool_id(tool_id)
                 tool_info = tool_calls_info.get(tool_id) or tool_calls_info.get(normalized_tool_id)
+                tool_message = chunk[0]
 
                 if tool_info:
                     run_time = 0
@@ -757,7 +758,10 @@ async def _yield_mcp_response(
                         tool_info.get("icon", ""), tool_info["name"], tool_info["input"], tool_result, run_time,
                         tool_id=tool_lib_id, tool_record_id=tool_record_id
                     )
-                    chunk[0].content = content
+                    # 只输出渲染标记的消息副本给前端，留在会话上下文中的 ToolMessage 保留原始工具结果：
+                    # 模型一旦在上下文里看到 <tool_calls_render> 标记，会模仿输出伪造的 tool_id/tool_record_id，
+                    # 前端点击“查看执行详情”就会请求到不存在的执行记录（500 Tool record does not exist）
+                    tool_message = chunk[0].model_copy(update={"content": content})
                 else:
                     maxkb_logger.warning(
                         f"Tool ID {tool_id} not found in tool_calls_info. "
@@ -766,7 +770,7 @@ async def _yield_mcp_response(
                         f"Tool fragments at this point: {_tool_fragments}"
                     )
 
-                yield chunk[0]
+                yield tool_message
 
     except ExceptionGroup as eg:
 
@@ -1202,12 +1206,14 @@ def get_workflow_args(tool, qv):
 
 def get_workflow_func(source_type, source_id, tool, qv, workspace_id, user_id=None):
     tool_id = tool.id
-    tool_record_id = str(uuid.uuid7())
-    took_execute = ToolExecute(tool_id, tool_record_id, workspace_id, source_type, source_id, False)
 
     def inner(**kwargs):
         from application.flow.tool_workflow_manage import ToolWorkflowManage
 
+        # 执行记录id按每次调用生成：闭包每次节点执行只生成一个的话，同一次对话内多次调用同一个工作流工具
+        # 会共用同一条 tool_record，后一次覆盖前一次，前端点开的执行详情不是本次调用的内容
+        tool_record_id = str(uuid.uuid7())
+        took_execute = ToolExecute(tool_id, tool_record_id, workspace_id, source_type, source_id, False)
         work_flow_manage = ToolWorkflowManage(
             Workflow.new_instance(qv.work_flow, WorkflowMode.TOOL),
             {
