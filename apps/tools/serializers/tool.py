@@ -1600,7 +1600,7 @@ class ToolSerializer(serializers.Serializer):
             )
 
             messages[-1]["content"] = q
-            SUPPORTED_MODEL_TYPES = ["LLM"]
+            SUPPORTED_MODEL_TYPES = ["LLM", "MULTI"]
             model_exist = QuerySet(Model).filter(id=model_id, model_type__in=SUPPORTED_MODEL_TYPES).exists()
             if not model_exist:
                 raise Exception(_("Model does not exist or is not an LLM model"))

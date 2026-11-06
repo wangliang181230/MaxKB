@@ -71,6 +71,7 @@
                       <p>{{ $t('views.model.modelForm.model_type.tooltip7') }}</p>
                       <p>{{ $t('views.model.modelForm.model_type.tooltip8') }}</p>
                       <p>{{ $t('views.model.modelForm.model_type.tooltip9') }}</p>
+                      <p>{{ $t('views.model.modelForm.model_type.tooltip10') }}</p>
                     </template>
                     <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
                   </el-tooltip>
@@ -148,7 +149,7 @@
             type="text"
             @click.stop="openAddDrawer()"
             :disabled="
-              !['TTS', 'LLM', 'IMAGE', 'TTI', 'TTV', 'ITV', 'STT', 'EMBEDDING'].includes(
+              !['TTS', 'MULTI', 'LLM', 'IMAGE', 'TTI', 'TTV', 'ITV', 'STT', 'EMBEDDING'].includes(
                 base_form_data.model_type,
               )
             "

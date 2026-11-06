@@ -3350,6 +3350,10 @@ msgstr "模型類型不能為空"
 msgid "The current platform does not support downloading models"
 msgstr "當前平臺不支持下載模型"
 
+#: apps/models_provider/base_model_provider.py:142
+msgid "Multimodal Model"
+msgstr "多模態模型"
+
 #: apps/models_provider/base_model_provider.py:143
 msgid "LLM"
 msgstr "大語言模型"

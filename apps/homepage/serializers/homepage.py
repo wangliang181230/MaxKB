@@ -907,7 +907,7 @@ class HomePageSerializer(serializers.Serializer):
             result = query_set.aggregate(
                 total=Count("id"),
                 embedding_count=Count("id", filter=Q(model_type=ModelTypeConst.EMBEDDING.name)),
-                llm_count=Count("id", filter=Q(model_type=ModelTypeConst.LLM.name)),
+                llm_count=Count("id", filter=Q(model_type__in=[ModelTypeConst.LLM.name, ModelTypeConst.MULTI.name])),
             )
             total = result["total"] or 0
             embedding_count = result["embedding_count"] or 0
