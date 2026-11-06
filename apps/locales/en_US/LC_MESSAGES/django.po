@@ -3343,6 +3343,10 @@ msgstr ""
 msgid "The current platform does not support downloading models"
 msgstr ""
 
+#: apps/models_provider/base_model_provider.py:142
+msgid "Multimodal Model"
+msgstr ""
+
 #: apps/models_provider/base_model_provider.py:143
 msgid "LLM"
 msgstr ""
