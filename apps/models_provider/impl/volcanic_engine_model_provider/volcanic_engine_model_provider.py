@@ -52,6 +52,11 @@ model_info_list = [
               ModelTypeConst.IMAGE,
               volcanic_engine_image_model_credential, VolcanicEngineImage
               ),
+    ModelInfo('ep-xxxxxxxxxx-yyyy',
+              _('The user goes to the model inference page of Volcano Ark to create an inference access point. Here, you need to enter ep-xxxxxxxxxx-yyyy to call it.'),
+              ModelTypeConst.MULTI,
+              volcanic_engine_llm_model_credential, VolcanicEngineChatModel
+              ),
     ModelInfo('asr',
               '',
               ModelTypeConst.STT,

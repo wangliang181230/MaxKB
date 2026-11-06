@@ -97,6 +97,7 @@
                   currentModel.model_type === 'STT' ||
                   currentModel.model_type === 'LLM' ||
                   currentModel.model_type === 'IMAGE' ||
+                  currentModel.model_type === 'MULTI' ||
                   currentModel.model_type === 'TTI' ||
                   currentModel.model_type === 'ITV' ||
                   currentModel.model_type === 'EMBEDDING' ||

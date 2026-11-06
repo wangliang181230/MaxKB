@@ -172,6 +172,16 @@ def _initialize_model_info():
         )
     ]
 
+    model_info_multimodal_list = [
+        _create_model_info(
+            "hunyuan-vision",
+            _("Hunyuan Vision - supports both text and image inputs"),
+            ModelTypeConst.MULTI,
+            TencentLLMModelCredential,
+            TencentModel,
+        )
+    ]
+
     model_info_manage = (
         ModelInfoManage.builder()
         .append_model_info_list(model_info_list)
@@ -180,6 +190,8 @@ def _initialize_model_info():
         .append_default_model_info(model_info_vision_list[0])
         .append_model_info_list(model_info_tti_list)
         .append_default_model_info(model_info_tti_list[0])
+        .append_model_info_list(model_info_multimodal_list)
+        .append_default_model_info(model_info_multimodal_list[0])
         .append_default_model_info(model_info_list[0])
         .append_default_model_info(tencent_embedding_model_info)
         .build()

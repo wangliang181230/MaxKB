@@ -110,6 +110,15 @@ model_info_tti_list = [
               OpenAITextToImage),
 ]
 
+model_info_multimodal_list = [
+    ModelInfo('gpt-4o', _('The latest GPT-4o, cheaper and faster than gpt-4-turbo, updated with OpenAI adjustments'),
+              ModelTypeConst.MULTI, openai_llm_model_credential,
+              OpenAIChatModel),
+    ModelInfo('gpt-4o-mini', _('The latest gpt-4o-mini, cheaper and faster than gpt-4o, updated with OpenAI adjustments'),
+              ModelTypeConst.MULTI, openai_llm_model_credential,
+              OpenAIChatModel),
+]
+
 model_info_manage = (
     ModelInfoManage.builder()
     .append_model_info_list(model_info_list)
@@ -122,6 +131,8 @@ model_info_manage = (
     .append_default_model_info(model_info_image_list[0])
     .append_model_info_list(model_info_tti_list)
     .append_default_model_info(model_info_tti_list[0])
+    .append_model_info_list(model_info_multimodal_list)
+    .append_default_model_info(model_info_multimodal_list[0])
     .append_default_model_info(ModelInfo('whisper-1', '',
               ModelTypeConst.STT, openai_stt_model_credential,
               OpenAISpeechToText)

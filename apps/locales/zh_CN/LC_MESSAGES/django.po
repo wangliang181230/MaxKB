@@ -3370,6 +3370,10 @@ msgstr "语音合成"
 msgid "Vision Model"
 msgstr "视觉模型"
 
+#: apps/models_provider/base_model_provider.py:166
+msgid "Multimodal Model"
+msgstr "多模态模型"
+
 #: apps/models_provider/base_model_provider.py:148
 msgid "Image Generation"
 msgstr "图片生成"

@@ -49,6 +49,7 @@ export default {
       TTV: 'Text-to-Video Model',
       ITV: 'Image-to-Video Model',
       RERANKER: 'Rerank Model',
+      MULTI: 'Multimodal Model',
     },
   },
   tip: {

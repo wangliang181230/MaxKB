@@ -17,4 +17,5 @@ export enum modelType {
   RERANKER = 'views.model.modelType.RERANKER',
   TTV = 'views.model.modelType.TTV',
   ITV = 'views.model.modelType.ITV',
+  MULTI = 'views.model.modelType.MULTI',
 }

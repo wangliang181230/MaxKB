@@ -32,6 +32,7 @@ export default {
     TTI: '圖片生成',
     TTV: '文生視頻',
     ITV: '圖生視頻',
+    MULTI: '多模態模型',
   },
   modelForm: {
     title: {
@@ -65,6 +66,7 @@ export default {
       tooltip7: '圖片生成：在高階智能體中用於圖片生成的視覺模型。',
       tooltip8: '文生視頻：在高階智能體中用於文生視頻的模型。',
       tooltip9: '圖生視頻：在高階智能體中用於圖生視頻的模型。',
+      tooltip10: '多模態模型：同時支援大語言模型和視覺模型功能，可用於 AI 對話和圖片理解。',
       requiredMessage: '模型類型不能為空',
     },
     base_model: {

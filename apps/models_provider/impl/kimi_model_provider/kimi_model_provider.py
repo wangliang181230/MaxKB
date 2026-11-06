@@ -24,8 +24,23 @@ moonshot_v1_32k = ModelInfo('moonshot-v1-32k', '', ModelTypeConst.LLM, kimi_llm_
 moonshot_v1_128k = ModelInfo('moonshot-v1-128k', '', ModelTypeConst.LLM, kimi_llm_model_credential,
                              KimiChatModel)
 
-model_info_manage = ModelInfoManage.builder().append_model_info(moonshot_v1_8k).append_model_info(
-    moonshot_v1_32k).append_default_model_info(moonshot_v1_128k).append_default_model_info(moonshot_v1_8k).build()
+moonshot_v1_8k_vision = ModelInfo('moonshot-v1-8k-vision', '', ModelTypeConst.MULTI, kimi_llm_model_credential, KimiChatModel)
+moonshot_v1_32k_vision = ModelInfo('moonshot-v1-32k-vision', '', ModelTypeConst.MULTI, kimi_llm_model_credential, KimiChatModel)
+moonshot_v1_128k_vision = ModelInfo('moonshot-v1-128k-vision', '', ModelTypeConst.MULTI, kimi_llm_model_credential, KimiChatModel)
+
+model_info_manage = (
+    ModelInfoManage.builder()
+    .append_model_info(moonshot_v1_8k)
+    .append_model_info(moonshot_v1_32k)
+    .append_model_info(moonshot_v1_128k)
+    .append_model_info(moonshot_v1_8k_vision)
+    .append_model_info(moonshot_v1_32k_vision)
+    .append_model_info(moonshot_v1_128k_vision)
+    .append_default_model_info(moonshot_v1_128k)
+    .append_default_model_info(moonshot_v1_8k)
+    .append_default_model_info(moonshot_v1_128k_vision)
+    .build()
+)
 
 
 class KimiModelProvider(IModelProvider):

@@ -48,6 +48,7 @@ export default {
       TTV: '文生影片模型',
       ITV: '圖生影片模型',
       RERANKER: '重排模型',
+      MULTI: '多模態模型',
     },
   },
   tip: {

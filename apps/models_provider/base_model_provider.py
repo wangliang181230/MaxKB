@@ -152,6 +152,8 @@ class BaseModelCredential(ABC):
 
 
 class ModelTypeConst(Enum):
+    # 多模态模型：同时支持 LLM 和 IMAGE 功能
+    MULTI = {'code': 'MULTI', 'message': _('Multimodal Model')}
     LLM = {'code': 'LLM', 'message': _('LLM')}
     EMBEDDING = {'code': 'EMBEDDING', 'message': _('Embedding Model')}
     STT = {'code': 'STT', 'message': _('Speech2Text')}
@@ -226,6 +228,9 @@ class ModelInfoManage:
         return [model.to_dict() for model in self.model_list]
 
     def get_model_list_by_model_type(self, model_type):
+        # 多模态模型兼容：查询 LLM 或 IMAGE 时，同时包含 MULTI 类型
+        if model_type in ["LLM", "IMAGE"]:
+            return [model.to_dict() for model in self.model_list if model.model_type in [model_type, "MULTI"]]
         return [model.to_dict() for model in self.model_list if model.model_type == model_type]
 
     def get_model_type_list(self):

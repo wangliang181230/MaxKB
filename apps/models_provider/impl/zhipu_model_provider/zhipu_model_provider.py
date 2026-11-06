@@ -54,6 +54,18 @@ model_info_tti_list = [
               ZhiPuTextToImage),
 ]
 
+model_info_multimodal_list = [
+    ModelInfo('glm-4v-plus', _('GLM-4V-Plus - supports both text and image inputs'),
+              ModelTypeConst.MULTI, zhipu_model_credential,
+              ZhipuChatModel),
+    ModelInfo('glm-4v', _('GLM-4V - supports both text and image inputs'),
+              ModelTypeConst.MULTI, zhipu_model_credential,
+              ZhipuChatModel),
+    ModelInfo('glm-4v-flash', _('GLM-4V-Flash - supports both text and image inputs (free)'),
+              ModelTypeConst.MULTI, zhipu_model_credential,
+              ZhipuChatModel),
+]
+
 model_info_manage = (
     ModelInfoManage.builder()
     .append_model_info_list(model_info_list)
@@ -62,6 +74,8 @@ model_info_manage = (
     .append_default_model_info(model_info_image_list[0])
     .append_model_info_list(model_info_tti_list)
     .append_default_model_info(model_info_tti_list[0])
+    .append_model_info_list(model_info_multimodal_list)
+    .append_default_model_info(model_info_multimodal_list[0])
     .build()
 )
 

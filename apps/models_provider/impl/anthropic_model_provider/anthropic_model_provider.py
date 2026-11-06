@@ -41,12 +41,21 @@ image_model_info = [
               AnthropicImage),
 ]
 
+multimodal_model_info = [
+    ModelInfo('claude-3-5-sonnet-20241022', '', ModelTypeConst.MULTI, openai_llm_model_credential, AnthropicChatModel),
+    ModelInfo('claude-3-opus-20240229', '', ModelTypeConst.MULTI, openai_llm_model_credential, AnthropicChatModel),
+    ModelInfo('claude-3-sonnet-20240229', '', ModelTypeConst.MULTI, openai_llm_model_credential, AnthropicChatModel),
+    ModelInfo('claude-3-haiku-20240307', '', ModelTypeConst.MULTI, openai_llm_model_credential, AnthropicChatModel),
+]
+
 model_info_manage = (
     ModelInfoManage.builder()
     .append_model_info_list(model_info_list)
     .append_default_model_info(model_info_list[0])
     .append_model_info_list(image_model_info)
     .append_default_model_info(image_model_info[0])
+    .append_model_info_list(multimodal_model_info)
+    .append_default_model_info(multimodal_model_info[0])
     .build()
 )
 

@@ -118,6 +118,37 @@ itv_model_info_list = [
     ModelInfo("veo-3.1-generate-preview", "", ModelTypeConst.ITV, gemini_itv_model_credential, GenerationVideoModel)
 ]
 
+multimodal_model_info_list = [
+    ModelInfo(
+        "gemini-1.5-pro",
+        _("Gemini 1.5 Pro - supports both text and image inputs"),
+        ModelTypeConst.MULTI,
+        gemini_llm_model_credential,
+        GeminiChatModel,
+    ),
+    ModelInfo(
+        "gemini-1.5-flash",
+        _("Gemini 1.5 Flash - supports both text and image inputs"),
+        ModelTypeConst.MULTI,
+        gemini_llm_model_credential,
+        GeminiChatModel,
+    ),
+    ModelInfo(
+        "gemini-2.0-flash",
+        _("Gemini 2.0 Flash - supports both text and image inputs"),
+        ModelTypeConst.MULTI,
+        gemini_llm_model_credential,
+        GeminiChatModel,
+    ),
+    ModelInfo(
+        "gemini-2.0-pro",
+        _("Gemini 2.0 Pro - supports both text and image inputs"),
+        ModelTypeConst.MULTI,
+        gemini_llm_model_credential,
+        GeminiChatModel,
+    ),
+]
+
 
 model_info_manage = (
     ModelInfoManage.builder()
@@ -126,11 +157,13 @@ model_info_manage = (
     .append_model_info_list(model_stt_info_list)
     .append_model_info_list(model_embedding_info_list)
     .append_model_info_list(model_tti_info_list)
+    .append_model_info_list(multimodal_model_info_list)
     .append_default_model_info(model_info_list[0])
     .append_default_model_info(model_image_info_list[0])
     .append_default_model_info(model_stt_info_list[0])
     .append_default_model_info(model_embedding_info_list[0])
     .append_default_model_info(model_tti_info_list[0])
+    .append_default_model_info(multimodal_model_info_list[0])
     .append_model_info_list(ttv_model_info_list)
     .append_default_model_info(ttv_model_info_list[0])
     .append_model_info_list(itv_model_info_list)

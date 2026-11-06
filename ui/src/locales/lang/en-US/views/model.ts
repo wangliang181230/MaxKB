@@ -34,6 +34,7 @@ export default {
     TTI: 'Image Generation',
     TTV: 'Text-to-Video',
     ITV: 'Image-to-Video',
+    MULTI: 'Multimodal Model',
   },
   modelForm: {
     title: {
@@ -72,6 +73,8 @@ export default {
         'Text-to-Video: A visual model used for text-to-video in the agent.',
       tooltip9:
         'Image-to-Video: A visual model used for image-to-video in the agent.',
+      tooltip10:
+        'Multimodal Model: Supports both LLM and vision model capabilities, can be used for AI chat and image understanding.',
       requiredMessage: 'Model type cannot be empty',
     },
     base_model: {

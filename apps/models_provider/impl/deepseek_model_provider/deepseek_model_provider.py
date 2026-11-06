@@ -27,10 +27,16 @@ deepseek_llm_list = [
     ModelInfo("deepseek-v4-flash", "", ModelTypeConst.LLM, deepseek_llm_model_credential, DeepSeekChatModel),
 ]
 
+deepseek_multimodal_list = [
+    ModelInfo("deepseek-vl2", '', ModelTypeConst.MULTI, deepseek_llm_model_credential, DeepSeekChatModel),
+]
+
 model_info_manage = (
     ModelInfoManage.builder()
     .append_model_info_list(deepseek_llm_list)
     .append_default_model_info(deepseek_llm_list[0])
+    .append_model_info_list(deepseek_multimodal_list)
+    .append_default_model_info(deepseek_multimodal_list[0])
     .build()
 )
 

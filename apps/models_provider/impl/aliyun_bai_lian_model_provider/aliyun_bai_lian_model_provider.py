@@ -201,6 +201,15 @@ module_info_itv_list = [
     ModelInfo("wanx2.1-i2v-turbo", "", ModelTypeConst.ITV, aliyun_bai_lian_itv_model_credential, GenerationVideoModel),
 ]
 
+module_info_multimodal_list = [
+    ModelInfo("qwen-vl-max", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+    ModelInfo("qwen-vl-max-0809", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+    ModelInfo("qwen-vl-plus-0809", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+    ModelInfo("qwen2.5-vl-72b-instruct", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+    ModelInfo("qwen2.5-vl-7b-instruct", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+    ModelInfo("qwen2.5-vl-3b-instruct", '', ModelTypeConst.MULTI, aliyun_bai_lian_llm_model_credential, BaiLianChatModel),
+]
+
 model_info_manage = (
     ModelInfoManage.builder()
     .append_model_info_list(model_info_list)
@@ -226,6 +235,8 @@ model_info_manage = (
     .append_default_model_info(model_info_ttv_list[0])
     .append_model_info_list(module_info_itv_list)
     .append_default_model_info(module_info_itv_list[0])
+    .append_model_info_list(module_info_multimodal_list)
+    .append_default_model_info(module_info_multimodal_list[0])
     .build()
 )
 
