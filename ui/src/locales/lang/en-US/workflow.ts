@@ -41,6 +41,7 @@ export default {
     saveChanges: 'Save Changes',
     discardChanges: "Don't Save",
     modelType: {
+      MULTI: 'Multimodal Model',
       LLM: 'AI Model',
       TTS: 'TTS Model',
       STT: 'STT Model',

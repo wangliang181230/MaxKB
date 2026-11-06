@@ -95,6 +95,7 @@
               v-if="
                 (currentModel.model_type === 'TTS' ||
                   currentModel.model_type === 'STT' ||
+                  currentModel.model_type === 'MULTI' ||
                   currentModel.model_type === 'LLM' ||
                   currentModel.model_type === 'IMAGE' ||
                   currentModel.model_type === 'TTI' ||

@@ -40,6 +40,7 @@ export default {
     saveChanges: '保存修改',
     discardChanges: '不保存',
     modelType: {
+      MULTI: '多模态模型',
       LLM: 'AI 模型',
       TTS: '语音合成模型',
       STT: '语音识别模型',
