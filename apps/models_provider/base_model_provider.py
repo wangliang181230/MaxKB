@@ -86,7 +86,9 @@ class IModelProvider(ABC):
     def is_valid_credential(self, model_type, model_name, model_credential: Dict[str, object],
                             model_params: Dict[str, object], raise_exception=False):
         model_info = self.get_model_info_manage().get_model_info(model_type, model_name)
-        return model_info.model_credential.is_valid(model_type, model_name, model_credential, model_params, self,
+        # 多模态模型兼容：凭据验证时将 MULTI 规范化为 LLM，避免提供商类型守卫拒绝
+        effective_type = "LLM" if model_type == "MULTI" else model_type
+        return model_info.model_credential.is_valid(effective_type, model_name, model_credential, model_params, self,
                                                     raise_exception=raise_exception)
 
     def get_model(self, model_type, model_name, model_credential: Dict[str, object], **model_kwargs) -> BaseModel:
@@ -152,6 +154,7 @@ class BaseModelCredential(ABC):
 
 
 class ModelTypeConst(Enum):
+    MULTI = {'code': 'MULTI', 'message': _('Multimodal Model')}
     LLM = {'code': 'LLM', 'message': _('LLM')}
     EMBEDDING = {'code': 'EMBEDDING', 'message': _('Embedding Model')}
     STT = {'code': 'STT', 'message': _('Speech2Text')}
@@ -226,14 +229,37 @@ class ModelInfoManage:
         return [model.to_dict() for model in self.model_list]
 
     def get_model_list_by_model_type(self, model_type):
+        # 多模态模型兼容：查询 LLM 或 IMAGE 时，同时包含 MULTI 类型
+        if model_type in ["LLM", "IMAGE"]:
+            return [model.to_dict() for model in self.model_list if model.model_type in [model_type, "MULTI"]]
+        # 多模态模型兼容：查询 MULTI 时，返回 IMAGE 模型的并集（按名称去重）
+        if model_type == "MULTI":
+            seen = set()
+            result = []
+            for model in self.model_list:
+                if model.model_type in ("IMAGE", "MULTI") and model.name not in seen:
+                    seen.add(model.name)
+                    result.append(model.to_dict())
+            return result
         return [model.to_dict() for model in self.model_list if model.model_type == model_type]
 
     def get_model_type_list(self):
-        return [{'key': _type.value.get('message'), 'value': _type.value.get('code')} for _type in ModelTypeConst if
-                len([model for model in self.model_list if model.model_type == _type.name]) > 0]
+        type_list = [{'key': _type.value.get('message'), 'value': _type.value.get('code')} for _type in ModelTypeConst if
+                     len([model for model in self.model_list if model.model_type == _type.name]) > 0]
+        # 多模态模型兼容：提供商有 IMAGE 模型时，自动添加 MULTI 类型
+        registered_types = {item['value'] for item in type_list}
+        if "MULTI" not in registered_types and ("IMAGE" in registered_types):
+            type_list.insert(0, {'key': ModelTypeConst.MULTI.value['message'], 'value': 'MULTI'})
+        return type_list
 
     def get_model_info(self, model_type, model_name) -> ModelInfo:
         model_info = self.model_dict.get(model_type, {}).get(model_name, self.default_model_dict.get(model_type))
+        # 多模态模型兼容：查询 LLM 或 IMAGE 时，回退到 MULTI 类型
+        if model_info is None and model_type in ("LLM", "IMAGE"):
+            model_info = self.model_dict.get("MULTI", {}).get(model_name, self.default_model_dict.get("MULTI"))
+        # 多模态模型兼容：查询 MULTI 时，回退到 IMAGE 类型
+        if model_info is None and model_type == "MULTI":
+            model_info = self.model_dict.get("IMAGE", {}).get(model_name, self.default_model_dict.get("IMAGE"))
         if model_info is None:
             raise AppApiException(500, _('The model does not support'))
         return model_info

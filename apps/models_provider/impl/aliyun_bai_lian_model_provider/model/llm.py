@@ -27,6 +27,9 @@ class BaiLianChatModel(MaxKBBaseModel, BaseChatOpenAI):
             **optional_params,
         )
 
+    def check_auth(self, api_key):
+        return True
+
     def _get_request_payload(
             self,
             input_: LanguageModelInput,
