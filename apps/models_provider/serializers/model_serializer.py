@@ -448,6 +448,12 @@ class ModelSerializer(serializers.Serializer):
                         queryset = queryset.filter(**{f"{field}__icontains": value})
                     elif field == "create_user":
                         queryset = queryset.filter(user_id=value)
+                    elif field == "model_type":
+                        # 多模态模型兼容：查询 LLM 或 IMAGE 时，同时包含 MULTI 类型
+                        if value in ["LLM", "IMAGE"]:
+                            queryset = queryset.filter(model_type__in=[value, "MULTI"])
+                        else:
+                            queryset = queryset.filter(**{field: value})
                     else:
                         queryset = queryset.filter(**{field: value})
             queryset = queryset.order_by("-create_time")
@@ -601,6 +607,12 @@ class WorkspaceSharedModelSerializer(serializers.Serializer):
                     queryset = queryset.filter(**{f"{field}__icontains": value})
                 elif field == "create_user":
                     queryset = queryset.filter(user_id=value)
+                elif field == "model_type":
+                    # 多模态模型兼容：查询 LLM 或 IMAGE 时，同时包含 MULTI 类型
+                    if value in ["LLM", "IMAGE"]:
+                        queryset = queryset.filter(model_type__in=[value, "MULTI"])
+                    else:
+                        queryset = queryset.filter(**{field: value})
                 else:
                     queryset = queryset.filter(**{field: value})
 

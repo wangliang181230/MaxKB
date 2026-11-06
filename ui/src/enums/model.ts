@@ -8,6 +8,7 @@ export enum PermissionDesc {
 }
 
 export enum modelType {
+  MULTI = 'views.model.modelType.MULTI',
   EMBEDDING = 'views.model.modelType.EMBEDDING',
   LLM = 'views.model.modelType.LLM',
   STT = 'views.model.modelType.STT',
