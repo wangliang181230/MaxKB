@@ -24,6 +24,7 @@ export default {
     allModel: '全部模型',
     publicModel: '公有模型',
     privateModel: '私有模型',
+    MULTI: '多模态模型',
     LLM: '大语言模型',
     EMBEDDING: '向量模型',
     RERANKER: '重排模型',
@@ -66,6 +67,7 @@ export default {
       tooltip7: '图片生成：在高级智能体中用于图片生成的视觉模型。',
       tooltip8: '文生视频：在高级智能体中用于文生视频的模型。',
       tooltip9: '图生视频：在高级智能体中用于图生视频的模型。',
+      tooltip10: '多模态模型：同时支持大语言模型和视觉模型功能，可用于AI对话和图片理解。',
       requiredMessage: '模型类型不能为空',
     },
     base_model: {

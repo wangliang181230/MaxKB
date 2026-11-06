@@ -317,7 +317,7 @@ class PromptGenerateSerializer(serializers.Serializer):
         q = prompt.replace("{userInput}", message)
 
         messages[-1]['content'] = q
-        SUPPORTED_MODEL_TYPES = ["LLM", "IMAGE"]
+        SUPPORTED_MODEL_TYPES = ["LLM", "IMAGE", "MULTI"]
         model_exist = QuerySet(Model).filter(
             id=model_id,
             model_type__in=SUPPORTED_MODEL_TYPES
