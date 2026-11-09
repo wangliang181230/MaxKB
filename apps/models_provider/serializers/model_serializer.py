@@ -16,7 +16,7 @@ from common.utils.common import get_file_content
 from common.utils.rsa_util import rsa_long_decrypt, rsa_long_encrypt
 from django.core.cache import cache
 from django.db import transaction
-from django.db.models import QuerySet
+from django.db.models import Count, QuerySet
 from django.utils.translation import gettext_lazy as _
 from maxkb.conf import PROJECT_DIR
 from models_provider.base_model_provider import DownModelChunkStatus, ValidCode
@@ -540,6 +540,21 @@ class ModelSerializer(serializers.Serializer):
             model.model_params_form = model_params_form
             model.save()
             return True
+
+
+class ProviderModelCountSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField(required=True, label=_("user id"))
+    workspace_id = serializers.CharField(required=False, label=_("workspace id"))
+
+    def get_model_count(self, with_valid=True):
+        if with_valid:
+            self.is_valid(raise_exception=True)
+        workspace_id = self.data.get("workspace_id")
+        queryset = QuerySet(Model)
+        if workspace_id:
+            queryset = queryset.filter(workspace_id=workspace_id)
+        rows = queryset.values("provider").annotate(count=Count("id"))
+        return {row["provider"]: row["count"] for row in rows}
 
 
 class WorkspaceSharedModelSerializer(serializers.Serializer):

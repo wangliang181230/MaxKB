@@ -9,6 +9,7 @@ app_name = "models_provider"
 # fmt: off
 urlpatterns = [
     path('provider', views.Provide.as_view()),
+    path('workspace/<str:workspace_id>/provider/model_count', views.Provide.ModelCount.as_view(), name='provider_model_count'),
     path('provider/model_type_list', views.Provide.ModelTypeList.as_view()),
     path('provider/model_list', views.Provide.ModelList.as_view()),
     path('provider/model_params_form', views.Provide.ModelParamsForm.as_view()),
