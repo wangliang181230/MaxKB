@@ -59,7 +59,12 @@
                     style="height: 20px; width: 20px"
                     class="mr-8"
                   />
-                  <span class="ellipsis-1" :title="row.name">{{ row.name }}</span>
+                  <span class="ellipsis-1" :title="getProviderDisplayName(row)">
+                    {{ row.name }}
+                    <span v-if="row.model_count !== undefined" class="model-count">
+                      ({{ row.model_count }})
+                    </span>
+                  </span>
                 </div>
               </template>
             </common-list>
@@ -93,7 +98,12 @@
                     style="height: 20px; width: 20px"
                     class="mr-8"
                   />
-                  <span class="ellipsis-1" :title="row.name">{{ row.name }}</span>
+                  <span class="ellipsis-1" :title="getProviderDisplayName(row)">
+                    {{ row.name }}
+                    <span v-if="row.model_count !== undefined" class="model-count">
+                      ({{ row.model_count }})
+                    </span>
+                  </span>
                 </div>
               </template>
             </common-list>
@@ -121,9 +131,15 @@ const emit = defineEmits(['click'])
 const online_provider_list = ref<Array<Provider>>([])
 const local_provider_list = ref<Array<Provider>>([])
 
+const getProviderDisplayName = (row: Provider) => {
+  return row.model_count === undefined ? row.name : `${row.name} (${row.model_count})`
+}
+
 watch(
   () => props.data,
   (list) => {
+    online_provider_list.value = []
+    local_provider_list.value = []
     const local_provider = [
       'model_ollama_provider',
       'model_local_provider',
@@ -157,6 +173,9 @@ const handleSharedNodeClick = () => {
 <style lang="scss" scoped>
 .provider-list {
   height: calc(var(--app-main-height));
+  .model-count {
+    color: var(--el-text-color-secondary);
+  }
   .all-mode {
     padding: 10px 8px;
     font-weight: 400;

@@ -30,6 +30,17 @@ const useModelStore = defineStore('model', {
           })
       })
     },
+    async asyncGetProviderModelCount(loading?: Ref<boolean>) {
+      return new Promise((resolve, reject) => {
+        ProviderApi.getProviderModelCount(loading)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
   },
 })
 
