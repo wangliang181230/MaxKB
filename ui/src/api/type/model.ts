@@ -18,6 +18,10 @@ interface Provider {
    * 供应商icon
    */
   icon: string
+  /**
+   * 该供应商下的模型数量
+   */
+  model_count?: number
 }
 
 interface ListModelRequest {

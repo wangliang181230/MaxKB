@@ -8,10 +8,11 @@ from rest_framework.views import APIView
 from common import result
 from common.auth import TokenAuth
 from common.auth.authentication import has_permissions
-from common.constants.permission_constants import PermissionConstants
+from common.constants.permission_constants import PermissionConstants, RoleConstants
 from models_provider.api.provide import ProvideApi
 from models_provider.constants.model_provider_constants import ModelProvideConstants
-from models_provider.serializers.model_serializer import get_default_model_params_setting
+from models_provider.serializers.model_serializer import get_default_model_params_setting, \
+    ProviderModelCountSerializer
 
 
 class Provide(APIView):
@@ -35,6 +36,23 @@ class Provide(APIView):
         return result.success(
             [ModelProvideConstants[key].value.get_model_provide_info().to_dict() for key in
              ModelProvideConstants.__members__])
+
+    class ModelCount(APIView):
+        authentication_classes = [TokenAuth]
+
+        @extend_schema(methods=['GET'],
+                       summary=_('Get the number of models for each supplier'),
+                       description=_('Get the number of models for each supplier'),
+                       operation_id=_('Get the number of models for each supplier'),  # type: ignore
+                       responses=ProvideApi.ModelCount.get_response(),
+                       tags=[_('Model')])  # type: ignore
+        @has_permissions(PermissionConstants.MODEL_READ.get_workspace_permission(),
+                         PermissionConstants.MODEL_READ.get_workspace_permission_workspace_manage_role(),
+                         RoleConstants.WORKSPACE_MANAGE.get_workspace_role(), RoleConstants.USER.get_workspace_role())
+        def get(self, request: Request, workspace_id: str):
+            return result.success(
+                ProviderModelCountSerializer(
+                    data={'user_id': str(request.user.id), 'workspace_id': workspace_id}).get_model_count())
 
     class ModelTypeList(APIView):
         authentication_classes = [TokenAuth]

@@ -24,6 +24,14 @@ class ProvideListSerializer(serializers.Serializer):
     value = serializers.CharField(required=True, label=_("value"))
 
 
+class ProviderModelCountResponse(ResultSerializer):
+    def get_data(self):
+        return serializers.DictField(
+            child=serializers.IntegerField(),
+            label=_("model count of each provider"),
+        )
+
+
 class ModelListSerializer(serializers.Serializer):
     name = serializers.CharField(required=True, label=_("model name"))
     model_type = serializers.CharField(required=True, label=_("model type"))
@@ -115,6 +123,11 @@ class ProvideApi(APIMixin):
     @staticmethod
     def get_response():
         return ProvideResponse
+
+    class ModelCount(APIMixin):
+        @staticmethod
+        def get_response():
+            return ProviderModelCountResponse
 
     class ModelTypeList(APIMixin):
         @staticmethod
