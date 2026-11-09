@@ -85,7 +85,7 @@
               :key="i"
             >
               <ModelCard
-                @change="list_model"
+                @change="refreshModelAndProviderCount"
                 :updateModelById="updateModelById"
                 :model="model"
                 :provider_list="provider_list"
@@ -103,7 +103,7 @@
 
     <CreateModelDialog
       ref="createModelRef"
-      @submit="list_model"
+      @submit="refreshModelAndProviderCount"
       @change="openCreateModel($event)"
       v-if="!isShared"
     ></CreateModelDialog>
@@ -226,6 +226,32 @@ const list_model = () => {
     })
 }
 
+// 获取各供应商下的模型数量，合并到左侧供应商列表
+const fetchProviderModelCount = () => {
+  if (apiType.value !== 'workspace') {
+    return
+  }
+  model
+    .asyncGetProviderModelCount()
+    .then((ok: any) => {
+      const countMap = ok.data || {}
+      provider_list.value = provider_list.value.map((p) => {
+        if (countMap[p.provider] !== undefined) {
+          return {...p, model_count: countMap[p.provider]}
+        }
+        // 后端仅返回有模型的供应商；若原有计数但本次缺失，说明最后一个模型已被删除，需重置避免残留旧值
+        return p.model_count === undefined ? p : {...p, model_count: 0}
+      })
+    })
+    .catch(() => {})
+}
+
+// 模型新增/删除等变更后刷新列表，并同步更新左侧供应商列表的模型数量
+const refreshModelAndProviderCount = () => {
+  list_model()
+  fetchProviderModelCount()
+}
+
 const search_type_change = () => {
   model_search_form.value = {name: '', create_user: '', model_type: ''}
 }
@@ -235,6 +261,7 @@ onMounted(() => {
     active_provider.value = allObj
     provider_list.value = [allObj, ...ok.data]
     list_model()
+    fetchProviderModelCount()
   })
 })
 </script>

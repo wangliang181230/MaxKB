@@ -4,13 +4,27 @@ import type {Ref} from 'vue'
 import type {Provider, BaseModel} from '@/api/type/model'
 import type {FormField} from '@/components/dynamics-form/type'
 import type {KeyValue} from '../type/common'
+import useStore from '@/stores'
 
 const prefix_provider = '/provider'
+const get_workspace_prefix = () => {
+  const {user} = useStore()
+  return `/workspace/${user.getWorkspaceId()}${prefix_provider}`
+}
 /**
  * 获得供应商列表
  */
 const getProvider: (loading?: Ref<boolean>) => Promise<Result<Array<Provider>>> = (loading) => {
   return get(`${prefix_provider}`, {}, loading)
+}
+
+/**
+ * 获得各供应商下的模型数量
+ */
+const getProviderModelCount: (
+  loading?: Ref<boolean>,
+) => Promise<Result<Record<string, number>>> = (loading) => {
+  return get(`${get_workspace_prefix()}/model_count`, {}, loading)
 }
 
 /**
@@ -78,6 +92,7 @@ const listBaseModelParamsForm: (
 }
 export default {
   getProvider,
+  getProviderModelCount,
   getModelCreateForm,
   getProviderByModelType,
   listModelType,
