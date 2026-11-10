@@ -113,4 +113,4 @@ class AzureModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_azure_provider', name='Azure OpenAI', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'azure_model_provider', 'icon',
-                         'azure_icon_svg')))
+                         'azure_icon_svg')), url='https://azure.microsoft.com/products/ai-services/openai')

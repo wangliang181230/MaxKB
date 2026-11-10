@@ -141,4 +141,4 @@ class OpenAIModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_openai_provider', name='OpenAI', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'openai_model_provider', 'icon',
-                         'openai_icon_svg')))
+                         'openai_icon_svg')), url='https://platform.openai.com/docs/models')

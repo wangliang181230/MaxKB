@@ -75,4 +75,5 @@ class WenxinModelProvider(IModelProvider):
                                 icon=get_file_content(
                                     os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl',
                                                  'wenxin_model_provider', 'icon',
-                                                 'azure_icon_svg')))
+                                                 'azure_icon_svg')),
+                                url='https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/list')

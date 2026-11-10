@@ -152,4 +152,5 @@ class GeminiModelProvider(IModelProvider):
                     PROJECT_DIR, "apps", "models_provider", "impl", "gemini_model_provider", "icon", "gemini_icon_svg"
                 )
             ),
+            url="https://ai.google.dev/gemini-api/docs/models",
         )

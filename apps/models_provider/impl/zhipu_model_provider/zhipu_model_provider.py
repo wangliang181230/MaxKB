@@ -74,4 +74,4 @@ class ZhiPuModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_zhipu_provider', name=_('zhipu AI'), icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'zhipu_model_provider', 'icon',
-                         'zhipuai_icon_svg')))
+                         'zhipuai_icon_svg')), url='https://open.bigmodel.cn/console/modelcenter/square')
