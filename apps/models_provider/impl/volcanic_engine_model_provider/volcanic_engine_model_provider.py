@@ -151,4 +151,5 @@ class VolcanicEngineModelProvider(IModelProvider):
                                     os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl',
                                                  'volcanic_engine_model_provider',
                                                  'icon',
-                                                 'volcanic_engine_icon_svg')))
+                                                 'volcanic_engine_icon_svg')),
+                                url='https://console.volcengine.com/ark/region:cn-beijing/model?view=CARD_VIEW')

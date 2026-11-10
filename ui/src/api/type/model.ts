@@ -19,6 +19,10 @@ interface Provider {
    */
   icon: string
   /**
+   * 供应商官网或模型广场页面地址
+   */
+  url?: string
+  /**
    * 该供应商下的模型数量
    */
   model_count?: number

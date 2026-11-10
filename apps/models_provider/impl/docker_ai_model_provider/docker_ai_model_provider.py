@@ -100,4 +100,4 @@ class DockerModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_docker_ai_provider', name='Docker AI', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'docker_ai_model_provider', 'icon',
-                         'docker_ai_icon_svg')))
+                         'docker_ai_icon_svg')), url='https://www.docker.com/solutions/docker-ai/')

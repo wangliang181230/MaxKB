@@ -200,5 +200,6 @@ class BedrockModelProvider(IModelProvider):
         return ModelProvideInfo(
             provider='model_aws_bedrock_provider',
             name='Amazon Bedrock',
-            icon=icon_data
+            icon=icon_data,
+            url='https://aws.amazon.com/bedrock/'
         )

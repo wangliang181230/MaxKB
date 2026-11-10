@@ -260,12 +260,14 @@ class ModelInfoManage:
 
 
 class ModelProvideInfo:
-    def __init__(self, provider: str, name: str, icon: str):
+    def __init__(self, provider: str, name: str, icon: str, url: str = ''):
         self.provider = provider
 
         self.name = name
 
         self.icon = icon
+
+        self.url = url
 
     def to_dict(self):
         return reduce(lambda x, y: {**x, **y},

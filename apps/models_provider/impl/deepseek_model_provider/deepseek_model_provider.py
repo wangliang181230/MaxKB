@@ -54,4 +54,5 @@ class DeepSeekModelProvider(IModelProvider):
                     "deepseek_icon_svg",
                 )
             ),
+            url="https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
         )
