@@ -39,4 +39,4 @@ class KimiModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_kimi_provider', name='Kimi', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'kimi_model_provider', 'icon',
-                         'kimi_icon_svg')))
+                         'kimi_icon_svg')), url='https://platform.kimi.com/docs/models')

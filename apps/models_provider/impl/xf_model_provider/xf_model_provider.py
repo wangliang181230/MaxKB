@@ -84,4 +84,4 @@ class XunFeiModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_xf_provider', name=_('iFlytek Spark'), icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'xf_model_provider', 'icon',
-                         'xf_icon_svg')))
+                         'xf_icon_svg')), url='https://maas.xfyun.cn/modelSquare')

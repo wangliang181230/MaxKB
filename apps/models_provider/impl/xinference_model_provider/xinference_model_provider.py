@@ -564,7 +564,7 @@ class XinferenceModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_xinference_provider', name='Xorbits Inference', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'xinference_model_provider', 'icon',
-                         'xinference_icon_svg')))
+                         'xinference_icon_svg')), url='https://inference.readthedocs.io/zh-cn/latest/models/index.html')
 
     @staticmethod
     def get_base_model_list(api_base, api_key, model_type):

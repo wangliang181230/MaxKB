@@ -249,4 +249,5 @@ class AliyunBaiLianModelProvider(IModelProvider):
                     "aliyun_bai_lian_icon_svg",
                 )
             ),
+            url="https://www.qianwenai.com/models",
         )

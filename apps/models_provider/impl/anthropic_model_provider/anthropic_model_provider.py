@@ -59,4 +59,4 @@ class AnthropicModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_anthropic_provider', name='Anthropic', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'anthropic_model_provider', 'icon',
-                         'anthropic_icon_svg')))
+                         'anthropic_icon_svg')), url='https://www.anthropic.com/')

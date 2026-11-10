@@ -10,11 +10,29 @@
         :active="active_provider"
       />
     </template>
-    <ContentContainer
-      :header="active_provider?.name"
-      v-loading="list_model_loading"
-      style="padding: 0"
-    >
+    <ContentContainer v-loading="list_model_loading" style="padding: 0">
+      <template #header>
+        <div class="flex align-center">
+          <h4>{{ active_provider?.name }}</h4>
+          <el-tooltip
+            v-if="active_provider?.url"
+            effect="dark"
+            :content="$t('views.model.visitOfficialSite')"
+            placement="top"
+          >
+            <el-link
+              :href="active_provider.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="ml-8"
+              type="primary"
+              :underline="false"
+            >
+              <el-icon><TopRight /></el-icon>
+            </el-link>
+          </el-tooltip>
+        </div>
+      </template>
       <template #search>
         <div class="flex">
           <div class="complex-search">
