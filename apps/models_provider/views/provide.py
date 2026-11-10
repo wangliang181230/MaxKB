@@ -1,5 +1,8 @@
 # coding=utf-8
 
+import hashlib
+
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
@@ -13,6 +16,25 @@ from models_provider.api.provide import ProvideApi
 from models_provider.constants.model_provider_constants import ModelProvideConstants
 from models_provider.serializers.model_serializer import get_default_model_params_setting, \
     ProviderModelCountSerializer
+
+# 模型供应商列表为静态目录数据，仅随版本升级 / model_type / 语言变化，与具体用户无关，
+# 故通过 HTTP 缓存头（Cache-Control 强缓存 + ETag 协商缓存）让客户端在有效期内直接复用本地
+# 缓存，过期后再凭 ETag 命中 304，避免重复传输。
+PROVIDER_CACHE_MAX_AGE = 24 * 60 * 60  # 客户端强缓存时长（秒），可按需调整
+
+
+def _etag_matches(if_none_match, etag):
+    """判断请求头 If-None-Match 是否与当前 ETag 匹配（支持弱标记 W/ 与通配 *）。"""
+    if not if_none_match:
+        return False
+    if if_none_match.strip() == '*':
+        return True
+
+    def normalize(value):
+        value = value.strip()
+        return value[2:] if value[:2].upper() == 'W/' else value
+
+    return any(normalize(candidate) == etag for candidate in if_none_match.split(','))
 
 
 class Provide(APIView):
@@ -32,10 +54,23 @@ class Provide(APIView):
                 if len([item for item in ModelProvideConstants[key].value.get_model_type_list() if
                         item['value'] == model_type]) > 0:
                     providers.append(ModelProvideConstants[key].value.get_model_provide_info().to_dict())
-            return result.success(providers)
-        return result.success(
-            [ModelProvideConstants[key].value.get_model_provide_info().to_dict() for key in
-             ModelProvideConstants.__members__])
+        else:
+            providers = [ModelProvideConstants[key].value.get_model_provide_info().to_dict() for key in
+                         ModelProvideConstants.__members__]
+        return self._with_cache_headers(request, result.success(providers))
+
+    @staticmethod
+    def _with_cache_headers(request: Request, response):
+        """为静态供应商列表附加 HTTP 缓存头，命中协商缓存时返回 304。"""
+        etag = '"%s"' % hashlib.md5(response.content).hexdigest()
+        # 请求携带 Authorization 头，需 must-revalidate 浏览器才会缓存；名称随语言翻译，用 Vary 区分缓存。
+        cache_control = 'private, max-age=%d, must-revalidate' % PROVIDER_CACHE_MAX_AGE
+        if _etag_matches(request.headers.get('If-None-Match'), etag):
+            response = HttpResponse(status=304)
+        response['ETag'] = etag
+        response['Cache-Control'] = cache_control
+        response['Vary'] = 'Accept-Language'
+        return response
 
     class ModelCount(APIView):
         authentication_classes = [TokenAuth]
