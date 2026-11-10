@@ -29,7 +29,7 @@
           <span>{{ $t('views.model.modelType.allModel') }}</span>
         </div>
 
-        <el-collapse class="model-collapse" expand-icon-position="left">
+        <el-collapse v-model="activeNames" class="model-collapse" expand-icon-position="left">
           <el-collapse-item
             :title="$t('views.model.modelType.publicModel')"
             name="1"
@@ -130,6 +130,8 @@ const emit = defineEmits(['click'])
 
 const online_provider_list = ref<Array<Provider>>([])
 const local_provider_list = ref<Array<Provider>>([])
+// 公有模型与私有模型目录默认展开
+const activeNames = ref<Array<string>>(['1', '2'])
 
 const getProviderDisplayName = (row: Provider) => {
   return row.model_count === undefined ? row.name : `${row.name} (${row.model_count})`
@@ -140,13 +142,39 @@ watch(
   (list) => {
     online_provider_list.value = []
     local_provider_list.value = []
+    // 私有供应商展示顺序：本地模型 > vLLM > Ollama > Docker AI > Xorbits Inference > 其它
     const local_provider = [
-      'model_ollama_provider',
       'model_local_provider',
-      'model_xinference_provider',
       'model_vllm_provider',
-      'model_docker_ai_provider'
+      'model_ollama_provider',
+      'model_docker_ai_provider',
+      'model_xinference_provider',
     ]
+    const domestic_provider = [
+      'model_volcanic_engine_provider',
+      'aliyun_bai_lian_model_provider',
+      'model_deepseek_provider',
+      'model_kimi_provider',
+      'model_minimax_provider',
+      'model_siliconCloud_provider',
+      'model_tencent_provider',
+      'model_wenxin_provider',
+      'model_xf_provider',
+      'model_zhipu_provider',
+    ]
+    // 火山引擎 > 阿里云百炼 > DeepSeek > OpenAI > 其余国产厂商 > 海外厂商；同组内按 provider 字母序
+    const pinned_provider = [
+      'model_volcanic_engine_provider',
+      'aliyun_bai_lian_model_provider',
+      'model_deepseek_provider',
+      'model_openai_provider',
+    ]
+    const providerPriority = (provider: string) => {
+      const pinnedIndex = pinned_provider.indexOf(provider)
+      if (pinnedIndex > -1) return pinnedIndex
+      if (domestic_provider.indexOf(provider) > -1) return pinned_provider.length
+      return pinned_provider.length + 1
+    }
     list
       .filter((v) => v.provider)
       ?.forEach((item) => {
@@ -156,8 +184,16 @@ watch(
           online_provider_list.value.push(item)
         }
       })
-    online_provider_list.value.sort((a, b) => a.provider.localeCompare(b.provider))
-    local_provider_list.value.sort((a, b) => a.provider.localeCompare(b.provider))
+    online_provider_list.value.sort((a, b) => {
+      const pa = providerPriority(a.provider)
+      const pb = providerPriority(b.provider)
+      return pa !== pb ? pa - pb : a.provider.localeCompare(b.provider)
+    })
+    local_provider_list.value.sort((a, b) => {
+      const pa = local_provider.indexOf(a.provider)
+      const pb = local_provider.indexOf(b.provider)
+      return pa - pb
+    })
   },
   { immediate: true },
 )
