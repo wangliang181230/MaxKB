@@ -31,6 +31,7 @@ from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from pydub import AudioSegment
 from urllib.parse import urlparse
 
+from common.utils.logger import maxkb_logger
 from ..database_model_manage.database_model_manage import DatabaseModelManage
 from ..exception.app_exception import AppApiException
 
@@ -288,7 +289,18 @@ def split_and_transcribe(file_path, model, max_segment_length_ms=59000, audio_fo
     audio_length_ms = len(audio_data)
 
     if audio_length_ms <= max_segment_length_ms:
-        return model.speech_to_text(io.BytesIO(audio_data.export(format=audio_format).read()))
+        text = model.speech_to_text(io.BytesIO(audio_data.export(format=audio_format).read()))
+        if isinstance(text, str):
+            return text
+        else:
+            maxkb_logger.error(f"Speech to text failed, return empty string."
+                               f" --- file_path: {file_path},"
+                               f" audio_format: {audio_format},"
+                               f" model: {model},"
+                               f" max_segment_length_ms: {max_segment_length_ms},"
+                               f" result: {text},"
+                               f" result.type: {type(text).__name__}")
+            return ""
 
     full_text = []
     for start_ms in range(0, audio_length_ms, max_segment_length_ms):
