@@ -258,7 +258,7 @@ class OllamaModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_ollama_provider', name='Ollama', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'ollama_model_provider', 'icon',
-                         'ollama_icon_svg')))
+                         'ollama_icon_svg')), url='https://ollama.com/library')
 
     @staticmethod
     def get_base_model_list(api_base):

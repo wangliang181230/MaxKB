@@ -3,6 +3,7 @@ export default {
   provider: '供應商',
   providerPlaceholder: '選擇供應商',
   addModel: '新增模型',
+  visitOfficialSite: '訪問官網 / 模型廣場',
   delete: {
     confirmTitle: '是否刪除： ',
     confirmMessage: '模型刪除後將影響正在使用該模型的資源，請謹慎操作。',

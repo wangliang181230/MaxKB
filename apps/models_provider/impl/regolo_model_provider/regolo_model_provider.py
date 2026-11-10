@@ -85,4 +85,4 @@ class RegoloModelProvider(IModelProvider):
         return ModelProvideInfo(provider='model_regolo_provider', name='Regolo', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'regolo_model_provider',
                          'icon',
-                         'regolo_icon_svg')))
+                         'regolo_icon_svg')), url='https://regolo.ai/models/')

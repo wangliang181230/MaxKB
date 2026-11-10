@@ -113,4 +113,5 @@ class MiniMaxModelProvider(IModelProvider):
                     PROJECT_DIR, "apps", "models_provider", "impl", "minimax_model_provider", "icon", "minimax_icon_svg"
                 )
             ),
+            url="https://www.minimaxi.com/",
         )

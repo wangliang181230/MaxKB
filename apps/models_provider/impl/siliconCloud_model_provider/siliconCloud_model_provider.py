@@ -151,7 +151,7 @@ class SiliconCloudModelProvider(IModelProvider):
         return model_info_manage
 
     def get_model_provide_info(self):
-        return ModelProvideInfo(provider='model_siliconCloud_provider', name='SILICONFLOW', icon=get_file_content(
+        return ModelProvideInfo(provider='model_siliconCloud_provider', name='硅基流动', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'siliconCloud_model_provider',
                          'icon',
-                         'siliconCloud_icon_svg')))
+                         'siliconCloud_icon_svg')), url='https://cloud.siliconflow.cn/me/models')

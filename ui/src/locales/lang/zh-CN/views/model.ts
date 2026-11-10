@@ -3,6 +3,7 @@ export default {
   provider: '供应商',
   providerPlaceholder: '选择供应商',
   addModel: '添加模型',
+  visitOfficialSite: '访问官网 / 模型广场',
   delete: {
     confirmTitle: '是否删除：',
     confirmMessage: '模型删除后将影响正在使用该模型的资源，请谨慎操作。',

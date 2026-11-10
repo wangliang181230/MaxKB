@@ -17,6 +17,7 @@ class ProvideSerializer(serializers.Serializer):
     name = serializers.CharField(required=True, max_length=64, label=_("model name"))
     provider = serializers.CharField(required=True, label=_("provider"))
     icon = serializers.CharField(required=True, label=_("icon"))
+    url = serializers.CharField(required=False, allow_blank=True, label=_("official website or model plaza url"))
 
 
 class ProvideListSerializer(serializers.Serializer):

@@ -90,7 +90,7 @@ class VllmModelProvider(IModelProvider):
     def get_model_provide_info(self):
         return ModelProvideInfo(provider='model_vllm_provider', name='vLLM', icon=get_file_content(
             os.path.join(PROJECT_DIR, "apps", 'models_provider', 'impl', 'vllm_model_provider', 'icon',
-                         'vllm_icon_svg')))
+                         'vllm_icon_svg')), url='https://docs.vllm.ai/')
 
     @staticmethod
     def get_base_model_list(api_base, api_key):

@@ -3,6 +3,7 @@ export default {
   provider: 'Provider',
   providerPlaceholder: 'Select Provider',
   addModel: 'Add Model',
+  visitOfficialSite: 'Visit official site / model plaza',
 
   delete: {
     confirmTitle: 'Delete Model：',
