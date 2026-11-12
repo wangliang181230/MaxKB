@@ -227,7 +227,7 @@
                 "height": 763,
                 "stepName": "AI 对话",
                 "node_data": {
-                    "prompt": "已知信息：\n{{知识库检索.data}}\n问题：\n{{开始.question}}",
+                    "prompt": "{{开始.question}}",
                     "system": "",
                     "model_id": "",
                     "dialogue_number": 0,

@@ -241,7 +241,7 @@ export const applicationTemplate: any = {
           stepName: 'AI 对话',
           condition: 'AND',
           node_data: {
-            prompt: '已知信息：\n{{知识库检索.data}}\n问题：\n{{开始.question}}',
+            prompt: '{{开始.question}}',
             system: '',
             model_id: '',
             is_result: true,

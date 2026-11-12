@@ -227,7 +227,7 @@
                 "height": 763,
                 "stepName": "AI Chat",
                 "node_data": {
-                    "prompt": "Known information:\n{{Knowledge Search.data}}\nQuestion:\n{{Start.question}}",
+                    "prompt": "{{Start.question}}",
                     "system": "",
                     "model_id": "",
                     "dialogue_number": 0,

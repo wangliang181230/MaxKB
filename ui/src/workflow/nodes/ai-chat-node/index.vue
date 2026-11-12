@@ -695,10 +695,7 @@ const model_change = (model_id?: string) => {
   }
 }
 
-const defaultPrompt = `${t('workflow.nodes.aiChatNode.defaultPrompt')}：
-{{${t('workflow.nodes.searchKnowledgeNode.label')}.data}}
-${t('views.problem.title')}：
-{{${t('workflow.nodes.startNode.label')}.question}}`
+const defaultPrompt = `{{${t('workflow.nodes.startNode.label')}.question}}`
 
 const collapseData = reactive({
   MCP: true,
