@@ -29,6 +29,10 @@ class IntentNodeSerializer(serializers.Serializer):
     branch = IntentBranchSerializer(many=True)
     output_reason = serializers.BooleanField(required=False, default=True, label=_("Output reason"))
 
+    vision = serializers.BooleanField(required=False, default=False, label=_("vision"))
+    video_list = serializers.ListField(required=False, label=_("video"))
+    image_list = serializers.ListField(required=False, label=_("picture"))
+
 
 class IIntentNode(INode):
     type = 'intent-node'

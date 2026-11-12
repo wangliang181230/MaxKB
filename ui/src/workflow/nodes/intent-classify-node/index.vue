@@ -206,6 +206,66 @@
             </div>
           </div>
         </el-form-item>
+        <div class="flex" style="justify-content: space-between">
+          {{ t('workflow.nodes.aiChatNode.vision.label') }}
+          <el-switch size="small" v-model="vision" />
+        </div>
+        <template v-if="vision">
+          <el-form-item
+            :rules="{
+              type: 'array',
+              required: true,
+              message: $t('workflow.nodes.imageUnderstandNode.image.requiredMessage'),
+              trigger: 'change',
+            }"
+          >
+            <div class="flex align-center">
+              <div>
+                <span>{{ $t('workflow.nodes.imageUnderstandNode.image.label') }} </span>
+              </div>
+              <el-tooltip effect="dark" placement="right">
+                <template #content>
+                  <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
+                </template>
+                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
+              </el-tooltip>
+            </div>
+            <NodeCascader
+              ref="imageCascaderRef"
+              :nodeModel="nodeModel"
+              class="w-full"
+              :placeholder="$t('workflow.nodes.imageUnderstandNode.image.requiredMessage')"
+              v-model="form_data.image_list"
+            />
+          </el-form-item>
+          <el-form-item
+            :rules="{
+              type: 'array',
+              required: false,
+              message: $t('workflow.nodes.videoUnderstandNode.video.requiredMessage'),
+              trigger: 'change',
+            }"
+          >
+            <div class="flex align-center">
+              <div>
+                <span>{{ $t('workflow.nodes.videoUnderstandNode.video.label') }} </span>
+              </div>
+              <el-tooltip effect="dark" placement="right">
+                <template #content>
+                  <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
+                </template>
+                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
+              </el-tooltip>
+            </div>
+            <NodeCascader
+              ref="videoCascaderRef"
+              :nodeModel="nodeModel"
+              class="w-full"
+              :placeholder="$t('workflow.nodes.videoUnderstandNode.video.requiredMessage')"
+              v-model="form_data.video_list"
+            />
+          </el-form-item>
+        </template>
         <el-form-item>
           <div class="flex-between w-full">
             <div>
@@ -233,7 +293,7 @@ import DefaultModelDisplay from '@/workflow/common/DefaultModelDisplay.vue'
 import AIModeParamSettingDialog from '@/views/application/component/AIModeParamSettingDialog.vue'
 import type { FormInstance } from 'element-plus'
 import { ref, computed, onMounted, inject } from 'vue'
-import { isLastNode } from '@/workflow/common/data'
+import { isLastNode, fileTooltip } from '@/workflow/common/data'
 import { t } from '@/locales'
 import { useRoute } from 'vue-router'
 import { randomId } from '@/utils/common'
@@ -256,7 +316,18 @@ const apiType = computed(() => {
 })
 
 const nodeCascaderRef = ref()
+const imageCascaderRef = ref()
+const videoCascaderRef = ref()
 const AIModeParamSettingDialogRef = ref<InstanceType<typeof AIModeParamSettingDialog>>()
+
+const vision = computed({
+  get: () => {
+    return props.nodeModel.properties.node_data.vision
+  },
+  set: (vision: boolean) => {
+    set(props.nodeModel.properties.node_data, 'vision', vision)
+  },
+})
 
 function addClassfiyBranch() {
   const list = cloneDeep(props.nodeModel.properties.node_data.branch)
@@ -438,6 +509,9 @@ const validate = () => {
   return Promise.all([
     nodeCascaderRef.value ? nodeCascaderRef.value.validate() : Promise.resolve(''),
     modelCascaderRef.value ? modelCascaderRef.value.validate() : Promise.resolve(''),
+    vision.value && imageCascaderRef.value
+      ? imageCascaderRef.value.validate()
+      : Promise.resolve(''),
     IntentClassifyNodeFormRef.value?.validate(),
   ])
     .then(() => {

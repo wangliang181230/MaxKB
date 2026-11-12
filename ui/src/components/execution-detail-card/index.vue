@@ -388,7 +388,40 @@
                 {{ $t('aiChat.executionDetails.currentChat') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter pre-wrap">
-                {{ data.question || data.user_input || '-' }}
+                <div v-if="data.image_list?.length > 0" class="mb-8">
+                  <el-space wrap>
+                    <template v-for="(f, i) in data.image_list" :key="i">
+                      <el-image
+                        :src="f.url || (f.file_id ? `./oss/file/${f.file_id}` : '')"
+                        :alt="getFileName(f)"
+                        :title="getFileName(f)"
+                        fit="cover"
+                        style="width: 40px; height: 40px; display: block"
+                        class="border-r-6"
+                        :preview-src-list="data.image_list.map((img: any) => img.url || (img.file_id ? `./oss/file/${img.file_id}` : ''))"
+                        :initial-index="i"
+                        :zoom-rate="1.2"
+                        :max-scale="7"
+                        :min-scale="0.2"
+                      />
+                    </template>
+                  </el-space>
+                </div>
+                <div v-if="data.video_list?.length > 0" class="mb-8">
+                  <el-space wrap>
+                    <template v-for="(f, i) in data.video_list" :key="i">
+                      <video
+                        :src="f.url || (f.file_id ? `./oss/file/${f.file_id}` : '')"
+                        style="width: 170px; display: block"
+                        controls
+                        class="border-r-6"
+                      />
+                    </template>
+                  </el-space>
+                </div>
+                <div>
+                  {{ data.question || data.user_input || '-' }}
+                </div>
               </div>
             </div>
             <div class="card-never border-r-6 mt-8">
