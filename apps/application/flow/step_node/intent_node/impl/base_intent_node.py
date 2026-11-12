@@ -1,7 +1,9 @@
 # coding=utf-8
+import base64
 import json
 import re
 import time
+from imghdr import what
 from typing import List, Dict, Any
 from functools import reduce
 
@@ -11,6 +13,8 @@ from langchain_core.messages import HumanMessage
 
 from application.flow.i_step_node import INode, NodeResult
 from application.flow.step_node.intent_node.i_intent_node import IIntentNode
+from application.flow.tools import Reasoning
+from knowledge.models import File
 from models_provider.models import Model
 from models_provider.tools import get_model_instance_by_model_workspace_id, get_model_credential
 from .prompt_template import DEFAULT_PROMPT_TEMPLATE
@@ -45,7 +49,7 @@ def _write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wo
 
 def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, workflow):
     response = node_variable.get('result')
-    answer = response.content
+    answer = Reasoning('', '')._normalize_content(response.content)
     _write_context(node_variable, workflow_variable, node, workflow, answer)
 
 
@@ -96,14 +100,15 @@ class BaseIntentNode(IIntentNode):
         prompt = self.build_classification_prompt(prompt_template, user_input, branch, output_reason)
         self.context['system'] = prompt
 
-        # 生成消息列表
-        message_list = self.generate_message_list(prompt, history_message)
+        # 生成消息列表（开启视觉时附带图片/视频）
+        question = self.generate_prompt_question(prompt, chat_model)
+        message_list = self.generate_message_list(question, history_message)
         self.context['message_list'] = message_list
 
         # 调用模型进行分类
         try:
             r = chat_model.invoke(message_list)
-            classification_result = r.content.strip()
+            classification_result = Reasoning('', '')._normalize_content(r.content).strip()
             # 解析分类结果获取分支信息
             matched_branch = self.parse_classification_result(classification_result, branch)
 
@@ -115,7 +120,7 @@ class BaseIntentNode(IIntentNode):
                 'history_message': history_message,
                 'user_input': user_input,
                 'branch_id': matched_branch['id'],
-                'reason': self.parse_result_reason(r.content) if output_reason is not False else '',
+                'reason': self.parse_result_reason(classification_result) if output_reason is not False else '',
                 'category': matched_branch.get('content', matched_branch['id'])
             }, {}, _write_context=write_context)
 
@@ -180,9 +185,112 @@ class BaseIntentNode(IIntentNode):
         template = prompt_template or DEFAULT_PROMPT_TEMPLATE
         return _PLACEHOLDER_PATTERN.sub(lambda m: values.get(m.group(1), m.group(0)), template)
 
-    def generate_message_list(self, prompt: str, history_message):
+    def generate_message_list(self, question: HumanMessage, history_message):
         """生成消息列表"""
-        return [*history_message, HumanMessage(prompt)]
+        return [*history_message, question]
+
+    def generate_prompt_question(self, prompt, model):
+        image = self.get_image()
+        video = self.get_video()
+        vision = self.is_vision()
+        videos = []
+        images = []
+        if image and vision:
+            images = self._process_images(image)
+            self.generate_context_image(image)
+        if video and vision:
+            videos = self._process_videos(video, model)
+            self.generate_context_video(video)
+        if images or videos:
+            return HumanMessage(content=[*videos, *images, {"type": "text", "text": prompt}])
+        return HumanMessage(content=prompt)
+
+    def is_vision(self):
+        if "vision" in self.node_params_serializer.data:
+            return self.node_params_serializer.data.get("vision")
+        return False
+
+    def get_image(self):
+        if self.node_params_serializer.data.get("image_list"):
+            image = self.workflow_manage.get_reference_field(
+                self.node_params_serializer.data.get("image_list")[0],
+                self.node_params_serializer.data.get("image_list")[1:],
+            )
+            return image
+        return None
+
+    def get_video(self):
+        if self.node_params_serializer.data.get("video_list"):
+            video = self.workflow_manage.get_reference_field(
+                self.node_params_serializer.data.get("video_list")[0],
+                self.node_params_serializer.data.get("video_list")[1:],
+            )
+            return video
+        return None
+
+    def generate_context_image(self, image):
+        if isinstance(image, str) and image.startswith('http'):
+            self.context['image_list'] = [{'url': image}]
+        elif image is not None and len(image) > 0:
+            self.context['image_list'] = image
+
+    def generate_context_video(self, video):
+        if isinstance(video, str) and video.startswith('http'):
+            self.context['video_list'] = [{'url': video}]
+        elif video is not None and len(video) > 0:
+            self.context['video_list'] = video
+
+    def _process_videos(self, image, video_model):
+        videos = []
+        if isinstance(image, str) and image.startswith("http"):
+            videos.append({"type": "video_url", "video_url": {"url": image}})
+        elif image is not None and len(image) > 0:
+            # 先批量获取数据
+            file_ids = [img["file_id"] for img in image if "file_id" in img]
+            if file_ids:
+                files_map = {str(f.id): f for f in QuerySet(File).filter(id__in=file_ids)}
+            else:
+                files_map = {}
+            # 再循环从map中取数据进行处理
+            for img in image:
+                if "file_id" in img:
+                    file_id = img["file_id"]
+                    file = files_map.get(str(file_id))
+                    if file:
+                        url = video_model.upload_file_and_get_url(file.get_bytes(), file.file_name)
+                        videos.append({"type": "video_url", "video_url": {"url": url}})
+                elif "url" in img and img["url"].startswith("http"):
+                    videos.append({"type": "video_url", "video_url": {"url": img["url"]}})
+        return videos
+
+    def _process_images(self, image):
+        """
+        处理图像数据，转换为模型可识别的格式
+        """
+        images = []
+        if isinstance(image, str) and image.startswith("http"):
+            images.append({"type": "image_url", "image_url": {"url": image}})
+        elif image is not None and len(image) > 0:
+            # 先批量获取数据
+            file_ids = [img["file_id"] for img in image if "file_id" in img]
+            if file_ids:
+                files_map = {str(f.id): f for f in QuerySet(File).filter(id__in=file_ids)}
+            else:
+                files_map = {}
+            # 再循环从map中取数据进行处理
+            for img in image:
+                if "file_id" in img:
+                    file_id = img["file_id"]
+                    file = files_map.get(str(file_id))
+                    if file:
+                        image_bytes = file.get_bytes()
+                        base64_image = base64.b64encode(image_bytes).decode("utf-8")
+                        image_format = what(None, image_bytes)
+                        url = f"data:image/{image_format};base64,{base64_image}"
+                        images.append({"type": "image_url", "image_url": {"url": url}})
+                elif "url" in img and img["url"].startswith("http"):
+                    images.append({"type": "image_url", "image_url": {"url": img["url"]}})
+        return images
 
     def parse_classification_result(self, result: str, branch: List[Dict]) -> Dict[str, Any]:
         """解析分类结果"""
@@ -277,6 +385,8 @@ class BaseIntentNode(IIntentNode):
                 for message in (self.context.get('history_message') or [])
             ],
             'user_input': self.context.get('user_input'),
+            'image_list': self.context.get('image_list'),
+            'video_list': self.context.get('video_list'),
             'answer': self.context.get('answer'),
             'branch_id': self.context.get('branch_id'),
             'category': self.context.get('category'),
