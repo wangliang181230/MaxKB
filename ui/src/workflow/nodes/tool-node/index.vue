@@ -189,12 +189,7 @@ function submitCodemirrorEditor(val: string) {
 }
 
 function openAddDialog(data?: any, index?: any) {
-  if (typeof index !== 'undefined') {
-    currentIndex.value = index
-  } else {
-    // 新增参数时清空上一次编辑残留的行号，否则会覆盖已有参数
-    currentIndex.value = null
-  }
+  currentIndex.value = typeof index !== 'undefined' ? index : null
 
   FieldFormDialogRef.value.open(data)
 }
