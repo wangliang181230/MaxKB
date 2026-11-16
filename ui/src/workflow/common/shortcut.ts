@@ -167,10 +167,10 @@ const wheelDeltaToPixels = (delta: number, deltaMode: number, pageSize: number) 
   return delta
 }
 
-// 触摸板平移的速度加成：原生按 SCALE 折算，缩得越小移动越慢，20% 时几乎拖不动。
+// 触摸板平移的速度加成：原生按 SCALE 折算，缩得越小移动越慢，10% 时几乎拖不动。
 // 这里在原生位移上再乘一个系数，缩放比例越小加成越大：>=100% 时为 1（保持原速），
-// 线性过渡到 PAN_BOOST_MIN_SCALE（20%）时取最大值 PAN_BOOST_MAX_FACTOR（2 倍）。
-const PAN_BOOST_MIN_SCALE = 0.2
+// 线性过渡到 PAN_BOOST_MIN_SCALE（10%）时取最大值 PAN_BOOST_MAX_FACTOR（2 倍）。
+const PAN_BOOST_MIN_SCALE = 0.1
 const PAN_BOOST_MAX_FACTOR = 2
 
 const getWheelPanSpeedFactor = (scaleX: number, scaleY: number) => {

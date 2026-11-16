@@ -117,7 +117,7 @@ const createZoomScheduler = (instance: any, container: HTMLElement) => {
         zoomSize = snapZoomScale(
           current,
           currentZoom.zoomSize,
-          transformModel.MINI_SCALE_SIZE ?? 0.2,
+          transformModel.MINI_SCALE_SIZE ?? 0.1,
           transformModel.MAX_SCALE_SIZE ?? 16,
         )
       }
@@ -213,6 +213,7 @@ const renderGraphData = (data?: any) => {
       isSilentMode: false,
       container: container,
     })
+    lf.value.setZoomMiniSize(0.1)
     const { scheduleZoom, cleanup } = createZoomScheduler(lf.value, container)
     removeZoomListener = cleanup
     lf.value.scheduleZoom = scheduleZoom
