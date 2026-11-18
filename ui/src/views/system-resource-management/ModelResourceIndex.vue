@@ -184,23 +184,18 @@
         </el-table-column>
         <el-table-column :label="$t('common.operation')" align="left" width="120" fixed="right">
           <template #default="{ row }">
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.modify')"
-              placement="top"
+            <span
+              class="mr-8"
               v-if="permissionPrecise.modify()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  :title="$t('common.modify')"
-                  @click.stop="openEditModel(row)"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
+              <el-button
+                type="primary"
+                text
+                @click.stop="openEditModel(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
             <el-tooltip
               effect="dark"
               :content="$t('views.system.resourceAuthorization.title')"

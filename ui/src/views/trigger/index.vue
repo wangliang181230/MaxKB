@@ -279,13 +279,11 @@
                   />
                 </span>
                 <el-divider direction="vertical" />
-                <el-tooltip effect="dark" :content="$t('common.edit')" placement="top">
-                  <span class="mr-4">
-                    <el-button type="primary" text @click="openEditTriggerDrawer(row)">
-                      <AppIcon iconName="app-edit"></AppIcon>
-                    </el-button>
-                  </span>
-                </el-tooltip>
+                <span class="mr-4">
+                  <el-button type="primary" text @click="openEditTriggerDrawer(row)">
+                    <AppIcon iconName="app-edit"></AppIcon>
+                  </el-button>
+                </span>
                 <el-tooltip
                   v-if="triggerPermissionMap.record()"
                   effect="dark"
@@ -299,18 +297,14 @@
                   </span>
                 </el-tooltip>
 
-                <el-tooltip
+                <span
+                  class="mr-4"
                   v-if="triggerPermissionMap.delete()"
-                  effect="dark"
-                  :content="$t('common.delete')"
-                  placement="top"
                 >
-                  <span class="mr-4">
-                    <el-button type="primary" text @click="deleteTrigger(row)">
-                      <AppIcon iconName="app-delete"></AppIcon>
-                    </el-button>
-                  </span>
-                </el-tooltip>
+                  <el-button type="primary" text @click="deleteTrigger(row)">
+                    <AppIcon iconName="app-delete"></AppIcon>
+                  </el-button>
+                </span>
               </template>
             </el-table-column>
           </app-table>

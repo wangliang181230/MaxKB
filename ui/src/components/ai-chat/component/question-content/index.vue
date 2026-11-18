@@ -167,11 +167,9 @@
     </div>
     <div class="question-edit-button text-right mt-4" v-if="!selection">
       <div v-if="!isReQuestion && showIcon && props.type === 'ai-chat'">
-        <el-tooltip effect="dark" :content="$t('common.edit')" placement="top" v-if="props.isLast">
-          <el-button text @click.stop="handleEdit(chatRecord)">
-            <AppIcon class="color-secondary" iconName="app-edit"></AppIcon>
-          </el-button>
-        </el-tooltip>
+        <el-button text @click.stop="handleEdit(chatRecord)" v-if="props.isLast">
+          <AppIcon class="color-secondary" iconName="app-edit"></AppIcon>
+        </el-button>
         <el-tooltip effect="dark" :content="$t('common.copy')" placement="top">
           <el-button text @click.stop="copyClick(chatRecord?.problem_text)">
             <AppIcon class="color-secondary" iconName="app-copy"></AppIcon>
