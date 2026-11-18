@@ -39,6 +39,7 @@
         <el-icon class="is-loading color-primary"><Loading /></el-icon>
         {{ stateMap[aggStatus.value](aggStatus.key) }}
       </el-text>
+      <el-text class="color-text-primary" v-else></el-text>
     </template>
   </el-popover>
 </template>
