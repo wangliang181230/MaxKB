@@ -420,9 +420,9 @@
               </template>
               <template #default="{ row }">
                 <el-popover
+                  v-if="row.tag_count"
                   trigger="hover"
                   placement="bottom-start"
-                  :disabled="!row.tag_count"
                   :popper-style="{ width: 'auto', maxWidth: '300px' }"
                 >
                   <div
@@ -437,7 +437,7 @@
                   </div>
 
                   <template #reference>
-                    <el-tag v-if="row.tag_count" type="info" effect="plain" class="never mr-4">
+                    <el-tag type="info" effect="plain" class="never mr-4">
                       <div class="flex align-center color-text-primary">
                         <AppIcon iconName="app-tag"></AppIcon>
                         <span class="ml-4">{{ row.tag_count }}</span>
@@ -562,9 +562,9 @@
                     effect="dark"
                     :content="$t('views.knowledge.setting.vectorization')"
                     placement="top"
-                    v-else
+                    v-else-if="permissionPrecise.doc_vector(id)"
                   >
-                    <span class="mr-4" v-if="permissionPrecise.doc_vector(id)">
+                    <span class="mr-4">
                       <el-button type="primary" text @click.stop="refreshDocument(row)">
                         <AppIcon iconName="app-document-refresh" style="font-size: 16px"></AppIcon>
                       </el-button>
@@ -595,9 +595,9 @@
                     effect="dark"
                     :content="$t('views.knowledge.customSegmentation.wordIndexing')"
                     placement="top"
-                    v-else
+                    v-else-if="permissionPrecise.doc_token(id)"
                   >
-                    <span class="mr-4" v-if="permissionPrecise.doc_token(id)">
+                    <span class="mr-4">
                       <el-button type="primary" text @click.stop="tokenizeDocument(row)">
                         <AppIcon
                           iconName="app-document-wordIndexing"
@@ -729,9 +729,9 @@
                     effect="dark"
                     :content="$t('views.knowledge.setting.vectorization')"
                     placement="top"
-                    v-else
+                    v-else-if="permissionPrecise.vector(id)"
                   >
-                    <span class="mr-4" v-if="permissionPrecise.vector(id)">
+                    <span class="mr-4">
                       <el-button type="primary" text @click.stop="refreshDocument(row)">
                         <AppIcon iconName="app-document-refresh" style="font-size: 16px"></AppIcon>
                       </el-button>
@@ -762,9 +762,9 @@
                     effect="dark"
                     :content="$t('views.knowledge.customSegmentation.wordIndexing')"
                     placement="top"
-                    v-else
+                    v-else-if="permissionPrecise.doc_token(id)"
                   >
-                    <span class="mr-4" v-if="permissionPrecise.doc_token(id)">
+                    <span class="mr-4">
                       <el-button type="primary" text @click.stop="tokenizeDocument(row)">
                         <AppIcon
                           iconName="app-document-wordIndexing"
