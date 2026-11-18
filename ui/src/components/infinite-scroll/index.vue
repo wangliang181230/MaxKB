@@ -1,6 +1,7 @@
 <template>
-  <div v-infinite-scroll="loadData" :infinite-scroll-disabled="disabledScroll">
+  <div>
     <slot />
+    <div ref="sentinelRef" class="infinite-scroll-sentinel" aria-hidden="true"></div>
   </div>
   <div style="padding: 0 10px 16px" class="text-center lighter color-secondary">
     <el-text class="text-with-lines" type="info" v-if="size > 0 && loading">
@@ -12,7 +13,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
 defineOptions({ name: 'InfiniteScroll' })
 const props = defineProps({
@@ -68,8 +69,45 @@ function loadData() {
     emit('load')
   }
 }
+
+// v-infinite-scroll 指令在 Element Plus 3.0 将被移除，这里用 IntersectionObserver 自行实现滚动加载
+const sentinelRef = ref<HTMLElement>()
+let observer: IntersectionObserver | null = null
+
+const observeSentinel = () => {
+  observer?.disconnect()
+  if (disabledScroll.value || !sentinelRef.value) {
+    return
+  }
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && !disabledScroll.value) {
+        loadData()
+      }
+    },
+    { rootMargin: '0px 0px 1px 0px' },
+  )
+  observer.observe(sentinelRef.value)
+}
+
+onMounted(() => {
+  nextTick(observeSentinel)
+})
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  observer = null
+})
+
+watch([disabledScroll, () => props.size], () => {
+  nextTick(observeSentinel)
+})
 </script>
 <style lang="scss" scoped>
+.infinite-scroll-sentinel {
+  height: 1px;
+}
+
 .text-with-lines {
   position: relative;
   display: inline-block;
