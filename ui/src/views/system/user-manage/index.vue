@@ -230,56 +230,42 @@
               />
             </span>
             <el-divider direction="vertical" />
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+            <span
+              class="mr-8"
               v-if="hasPermission([RoleConst.ADMIN, PermissionConst.USER_EDIT], 'OR')"
-            >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="editUser(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('views.userManage.setting.updatePwd')"
-              placement="top"
-              v-if="hasPermission([RoleConst.ADMIN, PermissionConst.USER_EDIT], 'OR')"
-            >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="editPwdUser(row)"
-                  :title="$t('views.userManage.setting.updatePwd')"
-                >
-                  <AppIcon iconName="app-key"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.delete')"
-              placement="top"
-              v-if="hasPermission([RoleConst.ADMIN, PermissionConst.USER_DELETE], 'OR')"
             >
               <el-button
-                :disabled="row.role === 'ADMIN' || row.id === user.userInfo?.id"
                 type="primary"
                 text
-                @click.stop="deleteUserManage(row)"
-                :title="$t('common.delete')"
+                @click.stop="editUser(row)"
+                :title="$t('common.edit')"
               >
-                <AppIcon iconName="app-delete"></AppIcon>
+                <AppIcon iconName="app-edit"></AppIcon>
               </el-button>
-            </el-tooltip>
+            </span>
+            <span
+              class="mr-8"
+              v-if="hasPermission([RoleConst.ADMIN, PermissionConst.USER_EDIT], 'OR')"
+            >
+              <el-button
+                type="primary"
+                text
+                @click.stop="editPwdUser(row)"
+                :title="$t('views.userManage.setting.updatePwd')"
+              >
+                <AppIcon iconName="app-key"></AppIcon>
+              </el-button>
+            </span>
+            <el-button
+              :disabled="row.role === 'ADMIN' || row.id === user.userInfo?.id"
+              type="primary"
+              text
+              @click.stop="deleteUserManage(row)"
+              :title="$t('common.delete')"
+              v-if="hasPermission([RoleConst.ADMIN, PermissionConst.USER_DELETE], 'OR')"
+            >
+              <AppIcon iconName="app-delete"></AppIcon>
+            </el-button>
           </template>
         </el-table-column>
       </app-table>
