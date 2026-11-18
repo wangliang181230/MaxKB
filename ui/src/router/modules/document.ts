@@ -30,15 +30,15 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -48,36 +48,36 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_DOCUMENT_READ
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_DOCUMENT_READ.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_DOCUMENT_READ.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_DOCUMENT_READ.getWorkspacePermission()],
@@ -88,19 +88,19 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_DOCUMENT_READ
             }
           },
@@ -122,15 +122,15 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -140,36 +140,36 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_WORKFLOW_READ
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_WORKFLOW_READ.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_WORKFLOW_READ.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_WORKFLOW_READ.getWorkspacePermission()],
@@ -180,25 +180,25 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_WORKFLOW_READ
             }
           },
         ].map((p) => () => {
           // const to: any = get_next_route()
-          // if (to.params.type !== '4') {
+          // if (to.params?.type !== '4') {
           //   return false
           // }
           return p()
@@ -223,15 +223,15 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -241,36 +241,36 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_PROBLEM_READ
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_PROBLEM_READ.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_PROBLEM_READ.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_PROBLEM_READ.getWorkspacePermission()],
@@ -281,19 +281,19 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_PROBLEM_READ
             }
           },
@@ -315,15 +315,15 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -333,36 +333,36 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_TERMBASE_READ
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_TERMBASE_READ.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_TERMBASE_READ.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_TERMBASE_READ.getWorkspacePermission()],
@@ -373,19 +373,19 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_TERMBASE_READ
             }
           },
@@ -406,16 +406,16 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
-            } else if (to.params.folderId == 'share') {
+            } else if (to.params?.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'share') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -425,45 +425,45 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
-            } else if (to.params.folderId == 'share') {
+            } else if (to.params?.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'share') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_HIT_TEST_READ
-            } else if (to.params.folderId == 'resource-management') {
-            } else if (to.params.folderId == 'share') {
+            } else if (to.params?.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'share') {
             } else {
               return PermissionConst.KNOWLEDGE_HIT_TEST_READ.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
-            } else if (to.params.folderId == 'share') {
+            } else if (to.params?.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'share') {
             } else {
               return PermissionConst.KNOWLEDGE_HIT_TEST_READ.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_HIT_TEST
             }
           },
@@ -489,9 +489,9 @@ const DocumentRouter = {
               RoleConst.ADMIN,
               () => {
                 const to: any = get_next_route()
-                if (to.params.folderId == 'shared') {
+                if (to.params?.folderId == 'shared') {
                   return RoleConst.ADMIN
-                } else if (to.params.folderId == 'resource-management') {
+                } else if (to.params?.folderId == 'resource-management') {
                   return RoleConst.ADMIN
                 } else {
                   return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
@@ -501,21 +501,21 @@ const DocumentRouter = {
             [
               () => {
                 const to: any = get_next_route()
-                if (to.params.folderId == 'shared') {
+                if (to.params?.folderId == 'shared') {
                   return PermissionConst.SHARED_KNOWLEDGE_CHAT_USER_READ
-                } else if (to.params.folderId == 'resource-management') {
+                } else if (to.params?.folderId == 'resource-management') {
                   return PermissionConst.RESOURCE_KNOWLEDGE_CHAT_USER_READ
                 } else {
                   return PermissionConst.KNOWLEDGE_CHAT_USER_READ.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   )
                 }
               },
               () => {
                 const to: any = get_next_route()
-                if (to.params.folder_id == 'shared') {
+                if (to.params?.folder_id == 'shared') {
                   return PermissionConst.SHARED_KNOWLEDGE_CHAT_USER_READ
-                } else if (to.params.folderId == 'resource-management') {
+                } else if (to.params?.folderId == 'resource-management') {
                   return PermissionConst.RESOURCE_KNOWLEDGE_CHAT_USER_READ
                 } else {
                   return PermissionConst.KNOWLEDGE_CHAT_USER_READ.getWorkspacePermissionWorkspaceManageRole()
@@ -527,15 +527,15 @@ const DocumentRouter = {
           ),
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [EditionConst.IS_EE, EditionConst.IS_PE],
@@ -545,7 +545,7 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_CHAT_USER_READ.getWorkspacePermission()],
@@ -556,19 +556,19 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_CHAT_USER_READ
             }
           },
@@ -590,15 +590,15 @@ const DocumentRouter = {
         permission: [
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return new ComplexPermission(
                 [RoleConst.USER],
                 [
                   PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
-                    to ? to.params.id : '',
+                    to ? to.params?.id : '',
                   ),
                 ],
                 [],
@@ -608,36 +608,36 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return PermissionConst.SHARED_KNOWLEDGE_EDIT
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_EDIT.getKnowledgeWorkspaceResourcePermission(
-                to ? to.params.id : '',
+                to ? to.params?.id : '',
               )
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'shared') {
+            if (to.params?.folderId == 'shared') {
               return RoleConst.ADMIN
-            } else if (to.params.folderId == 'resource-management') {
+            } else if (to.params?.folderId == 'resource-management') {
             } else {
               return PermissionConst.KNOWLEDGE_EDIT.getWorkspacePermissionWorkspaceManageRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return new ComplexPermission(
                 [RoleConst.EXTENDS_USER.getWorkspaceRole()],
                 [PermissionConst.KNOWLEDGE_EDIT.getWorkspacePermission()],
@@ -648,19 +648,19 @@ const DocumentRouter = {
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'share') {
+            if (to.params?.folderId == 'share') {
               return RoleConst.USER.getWorkspaceRole()
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return RoleConst.ADMIN
             }
           },
           () => {
             const to: any = get_next_route()
-            if (to.params.folderId == 'resource-management') {
+            if (to.params?.folderId == 'resource-management') {
               return PermissionConst.RESOURCE_KNOWLEDGE_EDIT
             }
           },
