@@ -1,5 +1,11 @@
 <template>
-  <card-box :title="model.name" shadow="hover" class="model-card">
+  <card-box
+    :title="model.name"
+    shadow="hover"
+    class="model-card"
+    :class="canEdit ? 'cursor' : ''"
+    @click="handleClickCard"
+  >
     <template #icon>
       <span style="height: 32px; width: 32px" :innerHTML="icon"></span>
     </template>
@@ -57,7 +63,7 @@
       </li>
     </ul>
     <!-- progress -->
-    <div class="progress-mask" v-if="currentModel.status === 'DOWNLOAD'">
+    <div class="progress-mask" v-if="currentModel.status === 'DOWNLOAD'" @click.stop>
       <DownloadLoading class="percentage" />
 
       <div class="percentage-label flex-center">
@@ -137,18 +143,20 @@
         </template>
       </el-dropdown>
     </template>
-    <EditModel ref="editModelRef" @submit="emit('change')"></EditModel>
-    <ParamSettingDialog ref="paramSettingRef" />
-    <AuthorizedWorkspace
-      ref="AuthorizedWorkspaceDialogRef"
-      v-if="isSystemShare"
-    ></AuthorizedWorkspace>
-    <ResourceAuthorizationDrawer
-      :type="SourceTypeEnum.MODEL"
-      ref="ResourceAuthorizationDrawerRef"
-      v-if="apiType === 'workspace'"
-    />
-    <ResourceMappingDrawer ref="resourceMappingDrawerRef"></ResourceMappingDrawer>
+    <div @click.stop>
+      <EditModel ref="editModelRef" @submit="emit('change')"></EditModel>
+      <ParamSettingDialog ref="paramSettingRef" />
+      <AuthorizedWorkspace
+        ref="AuthorizedWorkspaceDialogRef"
+        v-if="isSystemShare"
+      ></AuthorizedWorkspace>
+      <ResourceAuthorizationDrawer
+        :type="SourceTypeEnum.MODEL"
+        ref="ResourceAuthorizationDrawerRef"
+        v-if="apiType === 'workspace'"
+      />
+      <ResourceMappingDrawer ref="resourceMappingDrawerRef"></ResourceMappingDrawer>
+    </div>
   </card-box>
 </template>
 <script setup lang="ts">
@@ -259,6 +267,15 @@ const cancelDownload = () => {
       downModel.value = undefined
       emit('change')
     })
+}
+const canEdit = computed(() => {
+  return !props.isShared && permissionPrecise.value.modify(props.model.id)
+})
+
+const handleClickCard = () => {
+  if (!props.isShared && permissionPrecise.value.modify(props.model.id)) {
+    openEditModel()
+  }
 }
 const openEditModel = () => {
   const provider = props.provider_list.find((p) => p.provider === props.model.provider)
