@@ -27,7 +27,7 @@ router.beforeEach(
     }
     const { chatUser } = useStore()
     if (['login', 'chat'].includes(to.name ? to.name.toString() : '')) {
-      chatUser.setAccessToken(to.params.accessToken.toString())
+      chatUser.setAccessToken(to.params?.accessToken.toString())
     } else {
       next({
         path: '/404',
@@ -51,7 +51,7 @@ router.beforeEach(
         next({
           name: 'login',
           params: {
-            accessToken: to.params.accessToken,
+            accessToken: to.params?.accessToken,
           },
           query: to.query,
         })
@@ -69,7 +69,7 @@ router.beforeEach(
               next({
                 name: 'login',
                 params: {
-                  accessToken: to.params.accessToken,
+                  accessToken: to.params?.accessToken,
                 },
                 query: to.query,
               })
@@ -102,7 +102,7 @@ router.beforeEach(
           next({
             name: 'login',
             params: {
-              accessToken: to.params.accessToken,
+              accessToken: to.params?.accessToken,
             },
             query: to.query,
           })

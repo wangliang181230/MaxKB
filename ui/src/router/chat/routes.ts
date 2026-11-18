@@ -5,7 +5,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/:accessToken',
     redirect: (to) => {
-      return `/${to.params.accessToken}/`
+      return `/${to.params?.accessToken}/`
     },
   },
   {
