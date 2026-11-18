@@ -18,9 +18,9 @@
     </div>
     <!-- Codemirror 弹出层 -->
     <el-dialog v-model="dialogVisible" :title="title" append-to-body fullscreen>
-      <template #title>
+      <template #header="{ titleId, titleClass }">
         <div class="flex-between">
-          <h4>{{ title }}</h4>
+          <h4 :id="titleId" :class="titleClass">{{ title }}</h4>
           <slot name="header-extra"> </slot>
         </div>
       </template>

@@ -8,9 +8,11 @@
     :close-on-press-escape="true"
     :before-close="handleDialogClose"
   >
-    <template #title>
+    <template #header="{ titleId, titleClass }">
       <div class="flex-between">
-        <h4>{{ $t('views.tool.generateCodeDialog.generatePrompt') }}</h4>
+        <h4 :id="titleId" :class="titleClass">
+          {{ $t('views.tool.generateCodeDialog.generatePrompt') }}
+        </h4>
         <div class="flex align-center">
           <div class="mr-4 lighter">{{ $t('views.application.form.aiModel.label') }}</div>
           <ModelSelect
