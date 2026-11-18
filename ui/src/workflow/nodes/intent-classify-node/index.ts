@@ -58,14 +58,13 @@ class IntentModel extends AppNodeModel {
                 const element = branch_condition_list[index]
 
                 anchors.push({
-                x: x + width / 2 - 10,
-                y: showNode
-                        ? y - height / 2 + FORM_ITEMS_HEIGHT  + index *41.36
-                        : y - 15,
-                id: `${id}_${element.id}_right`,
-                type: 'right'
+                  x: x + width / 2 - 10,
+                  y: showNode
+                    ? y - height / 2 + FORM_ITEMS_HEIGHT + index * 41.36
+                    : y - 15,
+                  id: `${id}_${element.id}_right`,
+                  type: 'right'
                 })
-                console.log(y - height / 2 + FORM_ITEMS_HEIGHT   + 100/ 2)
             }
         }
         return anchors
