@@ -215,108 +215,78 @@
             </span>
             <el-divider direction="vertical" />
 
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+            <span
+              class="mr-8"
               v-if="row.template_id && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="addInternalTool(row, true)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+              <el-button
+                type="primary"
+                text
+                @click.stop="addInternalTool(row, true)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
+            <span
+              class="mr-8"
               v-if="!row.template_id && row.tool_type === 'CUSTOM' && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="openCreateDialog(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+              <el-button
+                type="primary"
+                text
+                @click.stop="openCreateDialog(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
+            <span
+              class="mr-8"
               v-if="!row.template_id && row.tool_type === 'MCP' && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="openCreateMcpDialog(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+              <el-button
+                type="primary"
+                text
+                @click.stop="openCreateMcpDialog(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
+            <span
+              class="mr-8"
               v-if="!row.template_id && row.tool_type === 'DATA_SOURCE' && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="openCreateDataSourceDialog(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+              <el-button
+                type="primary"
+                text
+                @click.stop="openCreateDataSourceDialog(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
+            <span
+              class="mr-8"
               v-if="!row.template_id && row.tool_type === 'SKILL' && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="openCreateSkillToolDialog(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="dark"
-              :content="$t('common.edit')"
-              placement="top"
+              <el-button
+                type="primary"
+                text
+                @click.stop="openCreateSkillToolDialog(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
+            <span
+              class="mr-8"
               v-if="!row.template_id && row.tool_type === 'WORKFLOW' && permissionPrecise.edit()"
             >
-              <span class="mr-8">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="openCreateWorkflowDialog(row)"
-                  :title="$t('common.edit')"
-                >
-                  <AppIcon iconName="app-edit"></AppIcon>
-                </el-button>
-              </span>
-            </el-tooltip>
+              <el-button
+                type="primary"
+                text
+                @click.stop="openCreateWorkflowDialog(row)"
+              >
+                <AppIcon iconName="app-edit"></AppIcon>
+              </el-button>
+            </span>
             <el-tooltip
               effect="dark"
               :content="$t('common.copy')"

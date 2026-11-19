@@ -95,16 +95,14 @@
               <template #default="{ row }">
                 <div>
                   <span>
-                    <el-tooltip effect="dark" :content="$t('common.delete')" placement="top">
-                      <el-button
-                        type="primary"
-                        text
-                        @click.stop="deleteTermbase(row)"
-                        v-if="permissionPrecise.termbase_delete(id)"
-                      >
-                        <AppIcon iconName="app-delete"></AppIcon>
-                      </el-button>
-                    </el-tooltip>
+                    <el-button
+                      type="primary"
+                      text
+                      @click.stop="deleteTermbase(row)"
+                      v-if="permissionPrecise.termbase_delete(id)"
+                    >
+                      <AppIcon iconName="app-delete"></AppIcon>
+                    </el-button>
                   </span>
                 </div>
               </template>

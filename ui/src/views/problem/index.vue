@@ -122,16 +122,14 @@
                     </el-tooltip>
                   </span>
                   <span>
-                    <el-tooltip effect="dark" :content="$t('common.delete')" placement="top">
-                      <el-button
-                        type="primary"
-                        text
-                        @click.stop="deleteProblem(row)"
-                        v-if="permissionPrecise.problem_delete(id)"
-                      >
-                        <AppIcon iconName="app-delete"></AppIcon>
-                      </el-button>
-                    </el-tooltip>
+                    <el-button
+                      type="primary"
+                      text
+                      @click.stop="deleteProblem(row)"
+                      v-if="permissionPrecise.problem_delete(id)"
+                    >
+                      <AppIcon iconName="app-delete"></AppIcon>
+                    </el-button>
                   </span>
                 </div>
               </template>
