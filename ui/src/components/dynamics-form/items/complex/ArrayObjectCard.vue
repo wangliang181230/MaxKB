@@ -14,11 +14,9 @@
         label-position="top"
         require-asterisk-position="right"
       ></DynamicsForm>
-      <el-tooltip effect="dark" :content="$t('common.delete')" placement="top">
-        <el-button text @click.stop="deleteKnowledge(item)" class="delete-button">
-          <AppIcon iconName="app-delete"></AppIcon>
-        </el-button>
-      </el-tooltip>
+      <el-button text @click.stop="deleteKnowledge(item)" class="delete-button">
+        <AppIcon iconName="app-delete"></AppIcon>
+      </el-button>
     </el-card>
     <el-card shadow="never" class="card-add box-card" @click="add_card">
       <div class="flex-center">

@@ -42,11 +42,9 @@
       </el-table-column>
       <el-table-column :label="$t('common.operation')" align="left" width="100" fixed="right">
         <template #default="{ row }">
-          <el-tooltip effect="dark" :content="$t('common.delete')">
-            <el-button type="primary" text @click.stop="delTagValue(row)">
-              <AppIcon iconName="app-delete" />
-            </el-button>
-          </el-tooltip>
+          <el-button type="primary" text @click.stop="delTagValue(row)">
+            <AppIcon iconName="app-delete" />
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

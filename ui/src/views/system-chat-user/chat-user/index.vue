@@ -235,7 +235,6 @@
                 type="primary"
                 text
                 @click.stop="editUser(row)"
-                :title="$t('common.edit')"
                 v-if="
                   hasPermission(
                     new ComplexPermission(
@@ -279,7 +278,6 @@
                 type="primary"
                 text
                 @click.stop="deleteUserManage(row)"
-                :title="$t('common.delete')"
                 v-if="
                   hasPermission(
                     new ComplexPermission(

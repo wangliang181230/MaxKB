@@ -35,11 +35,9 @@
 
         <template v-if="permissionPrecise.chat_log_add_knowledge(id)">
           <span class="ml-8" v-if="buttonData.improve_paragraph_id_list.length === 0">
-            <el-tooltip effect="dark" :content="$t('views.chatLog.editContent')" placement="top">
-              <el-button text @click="editContent(data)">
-                <AppIcon iconName="app-edit" class="color-secondary"></AppIcon>
-              </el-button>
-            </el-tooltip>
+            <el-button text @click="editContent(data)">
+              <AppIcon iconName="app-edit" class="color-secondary"></AppIcon>
+            </el-button>
           </span>
           <span v-else class="ml-8">
             <el-tooltip effect="dark" :content="$t('views.chatLog.editMark')" placement="top">
