@@ -116,17 +116,13 @@
             <el-table-column :label="$t('common.operation')" align="left" width="80">
               <template #default="{ row, $index }">
                 <span class="mr-4">
-                  <el-tooltip effect="dark" :content="$t('common.modify')" placement="top">
-                    <el-button type="primary" text @click.stop="openEditFormCollect(row, $index)">
-                      <AppIcon iconName="app-edit"></AppIcon>
-                    </el-button>
-                  </el-tooltip>
-                </span>
-                <el-tooltip effect="dark" :content="$t('common.delete')" placement="top">
-                  <el-button type="primary" text @click="deleteField(row)">
-                    <AppIcon iconName="app-delete"></AppIcon>
+                  <el-button type="primary" text @click.stop="openEditFormCollect(row, $index)">
+                    <AppIcon iconName="app-edit"></AppIcon>
                   </el-button>
-                </el-tooltip>
+                </span>
+                <el-button type="primary" text @click="deleteField(row)">
+                  <AppIcon iconName="app-delete"></AppIcon>
+                </el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -93,17 +93,13 @@
           </span>
           <el-divider direction="vertical"/>
           <span class="mr-4">
-            <el-tooltip effect="dark" :content="$t('common.setting')" placement="top">
-              <el-button type="primary" text @click.stop="settingApiKey(row)">
-                <AppIcon iconName="app-edit"></AppIcon>
-              </el-button>
-            </el-tooltip>
-          </span>
-          <el-tooltip effect="dark" :content="$t('common.delete')" placement="top">
-            <el-button type="primary" text @click="deleteApiKey(row)">
-              <AppIcon iconName="app-delete"></AppIcon>
+            <el-button type="primary" text @click.stop="settingApiKey(row)">
+              <AppIcon iconName="app-edit"></AppIcon>
             </el-button>
-          </el-tooltip>
+          </span>
+          <el-button type="primary" text @click="deleteApiKey(row)">
+            <AppIcon iconName="app-delete"></AppIcon>
+          </el-button>
         </template>
       </el-table-column>
     </app-table>
