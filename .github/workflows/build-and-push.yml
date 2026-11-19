@@ -8,10 +8,16 @@ on:
       - my*dev
       - test*
       - dev*
+      - build*
     paths-ignore:
       - "**/*.md"
       - "**/.gitignore"
       - "**/LICENSE"
+
+# ✅ 关键：并发锁，同一个分支只允许一个构建，防止多job同时push打爆ACR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-push-to-aliyun-registry:
@@ -30,10 +36,10 @@ jobs:
         run: |
           DOCKER_IMAGE=${{ secrets.ALIYUN_DOCKERHUB_REGISTRY }}/wangliang181230/maxkb
           TAG_NAME="v2.10.x"
-          DOCKER_IMAGE_TAGS="--tag ${DOCKER_IMAGE}:${TAG_NAME}"
-          echo "buildx_args=--platform linux/amd64 --memory-swap -1 \
-            --build-arg DOCKER_IMAGE_TAG=${TAG_NAME} --build-arg BUILD_AT=$(TZ=Asia/Shanghai date +'%Y-%m-%dT%H:%M') --build-arg GITHUB_COMMIT=`git rev-parse --short HEAD` --no-cache \
-            ${DOCKER_IMAGE_TAGS} ." >> $GITHUB_OUTPUT
+          echo "DOCKER_IMAGE=${DOCKER_IMAGE}" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "COMMIT_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "BUILD_AT=$(TZ=Asia/Shanghai date +'%Y-%m-%dT%H:%M')" >> $GITHUB_OUTPUT
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
         with:
@@ -52,6 +58,9 @@ jobs:
           registry: ${{ secrets.ALIYUN_DOCKERHUB_REGISTRY }}
           username: ${{ secrets.ALIYUN_DOCKERHUB_USERNAME }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_TOKEN }}
+
+      # ✅ 【可选优化】把前端构建合并进Dockerfile多阶段，不再单独导出本地文件
+      # 如果你暂时不想改Dockerfile，就保留你原来的web-build步骤，我下面保留你原来的逻辑
       - name: Build Web
         run: |
           docker buildx build --no-cache --target web-build --output type=local,dest=./web-build-output . -f installer/Dockerfile
@@ -61,4 +70,15 @@ jobs:
       - name: Docker Buildx (build-and-push)
         run: |
           sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches && free -m
-          docker buildx build --output "type=image,push=true" --provenance=false ${{ steps.prepare.outputs.buildx_args }} -f installer/Dockerfile
+          docker buildx build \
+            --platform linux/amd64 \
+            --memory-swap -1 \
+            --max-parallel=1 \                # ✅ 串行推送layer，最关键，避免并发限流
+            --output "type=image,push=true" \
+            --provenance=false \
+            --build-arg DOCKER_IMAGE_TAG=${{ steps.prepare.outputs.TAG_NAME }} \
+            --build-arg BUILD_AT=${{ steps.prepare.outputs.BUILD_AT }} \
+            --build-arg GITHUB_COMMIT=${{ steps.prepare.outputs.COMMIT_SHORT }} \
+            --tag ${{ steps.prepare.outputs.DOCKER_IMAGE }}:${{ steps.prepare.outputs.TAG_NAME }} \
+            -f installer/Dockerfile \
+            .
