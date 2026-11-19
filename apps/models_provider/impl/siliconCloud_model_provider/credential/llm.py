@@ -38,7 +38,7 @@ class SiliconCloudLLMModelParams(BaseForm):
     extra_body = forms.JsonInputField(
         TooltipLabel(_('Extra Body'),
                      _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
-        required=False, default_value={})
+        required=False, default_value={'enable_thinking': False})
 
 
 class SiliconCloudLLMModelCredential(BaseForm, BaseModelCredential):
