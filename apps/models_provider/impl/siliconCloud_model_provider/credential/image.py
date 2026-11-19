@@ -31,6 +31,11 @@ class SiliconCloudImageModelParams(BaseForm):
         _step=1,
         precision=0)
 
+    extra_body = forms.JsonInputField(
+        TooltipLabel(_('Extra Body'),
+                     _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
+        required=False, default_value={})
+
 
 class SiliconCloudImageModelCredential(BaseForm, BaseModelCredential):
     api_base = forms.TextInputField('API URL', required=True, default_value='https://api.siliconflow.cn/v1')

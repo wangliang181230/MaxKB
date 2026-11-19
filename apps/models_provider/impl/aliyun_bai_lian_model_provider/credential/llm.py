@@ -37,6 +37,15 @@ class BaiLianLLMModelParams(BaseForm):
         precision=0
     )
 
+    extra_body = forms.JsonInputField(
+        TooltipLabel(
+            _('Extra Body'),
+            _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')
+        ),
+        required=False,
+        default_value={}
+    )
+
 
 class BaiLianLLMModelCredential(BaseForm, BaseModelCredential):
     api_base = forms.TextInputField(_('API URL'), required=True, default_value='https://dashscope.aliyuncs.com/compatible-mode/v1')
