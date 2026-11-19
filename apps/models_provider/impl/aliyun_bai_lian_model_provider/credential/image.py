@@ -35,6 +35,11 @@ class QwenModelParams(BaseForm):
         _step=1,
         precision=0)
 
+    extra_body = forms.JsonInputField(
+        TooltipLabel(_('Extra Body'),
+                     _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
+        required=False, default_value={})
+
 
 class QwenVLModelCredential(BaseForm, BaseModelCredential):
 
