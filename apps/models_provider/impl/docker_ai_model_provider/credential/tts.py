@@ -28,7 +28,7 @@ class DockerAITTSModelGeneralParams(BaseForm):
 
 
 class DockerAITTSModelCredential(BaseForm, BaseModelCredential):
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:12434/engines')
     api_key = forms.PasswordInputField('API Key', required=True)
 
     def is_valid(self, model_type: str, model_name, model_credential: Dict[str, object], model_params, provider,

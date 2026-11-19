@@ -72,7 +72,7 @@ class OllamaReRankModelCredential(BaseForm, BaseModelCredential):
                 raise AppApiException(500, _('{key}  is required').format(key=key))
         return self
 
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:11434')
 
     def get_model_params_setting_form(self, model_name: str) -> OllamaRerankerModelParams:
         return OllamaRerankerModelParams()

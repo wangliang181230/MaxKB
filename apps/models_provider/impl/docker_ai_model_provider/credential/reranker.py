@@ -60,7 +60,7 @@ class DockerAIRerankerCredential(BaseForm, BaseModelCredential):
     def encryption_dict(self, model: Dict[str, object]):
         return {**model}
 
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:12434/engines')
 
     def get_model_params_setting_form(self, model_name: str) -> DockerAIRerankerModelParams:
         return DockerAIRerankerModelParams()
