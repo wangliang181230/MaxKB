@@ -9722,3 +9722,59 @@ msgstr "URL 下载超时"
 #: apps/system_manage/views/chat_user.py:137
 msgid "Username is required"
 msgstr "用户名不能为空"
+
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/image.py:39
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/llm.py:42
+#: apps/models_provider/impl/azure_model_provider/credential/image.py:35
+#: apps/models_provider/impl/azure_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/deepseek_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/docker_ai_model_provider/credential/image.py:35
+#: apps/models_provider/impl/docker_ai_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/kimi_model_provider/credential/llm.py:39
+#: apps/models_provider/impl/minimax_model_provider/credential/llm.py:34
+#: apps/models_provider/impl/openai_model_provider/credential/image.py:35
+#: apps/models_provider/impl/openai_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/regolo_model_provider/credential/image.py:36
+#: apps/models_provider/impl/regolo_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/siliconCloud_model_provider/credential/image.py:35
+#: apps/models_provider/impl/siliconCloud_model_provider/credential/llm.py:39
+#: apps/models_provider/impl/tencent_model_provider/credential/image.py:50
+#: apps/models_provider/impl/tencent_model_provider/credential/llm.py:43
+#: apps/models_provider/impl/vllm_model_provider/credential/image.py:33
+#: apps/models_provider/impl/vllm_model_provider/credential/llm.py:32
+#: apps/models_provider/impl/volcanic_engine_model_provider/credential/image.py:33
+#: apps/models_provider/impl/volcanic_engine_model_provider/credential/llm.py:39
+#: apps/models_provider/impl/xinference_model_provider/credential/image.py:33
+#: apps/models_provider/impl/xinference_model_provider/credential/llm.py:33
+#: apps/models_provider/impl/zhipu_model_provider/credential/image.py:33
+#: apps/models_provider/impl/zhipu_model_provider/credential/llm.py:39
+msgid "Extra Body"
+msgstr "额外请求体"
+
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/image.py:40
+#: apps/models_provider/impl/aliyun_bai_lian_model_provider/credential/llm.py:43
+#: apps/models_provider/impl/azure_model_provider/credential/image.py:36
+#: apps/models_provider/impl/azure_model_provider/credential/llm.py:41
+#: apps/models_provider/impl/deepseek_model_provider/credential/llm.py:41
+#: apps/models_provider/impl/docker_ai_model_provider/credential/image.py:36
+#: apps/models_provider/impl/docker_ai_model_provider/credential/llm.py:41
+#: apps/models_provider/impl/kimi_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/minimax_model_provider/credential/llm.py:35
+#: apps/models_provider/impl/openai_model_provider/credential/image.py:36
+#: apps/models_provider/impl/openai_model_provider/credential/llm.py:41
+#: apps/models_provider/impl/regolo_model_provider/credential/image.py:37
+#: apps/models_provider/impl/regolo_model_provider/credential/llm.py:41
+#: apps/models_provider/impl/siliconCloud_model_provider/credential/image.py:36
+#: apps/models_provider/impl/siliconCloud_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/tencent_model_provider/credential/image.py:51
+#: apps/models_provider/impl/tencent_model_provider/credential/llm.py:44
+#: apps/models_provider/impl/vllm_model_provider/credential/image.py:34
+#: apps/models_provider/impl/vllm_model_provider/credential/llm.py:33
+#: apps/models_provider/impl/volcanic_engine_model_provider/credential/image.py:34
+#: apps/models_provider/impl/volcanic_engine_model_provider/credential/llm.py:40
+#: apps/models_provider/impl/xinference_model_provider/credential/image.py:34
+#: apps/models_provider/impl/xinference_model_provider/credential/llm.py:34
+#: apps/models_provider/impl/zhipu_model_provider/credential/image.py:34
+#: apps/models_provider/impl/zhipu_model_provider/credential/llm.py:40
+msgid "Extra request body passed through to the model API, e.g. controlling the thinking mode."
+msgstr "透传给模型 API 的额外请求体，可用于控制如深度思考（thinking）等行为。"

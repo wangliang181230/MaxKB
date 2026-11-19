@@ -29,6 +29,11 @@ class XinferenceImageModelParams(BaseForm):
         _step=1,
         precision=0)
 
+    extra_body = forms.JsonInputField(
+        TooltipLabel(_('Extra Body'),
+                     _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
+        required=False, default_value={'chat_template_kwargs': {}})
+
 
 class XinferenceImageModelCredential(BaseForm, BaseModelCredential):
     api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:9997/v1')
