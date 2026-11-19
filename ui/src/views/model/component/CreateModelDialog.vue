@@ -233,7 +233,7 @@
   <AddParamDrawer ref="AddParamRef" @refresh="refresh" />
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Provider, BaseModel } from '@/api/type/model'
 import type { Dict, KeyValue } from '@/api/type/common'
@@ -316,6 +316,24 @@ const form_data = computed({
   },
 })
 
+// 基础模型确定后，聚焦 API URL 输入框；若 API URL 已有默认值，则改为聚焦 API Key 输入框
+const focusCredentialInput = (fields: Array<FormField>) => {
+  const isUrlField = (f: FormField) =>
+    f.input_type === 'TextInput' && /(url|base|endpoint)/i.test(f.field || '')
+  const isKeyField = (f: FormField) =>
+    f.input_type === 'PasswordInput' && /(api_key|access_key|(^|_)ak$)/i.test(f.field || '')
+  const urlField = fields.find(isUrlField)
+  const keyField = fields.find(isKeyField)
+  const target = urlField && urlField.default_value ? keyField : urlField
+  if (!target) {
+    return
+  }
+  // 等待动态表单渲染完成(字段列表更新 + 子组件挂载)后再聚焦
+  nextTick(() => {
+    setTimeout(() => dynamicsFormRef.value?.focusField(target.field), 0)
+  })
+}
+
 const getModelForm = (model_name: string) => {
   if (!form_data.value.model_type) {
     MsgWarning(t('views.model.modelForm.model_type.requiredMessage'))
@@ -331,6 +349,8 @@ const getModelForm = (model_name: string) => {
       model_form_field.value = ok.data
       // 渲染动态表单
       dynamicsFormRef.value?.render(model_form_field.value, undefined)
+      // 基础模型确定后，自动聚焦凭证输入框
+      focusCredentialInput(model_form_field.value)
     })
 
     ProviderApi.listBaseModelParamsForm(

@@ -217,7 +217,13 @@ const validate = () => {
   }
   return Promise.resolve()
 }
-defineExpose({ validate })
+/**
+ * 聚焦到当前表单项的输入框
+ */
+const focus = () => {
+  componentFormRef.value?.focus?.()
+}
+defineExpose({ validate, focus, field: () => props.formfield.field })
 </script>
 <style lang="scss" scoped>
 .hide-asterisk {

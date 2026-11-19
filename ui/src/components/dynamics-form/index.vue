@@ -314,12 +314,25 @@ const validate = () => {
   ])
 }
 
+/**
+ * 聚焦到指定 field 对应的输入框
+ * @param field 表单字段名
+ */
+const focusField = (field: string) => {
+  if (!field) {
+    return
+  }
+  const target = formFieldRef.value.find((item: any) => item?.field?.() === field)
+  target?.focus?.()
+}
+
 // 暴露获取当前表单数据函数
 defineExpose({
   initDefaultData,
   validate,
   render,
   ruleFormRef,
+  focusField,
 })
 </script>
 <style lang="scss" scoped></style>
