@@ -48,5 +48,5 @@ class VllmEmbeddingCredential(BaseForm, BaseModelCredential):
     def encryption_dict(self, model: Dict[str, object]):
         return {**model, 'api_key': super().encryption(model.get('api_key', ''))}
 
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:8000/v1')
     api_key = forms.PasswordInputField('API Key', required=True)

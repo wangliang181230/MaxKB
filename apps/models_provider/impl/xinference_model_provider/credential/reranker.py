@@ -56,7 +56,7 @@ class XInferenceRerankerModelCredential(BaseForm, BaseModelCredential):
     def encryption_dict(self, model_info: Dict[str, object]):
         return model_info
 
-    server_url = forms.TextInputField('API URL', required=True)
+    server_url = forms.TextInputField('API URL', required=True, default_value='http://localhost:9997')
 
     api_key = forms.PasswordInputField('API Key', required=False)
 
