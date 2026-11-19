@@ -1,63 +1,115 @@
-<p align="center"><img src= "https://github.com/1Panel-dev/maxkb/assets/52996290/c0694996-0eed-40d8-b369-322bf2a380bf" alt="MaxKB" width="300" /></p>
-<h3 align="center">Open-source platform for building enterprise-grade agents</h3>
-<h3 align="center">强大易用的企业级智能体平台</h3>
-<p align="center"><a href="https://trendshift.io/repositories/9113" target="_blank"><img src="https://trendshift.io/api/badge/repositories/9113" alt="1Panel-dev%2FMaxKB | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a></p>
-<p align="center">
-  <a href="https://www.gnu.org/licenses/gpl-3.0.html#license-text"><img src="https://img.shields.io/github/license/1Panel-dev/maxkb?color=%231890FF" alt="License: GPL v3"></a>
-  <a href="https://github.com/1Panel-dev/maxkb/releases/latest"><img src="https://img.shields.io/github/v/release/1Panel-dev/maxkb" alt="Latest release"></a>
-  <a href="https://github.com/1Panel-dev/maxkb"><img src="https://img.shields.io/github/stars/1Panel-dev/maxkb?color=%231890FF&style=flat-square" alt="Stars"></a>    
-  <a href="https://hub.docker.com/r/1panel/maxkb"><img src="https://img.shields.io/docker/pulls/1panel/maxkb?label=downloads" alt="Download"></a><br/>
- [<a href="/README_CN.md">中文(简体)</a>] | [<a href="/README.md">English</a>] 
-</p>
-<hr/>
+## 一、当前分支说明：
 
-MaxKB = Max Knowledge Brain, it is an open-source platform for building enterprise-grade agents. MaxKB integrates Retrieval-Augmented Generation (RAG) pipelines, supports robust workflows, and provides advanced MCP tool-use capabilities. MaxKB is widely applied in scenarios such as intelligent customer service, corporate internal knowledge bases, academic research, and education.
+基于官方仓库的 `v2.10.10-lts`（commit: [5290738e](https://github.com/1Panel-dev/MaxKB/commits/5290738e)） 分支进行改造的，总共提交了 78 个 Commit，包括：
+- 20 个 feat（新特性）
+- 44 个 perf（优化及性能提升）
+- 14 个 fix（BUG修复）
 
-- **RAG Pipeline**: Supports direct uploading of documents / automatic crawling of online documents, with features for automatic text splitting, vectorization. This effectively reduces hallucinations in large models, providing a superior smart Q&A interaction experience.
-- **Agentic Workflow**: Equipped with a powerful workflow engine, function library and MCP tool-use, enabling the orchestration of AI processes to meet the needs of complex business scenarios.
-- **Seamless Integration**: Facilitates zero-coding rapid integration into third-party business systems, quickly equipping existing systems with intelligent Q&A capabilities to enhance user satisfaction.
-- **Model-Agnostic**: Supports various large models, including private models (such as DeepSeek, Llama, Qwen, etc.) and public models (like OpenAI, Claude, Gemini, MiniMax, etc.).
-- **Multi Modal**: Native support for input and output text, image, audio and video.
+[详情请看变更记录](https://github.com/wangliang181230/MaxKB/compare/5290738e...45ec6aa4)
 
-## Quick start
 
-Execute the script below to start a MaxKB container using Docker:
+## 二、区别于官方仓库的主要功能：
 
-```bash
-docker run -d --name=maxkb --restart=always -p 8080:8080 -v ~/.maxkb:/opt/maxkb 1panel/maxkb
-```
+### 【feat / 新特性】
 
-Access MaxKB web interface at `http://your_server_ip:8080` with default admin credentials:
+1. 模型管理页面：
+   1. 添加一种模型类型：`多模态模型`（同时用于 `AI 对话` 和 `图片理解`，减少模型数据的维护成本）
+   2. 左侧供应商的标题的尾部，展示该供应商下添加了多少个模型
+   3. 点击供应商筛选模型后，右侧供应商名称后，添加前往该供应商官网或模型广场的链接，方便去找大模型
+2. `意图识别` 节点：
+   1. 支持 `视觉` 功能，结合 `文本` 和 `图片` 进行 `意图识别`
+   2. 支持修改 `系统提示词`，微调意图识别的效果
+      > 如：修改系统提示词，加入上一轮对话的意图，使意图具有连续性
+   3. 可配置不输出意图识别的 `理由`（生产环境建议不输出 `理由`，响应会更快）
+3. `判断器` 节点：支持更多判断器
+4. 添加一个 `空白节点`：用于部分流程分支无需执行任何操作，但又无法保存时，可以使用此节点占位
+5. `AI 对话` 节点，调用 `工作流工具` 时，执行详情中显示 `查看工作流执行详情` 的按钮，方便查看，无需前往工具页面去查看历史执行记录
+6. 添加 `Switch` 节点，枚举值判断时，比 `判断器` 使用起来更简单
+7. 改造智能体的 `对话日志`的搜索功能：
+   1. 改为关键字搜索，分别匹配摘要、用户输入、AI回答内容，只要匹配一个就输出
+   2. 关键字支持 `&` 和 `|`，分别用于检索多关键字的交集和并集
+   3. 搜索结果中的关键字高亮显示（注：`AI回答内容` 未高亮处理，整了半天没能实现 orz）
+8. `意图识别`、`判断器`、`Switch` 各分支可以拖拽排序了，连同锚点一起拖拽
 
-- username: admin
-- password: MaxKB@123..
+### 【perf / 优化及性能提升】
 
-中国用户如遇到 Docker 镜像 Pull 失败问题，请参照该 [离线安装文档](https://maxkb.cn/docs/v2/installation/offline_installtion/) 进行安装。
+1. 大幅提升 `工作流` 页面的 `性能` 和 `可操作性`：
+   1. 性能大幅提升，减少操作卡顿的情况，包括：拖拽画布、缩放画布、拖动节点等等
+   2. 添加快捷键 `字母V` 用于切换 `选择模式` 和 `拖拽模式`
+   3. `选择模式` 下，可通过 `触摸板`、`鼠标中键` 进行拖拽画布了
+   4. `适应` 功能自适应缩放比，尽可能的可以看到更多节点
+   5. 优化 `一键美化` 功能，使其效果更好（节点多时，还是有点乱，但还是比官方默认的要好很多，后续有空会继续优化）
+   6. 修改 `基础信息` 和 `开始` 节点的初始坐标，让 `基础信息` 在 `开始` 节点的左边
+   7. 左上角显示X、Y、缩放比例值
+   8. 修复部分浏览器点击右边 `+` 号（即：锚点）弹出层渲染不全的问题
+   9. 缩放比例越小，`触摸板` 和 `鼠标中键滚动` 移动画布的速度越快，最高为默认速度的2倍
+   10. 缩放比单次缩放由原来的4%提升到10%，缩放更快
+   11. 调整工作流页面最小缩放比例：由20%改为10%
+   12. 节点非常多时，解决锚点拉出的连接线在其他节点上移动时页面卡死的问题
+   13. 解决多选时部分节点未显示为蓝色边框的问题
+2. 多个功能性能提升：
+   1. 多个功能：处理 `循环N+1` 查询 导致的性能问题
+3. token消耗区分显示 `输入token消耗` 和 `输出token消耗` 展示
+4. 长期记忆功能：
+   1. 优化长期记忆提示词，生成每项记忆的日期
+   2. 区分无历史记忆的情况，减少提示词的内容，降低输入tokens的消耗
+5. 执行耗时，改为保留3位小数，对应 ms，比较符合程序员的习惯
+6. 增强占位符的能力，添加3个python函数、4个自定义函数、1个常量、8个类型（此优化不常用）
+7. 优化工具调试页面：
+   1. 默认加载已设置的 `启动参数`（除密码类参数外）
+   2. 刚进入调试页面时，获取 `空输入框` 的焦点
 
-## Screenshots
+### 【fix / BUG修复】
 
-<table style="border-collapse: collapse; border: 1px solid black;">
-  <tr>
-    <td style="padding: 5px;background-color:#fff;"><img src= "https://github.com/user-attachments/assets/eb285512-a66a-4752-8941-c65ed1592238" alt="MaxKB Demo1"   /></td>
-    <td style="padding: 5px;background-color:#fff;"><img src= "https://github.com/user-attachments/assets/f732f1f5-472c-4fd2-93c1-a277eda83d04" alt="MaxKB Demo2"   /></td>
-  </tr>
-  <tr>
-    <td style="padding: 5px;background-color:#fff;"><img src= "https://github.com/user-attachments/assets/c927474a-9a23-4830-822f-5db26025c9b2" alt="MaxKB Demo3"   /></td>
-    <td style="padding: 5px;background-color:#fff;"><img src= "https://github.com/user-attachments/assets/e6268996-a46d-4e58-9f30-31139df78ad2" alt="MaxKB Demo4"   /></td>
-  </tr>
-</table>
+1. `简易智能体`: 修复长期记忆功能失效的问题
+2. 修复 “未做任何变更时退出编辑，却提示`更改尚未保存`” 的问题
+3. 修复Windows环境本地运行失败的问题：
+   1. 一些组件不存在导致启用失败
+   2. 修复icon为本地文件时显示失败的问题
+   3. tmp目录不存在导致执行部分功能失败
+4. 修复新增参数时覆盖已有参数的问题（已在官方issue区提了此BUG，已有PR修复此BUG）
+5. 修复点击 `语言` 菜单导致整个菜单关闭的问题（操作习惯问题）
 
-## Technical stack
 
-- Frontend：[Vue.js](https://vuejs.org/)
-- Backend：[Python / Django](https://www.djangoproject.com/)
-- LLM Framework：[LangChain](https://www.langchain.com/)
-- Database：[PostgreSQL + pgvector](https://www.postgresql.org/)
+## 三、快速启动：
 
-## License
+1. 执行以下脚本，使用Docker启动MaxKB容器：
+    1. Docker命令：
+        ```bash
+        docker run \
+            -d \
+            --name=maxkb \
+            --restart=always \
+            -p 8080:8080 \
+            -p 5432:5432 \
+            -p 6379:6379 \
+            -v ~/.maxkb:/opt/maxkb \
+            -e MAXKB_ADMIN_PATH=/maxkb/admin \
+            -e MAXKB_CHAT_PATH=/maxkb/chat \
+            crpi-eomrzdj73f5p8zyb.cn-hangzhou.personal.cr.aliyuncs.com/wangliang181230/maxkb:v2.10.10
+        ```
 
-Licensed under The GNU General Public License version 3 (GPLv3)  (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+    2. 命令参数说明：
 
-<https://www.gnu.org/licenses/gpl-3.0.html>
+       - 镜像: `crpi-eomrzdj73f5p8zyb.cn-hangzhou.personal.cr.aliyuncs.com/wangliang181230/maxkb:v2.10.10`
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+           此镜像是基于当前分支（`v2.10.10`）打包的，并不是MaxKB的官方镜像，
+
+       - -p
+           - `8080`: MaxKB 的端口
+           - `5432`: 内置 PostgreSQL 的端口，默认用户名：`root`，默认密码：`Password123@postgres`
+           - `6379`: 内置 Redis 的端口，默认密码：`Password123@redis`
+
+       - -v
+           - `~/.maxkb`: 你本地的 MaxKB 数据目录
+
+       - -e （当你需要使用nginx代理出去时，请配置以下两项。）
+           - `MAXKB_ADMIN_PATH`: MaxKB `管理`页面的根路径，不配置时，默认值为 `/admin`
+           - `MAXKB_CHAT_PATH`: MaxKB `聊天`页面的根路径，不配置时，默认值为 `/chat`
+
+2. 访问 MaxKB 管理界面 `http://localhost:8080` 使用默认管理员凭据：
+
+    - 用户名: `admin`
+    - 密码: `MaxKB@123..`
+
+3. 如有问题，请发邮件给我，我会免费帮助大家解决问题： [841369634@qq.com](mailto:841369634@qq.com)
