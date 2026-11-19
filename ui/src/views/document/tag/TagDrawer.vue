@@ -91,7 +91,7 @@
       </el-table-column>
       <el-table-column :label="$t('views.document.tag.relatedDoc')" align="right">
         <template #default="{ row }">
-          <el-link type="primary" underline @click="openTagLinkedDocumentDialog(row)">
+          <el-link type="primary" underline="always" @click="openTagLinkedDocumentDialog(row)">
             {{ row.doc_count }}
           </el-link>
         </template>

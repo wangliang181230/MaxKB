@@ -26,7 +26,7 @@
               rel="noopener noreferrer"
               class="ml-8"
               type="primary"
-              :underline="false"
+              underline="never"
             >
               <el-icon><TopRight /></el-icon>
             </el-link>
