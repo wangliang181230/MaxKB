@@ -61,7 +61,7 @@
                   />
                   <span class="ellipsis-1" :title="getProviderDisplayName(row)">
                     {{ row.name }}
-                    <span v-if="row.model_count !== undefined" class="model-count">
+                    <span v-if="row.model_count > 0" class="model-count">
                       ({{ row.model_count }})
                     </span>
                   </span>
@@ -100,7 +100,7 @@
                   />
                   <span class="ellipsis-1" :title="getProviderDisplayName(row)">
                     {{ row.name }}
-                    <span v-if="row.model_count !== undefined" class="model-count">
+                    <span v-if="row.model_count > 0" class="model-count">
                       ({{ row.model_count }})
                     </span>
                   </span>
