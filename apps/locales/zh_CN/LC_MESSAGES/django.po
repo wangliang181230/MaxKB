@@ -9726,3 +9726,8 @@ msgstr "URL 下载超时"
 #: apps/system_manage/views/chat_user.py:137
 msgid "Username is required"
 msgstr "用户名不能为空"
+msgid "Extra Body"
+msgstr "额外请求体"
+
+msgid "Extra request body passed through to the model API, e.g. controlling the thinking mode."
+msgstr "透传给模型 API 的额外请求体，可用于控制如深度思考（thinking）等行为。"

@@ -29,6 +29,11 @@ class XinferenceLLMModelParams(BaseForm):
         _step=1,
         precision=0)
 
+    extra_body = forms.JsonInputField(
+        TooltipLabel(_('Extra Body'),
+                     _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
+        required=False, default_value={'chat_template_kwargs': {}})
+
 
 class XinferenceLLMModelCredential(BaseForm, BaseModelCredential):
     def is_valid(self, model_type: str, model_name, model_credential: Dict[str, object], model_params, provider,

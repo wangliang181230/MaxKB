@@ -9576,3 +9576,8 @@ msgstr "URL download timed out"
 #: apps/system_manage/views/chat_user.py:137
 msgid "Username is required"
 msgstr "Username is required"
+msgid "Extra Body"
+msgstr "Extra Body"
+
+msgid "Extra request body passed through to the model API, e.g. controlling the thinking mode."
+msgstr "Extra request body passed through to the model API, e.g. controlling the thinking mode."
