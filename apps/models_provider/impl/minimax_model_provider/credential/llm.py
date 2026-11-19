@@ -33,7 +33,7 @@ class MiniMaxLLMModelParams(BaseForm):
     extra_body = forms.JsonInputField(
         TooltipLabel(_('Extra Body'),
                      _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
-        required=False, default_value={})
+        required=False, default_value={'thinking': {'type': 'disabled'}})
 
 
 class MiniMaxLLMModelCredential(BaseForm, BaseModelCredential):
