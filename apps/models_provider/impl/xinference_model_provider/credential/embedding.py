@@ -40,5 +40,5 @@ class XinferenceEmbeddingModelCredential(BaseForm, BaseModelCredential):
                 raise AppApiException(500, _('{key}  is required').format(key=key))
         return self
 
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:9997')
     api_key = forms.PasswordInputField('API Key', required=True)

@@ -23,7 +23,7 @@ class VllmRerankerModelParams(BaseForm):
 
 
 class VllmRerankerCredential(BaseForm, BaseModelCredential):
-    api_url = forms.TextInputField('API URL', required=True)
+    api_url = forms.TextInputField('API URL', required=True, default_value='http://localhost:8000/v1')
     api_key = forms.PasswordInputField('API Key', required=True)
 
     def is_valid(self, model_type: str, model_name, model_credential: Dict[str, object], model_params, provider,
