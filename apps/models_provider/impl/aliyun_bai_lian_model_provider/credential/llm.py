@@ -43,7 +43,7 @@ class BaiLianLLMModelParams(BaseForm):
             _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')
         ),
         required=False,
-        default_value={}
+        default_value={'thinking': {'type': 'disabled'}}
     )
 
 

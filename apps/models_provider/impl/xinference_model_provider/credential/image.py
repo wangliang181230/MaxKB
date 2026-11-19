@@ -32,7 +32,7 @@ class XinferenceImageModelParams(BaseForm):
     extra_body = forms.JsonInputField(
         TooltipLabel(_('Extra Body'),
                      _('Extra request body passed through to the model API, e.g. controlling the thinking mode.')),
-        required=False, default_value={'chat_template_kwargs': {}})
+        required=False, default_value={'chat_template_kwargs': {'enable_thinking': False}})
 
 
 class XinferenceImageModelCredential(BaseForm, BaseModelCredential):
