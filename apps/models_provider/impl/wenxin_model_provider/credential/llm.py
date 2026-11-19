@@ -105,7 +105,7 @@ class WenxinLLMModelCredential(BaseForm, BaseModelCredential):
                               method='', )
 
     # v2版本字段
-    api_base = forms.TextInputField("API URL", required=True, relation_show_field_dict={"api_version": ["v2"]})
+    api_base = forms.TextInputField("API URL", required=True, relation_show_field_dict={"api_version": ["v2"]}, default_value='https://qianfan.baidubce.com/v2')
 
     # v1版本字段
     api_key = forms.PasswordInputField('API Key', required=True)

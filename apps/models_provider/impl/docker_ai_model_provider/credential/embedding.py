@@ -70,5 +70,5 @@ class DockerAIEmbeddingCredential(BaseForm, BaseModelCredential):
     def get_model_params_setting_form(self, model_name):
         return DockerAIEmbeddingModelParams()
 
-    api_base = forms.TextInputField('API URL', required=True)
+    api_base = forms.TextInputField('API URL', required=True, default_value='http://localhost:12434/engines')
     api_key = forms.PasswordInputField('API Key', required=True)
