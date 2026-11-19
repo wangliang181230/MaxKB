@@ -68,16 +68,14 @@
                   </el-button>
                 </el-tooltip>
               </span>
-              <el-tooltip effect="dark" :content="$t('common.delete')">
-                <el-button
-                  type="primary"
-                  text
-                  @click.stop="delTag(row)"
-                  v-if="permissionPrecise.tag_delete(id)"
-                >
-                  <AppIcon iconName="app-delete" />
-                </el-button>
-              </el-tooltip>
+              <el-button
+                type="primary"
+                text
+                @click.stop="delTag(row)"
+                v-if="permissionPrecise.tag_delete(id)"
+              >
+                <AppIcon iconName="app-delete" />
+              </el-button>
             </div>
           </div>
         </template>
@@ -110,16 +108,14 @@
               </el-button>
             </el-tooltip>
           </span>
-          <el-tooltip effect="dark" :content="$t('common.delete')">
-            <el-button
-              type="primary"
-              text
-              @click.stop="delTagValue(row)"
-              v-if="permissionPrecise.tag_delete(id)"
-            >
-              <AppIcon iconName="app-delete" />
-            </el-button>
-          </el-tooltip>
+          <el-button
+            type="primary"
+            text
+            @click.stop="delTagValue(row)"
+            v-if="permissionPrecise.tag_delete(id)"
+          >
+            <AppIcon iconName="app-delete" />
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
