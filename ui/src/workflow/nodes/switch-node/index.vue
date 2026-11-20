@@ -32,8 +32,11 @@
       <VueDraggable
         ref="el"
         v-bind:modelValue="form_data.branch"
-        :disabled="form_data.branch.length === 2"
+        :disabled="!canDragBranch"
         handle=".handle"
+        :filter="BRANCH_DRAG_IGNORE_SELECTOR"
+        :prevent-on-filter="false"
+        :move="onDragMove"
         :animation="150"
         ghostClass="ghost"
         @end="onEnd"
@@ -44,20 +47,20 @@
             shadow="never"
             class="drag-card card-never mb-8"
             :class="{
-              'no-drag': item.type === 'DEFAULT' || form_data.branch.length === 2,
+              'no-drag': !isDraggableCard(index),
             }"
-            style="--el-card-padding: 12px"
+            :style="item.type === 'DEFAULT' ? '--el-card-padding: 12px' : '--el-card-padding: 12px 12px 0 12px'"
           >
-            <div class="flex-between lighter">
+            <div class="flex-between lighter" :class="{ handle: isDraggableCard(index) }">
               <span class="flex align-center">
                 <img
-                  v-if="item.type !== 'DEFAULT'"
+                  v-if="isDraggableCard(index)"
                   src="@/assets/sort.svg"
                   alt=""
                   height="15"
-                  class="handle handle-img mr-4"
+                  class="handle-img mr-4"
                 />
-                <span :class="item.type === 'DEFAULT' ? 'ml-20' : ''">{{ item.type }}</span>
+                <span :class="index > 1 && item.type === 'DEFAULT' ? 'ml-20' : ''">{{ item.type }}</span>
               </span>
               <el-button
                 v-if="item.type !== 'DEFAULT'"
@@ -102,6 +105,7 @@ import type { FormInstance } from 'element-plus'
 import { ref, computed, onMounted } from 'vue'
 import { randomId } from '@/utils/common'
 import { VueDraggable } from 'vue-draggable-plus'
+import { reorderBranchWithAnchor, BRANCH_DRAG_IGNORE_SELECTOR } from '@/workflow/common/branch-drag'
 
 const props = defineProps<{ nodeModel: any }>()
 
@@ -170,17 +174,23 @@ const validate = () => {
 }
 
 function onEnd(event?: any) {
-  const { oldIndex, newIndex } = event
-  if (oldIndex === undefined || newIndex === undefined) return
-  const list = cloneDeep(props.nodeModel.properties.node_data.branch)
-  // Prevent moving DEFAULT
-  const lastIdx = list.length - 1
-  if (oldIndex === lastIdx || newIndex === lastIdx) return
-  const newInstance = { ...list[oldIndex], type: list[newIndex].type, id: list[newIndex].id }
-  const oldInstance = { ...list[newIndex], type: list[oldIndex].type, id: list[oldIndex].id }
-  list[newIndex] = newInstance
-  list[oldIndex] = oldInstance
-  set(props.nodeModel.properties.node_data, 'branch', list)
+  // 拖拽排序：整个 CASE 分支（值 + 锚点）一起移动，并根据新位置重新生成标题，DEFAULT 恒在末位（公共逻辑复用）
+  reorderBranchWithAnchor(props.nodeModel, event?.oldIndex, event?.newIndex, 1, (branch) => {
+    branch.forEach((item: any, index: number) => {
+      item.type = index === branch.length - 1 ? 'DEFAULT' : 'CASE ' + (index + 1)
+    })
+  })
+}
+
+// CASE 大于等于 2 个（即除 DEFAULT 外还有可排序分支）时才允许拖拽
+const canDragBranch = computed(() => form_data.value.branch.length > 2)
+// 当前卡片是否可拖拽：可排序且非 DEFAULT 兜底分支
+const isDraggableCard = (index: number) => {
+  return canDragBranch.value && form_data.value.branch[index].type !== 'DEFAULT'
+}
+// 不允许将分支拖到 DEFAULT 兜底分支位置
+const onDragMove = (evt: any) => {
+  return form_data.value.branch[evt.relatedIndex]?.type !== 'DEFAULT'
 }
 
 function addCase() {
