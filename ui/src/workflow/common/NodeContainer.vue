@@ -6,7 +6,7 @@
   >
     <div
       class="step-container white-bg border-r-8 p-16"
-      :class="{ isSelected: props.nodeModel.isSelected, error: node_status !== 200 }"
+      :class="{ isSelected: isSelected, error: node_status !== 200 }"
       style="overflow: visible"
     >
       <div v-resize="resizeStepContainer">
@@ -252,6 +252,7 @@ import { set } from 'lodash'
 import { iconComponent } from '../icons/utils'
 import { copyClick } from '@/utils/clipboard'
 import { WorkflowType, WorkflowKind } from '@/enums/application'
+import { syncNodeSelected } from '@/workflow/common/selectionSync'
 import { MsgError, MsgConfirm } from '@/utils/message'
 import type { FormInstance } from 'element-plus'
 import { t } from '@/locales'
@@ -488,6 +489,11 @@ const props = withDefaults(
     ],
   },
 )
+
+// nodeModel.isSelected 是 LogicFlow(mobx) 上的 observable，Vue 读它不会建立依赖，
+// 框选/多选后节点不会重渲染，蓝色边框就只出现在“碰巧因别的原因刷新过”的节点上；
+// 这里取 selectionSync 桥接出来的响应式值，选中状态一变就能刷边框
+const isSelected = syncNodeSelected(props.nodeModel)
 
 const nodeFields = computed(() => {
   if (props.nodeModel.properties.config.fields) {

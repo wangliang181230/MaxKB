@@ -408,19 +408,26 @@ class AppNodeModel extends HtmlResize.model {
     const { t } = i18n.global
     this.width = this.get_width()
     const isLoop = (node_id: string, target_node_id: string) => {
-      const up_node_list = this.graphModel.getNodeIncomingNode(node_id)
-      for (const index in up_node_list) {
-        const item = up_node_list[index]
-        if (item.id === target_node_id) {
-          return true
-        } else {
-          const result = isLoop(item.id, target_node_id)
-          if (result) {
+      // 拖拽锚点划过每个候选节点都会触发本校验，必须用 visited 去重，
+      // 否则在路径反复汇聚的 DAG 上同一祖先子图会被指数级重复展开，节点多时页面卡死
+      const visited = new Set<string>()
+      const walk = (current_id: string): boolean => {
+        if (visited.has(current_id)) {
+          return false
+        }
+        visited.add(current_id)
+        const up_node_list = this.graphModel.getNodeIncomingNode(current_id)
+        for (const item of up_node_list) {
+          if (item.id === target_node_id) {
+            return true
+          }
+          if (walk(item.id)) {
             return true
           }
         }
+        return false
       }
-      return false
+      return walk(node_id)
     }
     const circleOnlyAsTarget = {
       message: t('workflow.tip.onlyRight'),
