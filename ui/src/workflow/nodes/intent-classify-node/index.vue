@@ -156,7 +156,69 @@
             :step-strictly="true"
           />
         </el-form-item>
-        <el-form-item>
+        <div v-resize="resizeVisionArea" style="display: flow-root">
+          <div class="flex" style="justify-content: space-between">
+            {{ t('workflow.nodes.aiChatNode.vision.label') }}
+            <el-switch size="small" v-model="vision" />
+          </div>
+          <template v-if="vision">
+            <el-form-item
+              :rules="{
+                type: 'array',
+                required: true,
+                message: $t('workflow.nodes.imageUnderstandNode.image.requiredMessage'),
+                trigger: 'change',
+              }"
+            >
+              <div class="flex align-center">
+                <div>
+                  <span>{{ $t('workflow.nodes.imageUnderstandNode.image.label') }} </span>
+                </div>
+                <el-tooltip effect="dark" placement="right">
+                  <template #content>
+                    <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
+                  </template>
+                  <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
+                </el-tooltip>
+              </div>
+              <NodeCascader
+                ref="imageCascaderRef"
+                :nodeModel="nodeModel"
+                class="w-full"
+                :placeholder="$t('workflow.nodes.imageUnderstandNode.image.requiredMessage')"
+                v-model="form_data.image_list"
+              />
+            </el-form-item>
+            <el-form-item
+              :rules="{
+                type: 'array',
+                required: false,
+                message: $t('workflow.nodes.videoUnderstandNode.video.requiredMessage'),
+                trigger: 'change',
+              }"
+            >
+              <div class="flex align-center">
+                <div>
+                  <span>{{ $t('workflow.nodes.videoUnderstandNode.video.label') }} </span>
+                </div>
+                <el-tooltip effect="dark" placement="right">
+                  <template #content>
+                    <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
+                  </template>
+                  <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
+                </el-tooltip>
+              </div>
+              <NodeCascader
+                ref="videoCascaderRef"
+                :nodeModel="nodeModel"
+                class="w-full"
+                :placeholder="$t('workflow.nodes.videoUnderstandNode.video.requiredMessage')"
+                v-model="form_data.video_list"
+              />
+            </el-form-item>
+          </template>
+        </div>
+        <el-form-item class="mt-12">
           <template #label>
             <div class="flex-between">
               <div>
@@ -220,66 +282,6 @@
             </div>
           </VueDraggable>
         </el-form-item>
-        <div class="flex" style="justify-content: space-between">
-          {{ t('workflow.nodes.aiChatNode.vision.label') }}
-          <el-switch size="small" v-model="vision" />
-        </div>
-        <template v-if="vision">
-          <el-form-item
-            :rules="{
-              type: 'array',
-              required: true,
-              message: $t('workflow.nodes.imageUnderstandNode.image.requiredMessage'),
-              trigger: 'change',
-            }"
-          >
-            <div class="flex align-center">
-              <div>
-                <span>{{ $t('workflow.nodes.imageUnderstandNode.image.label') }} </span>
-              </div>
-              <el-tooltip effect="dark" placement="right">
-                <template #content>
-                  <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
-                </template>
-                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
-              </el-tooltip>
-            </div>
-            <NodeCascader
-              ref="imageCascaderRef"
-              :nodeModel="nodeModel"
-              class="w-full"
-              :placeholder="$t('workflow.nodes.imageUnderstandNode.image.requiredMessage')"
-              v-model="form_data.image_list"
-            />
-          </el-form-item>
-          <el-form-item
-            :rules="{
-              type: 'array',
-              required: false,
-              message: $t('workflow.nodes.videoUnderstandNode.video.requiredMessage'),
-              trigger: 'change',
-            }"
-          >
-            <div class="flex align-center">
-              <div>
-                <span>{{ $t('workflow.nodes.videoUnderstandNode.video.label') }} </span>
-              </div>
-              <el-tooltip effect="dark" placement="right">
-                <template #content>
-                  <div style="white-space: pre-wrap; font-family: monospace">{{ fileTooltip }}</div>
-                </template>
-                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
-              </el-tooltip>
-            </div>
-            <NodeCascader
-              ref="videoCascaderRef"
-              :nodeModel="nodeModel"
-              class="w-full"
-              :placeholder="$t('workflow.nodes.videoUnderstandNode.video.requiredMessage')"
-              v-model="form_data.video_list"
-            />
-          </el-form-item>
-        </template>
         <el-form-item>
           <div class="flex-between w-full">
             <div>
@@ -432,6 +434,17 @@ const resizeBranch = (wh: any, row: any, index: number) => {
   })
   set(props.nodeModel.properties, 'branch_condition_list', new_branch_condition_list)
   refreshBranchAnchor(props.nodeModel.properties.node_data.branch, true)
+}
+
+// 视觉功能区上移到“输入”下方后，会整体抬高右侧分支锚点，
+// 用 ResizeObserver 实测其渲染高度并写入 properties.vision_height，供 getDefaultAnchor 计算锚点偏移；
+// 视觉开/关（以及折叠态隐藏）导致高度变化时都会重新触发，从而得到不同的锚点坐标
+function resizeVisionArea(wh: any) {
+  if (props.nodeModel.properties.vision_height === wh.height) {
+    return
+  }
+  set(props.nodeModel.properties, 'vision_height', wh.height)
+  props.nodeModel.refreshBranch()
 }
 
 const wheel = (e: any) => {
