@@ -11,8 +11,11 @@
       <VueDraggable
         ref="el"
         v-bind:modelValue="form_data.branch"
-        :disabled="form_data.branch.length === 2"
+        :disabled="!canDragBranch"
         handle=".handle"
+        :filter="BRANCH_DRAG_IGNORE_SELECTOR"
+        :prevent-on-filter="false"
+        :move="onDragMove"
         :animation="150"
         ghostClass="ghost"
         @end="onEnd"
@@ -23,14 +26,20 @@
             shadow="never"
             class="drag-card card-never mb-8"
             :class="{
-              'no-drag': index === form_data.branch.length - 1 || form_data.branch.length === 2,
+              'no-drag': !isDraggableCard(index),
             }"
             style="--el-card-padding: 12px"
           >
-            <div class="handle flex-between lighter">
+            <div class="flex-between lighter" :class="{ handle: isDraggableCard(index) }">
               <span class="flex align-center">
-                <img src="@/assets/sort.svg" alt="" height="15" class="handle-img mr-4" />
-                {{ item.type }}
+                <img
+                  v-if="isDraggableCard(index)"
+                  src="@/assets/sort.svg"
+                  alt=""
+                  height="15"
+                  class="handle-img mr-4"
+                />
+                <span :style="index > 1 && item.type === 'ELSE' ? 'margin-left: 20px' : ''">{{ item.type }}</span>
               </span>
               <div class="info" v-if="item.conditions.length > 1">
                 <span>{{
@@ -180,6 +189,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { randomId } from '@/utils/common'
 import { compareList } from '@/workflow/common/data'
 import { VueDraggable } from 'vue-draggable-plus'
+import { reorderBranchWithAnchor, BRANCH_DRAG_IGNORE_SELECTOR } from '@/workflow/common/branch-drag'
 
 const props = defineProps<{ nodeModel: any }>()
 
@@ -258,17 +268,29 @@ const validate = () => {
 }
 
 function onEnd(event?: any) {
-  const { oldIndex, newIndex } = event
-  if (oldIndex === undefined || newIndex === undefined) return
-  const list = cloneDeep(props.nodeModel.properties.node_data.branch)
-  if (oldIndex === list.length - 1 || newIndex === list.length - 1) {
-    return
-  }
-  const newInstance = { ...list[oldIndex], type: list[newIndex].type, id: list[newIndex].id }
-  const oldInstance = { ...list[newIndex], type: list[oldIndex].type, id: list[oldIndex].id }
-  list[newIndex] = newInstance
-  list[oldIndex] = oldInstance
-  set(props.nodeModel.properties.node_data, 'branch', list)
+  // 拖拽排序：整条分支（内容 + 锚点）一起移动，并根据新位置重新生成标题（公共逻辑复用）
+  reorderBranchWithAnchor(props.nodeModel, event?.oldIndex, event?.newIndex, 1, (branch) => {
+    branch.forEach((item: any, index: number) => {
+      if (index === 0) {
+        item.type = 'IF'
+      } else if (index === branch.length - 1) {
+        item.type = 'ELSE'
+      } else {
+        item.type = 'ELSE IF ' + index
+      }
+    })
+  })
+}
+
+// IF 类型分支（IF + ELSE IF）大于等于 2 个时才允许拖拽排序（ELSE 为固定兜底）
+const canDragBranch = computed(() => form_data.value.branch.length > 2)
+// 当前卡片是否可拖拽：可排序且非末尾的 ELSE 兜底分支
+const isDraggableCard = (index: number) => {
+  return canDragBranch.value && index !== form_data.value.branch.length - 1
+}
+// 不允许将分支拖到末尾的 ELSE 兜底分支位置
+const onDragMove = (evt: any) => {
+  return evt.relatedIndex < form_data.value.branch.length - 1
 }
 
 function addBranch() {
