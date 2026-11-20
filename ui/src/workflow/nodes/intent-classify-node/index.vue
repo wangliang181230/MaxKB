@@ -170,7 +170,9 @@
               </el-button>
             </div>
           </template>
-          <div>
+          <div
+            class="w-full"
+          >
             <div v-for="(item, index) in form_data.branch" :key="item.id" class="mb-8">
               <el-form-item
                 :prop="`branch.${index}.content`"
@@ -180,12 +182,12 @@
                   required: true,
                 }"
               >
-                <el-row :gutter="12" align="middle">
+                <el-row :gutter="12" align="middle" class="w-full">
                   <el-col :span="22">
                     <el-input
                       v-model="item.content"
                       :title="item.content"
-                      style="width: 310px"
+                      class="w-full"
                       :disabled="item.isOther"
                       :placeholder="$t('common.inputPlaceholder')"
                     />
