@@ -232,7 +232,16 @@
               </el-button>
             </div>
           </template>
-          <div
+          <VueDraggable
+            v-bind:modelValue="form_data.branch"
+            :disabled="!canDragBranch"
+            handle=".intent-handle"
+            :filter="BRANCH_DRAG_IGNORE_SELECTOR"
+            :prevent-on-filter="false"
+            :move="onDragMove"
+            :animation="150"
+            ghostClass="ghost"
+            @end="onEnd"
             class="w-full"
           >
             <div v-for="(item, index) in form_data.branch" :key="item.id" class="mb-8">
@@ -244,8 +253,11 @@
                   required: true,
                 }"
               >
-                <el-row :gutter="12" align="middle" class="w-full">
-                  <el-col :span="22">
+                <el-row :gutter="12" align="middle" :class="['w-full', { 'intent-handle': isDraggableCard(index) }]">
+                  <el-col :span="2" v-if="isDraggableCard(index)">
+                    <img src="@/assets/sort.svg" alt="" height="15" class="intent-sort-icon" />
+                  </el-col>
+                  <el-col :span="isDraggableCard(index) ? 20 : 22">
                     <el-input
                       v-model="item.content"
                       :title="item.content"
@@ -268,7 +280,7 @@
                 </el-row>
               </el-form-item>
             </div>
-          </div>
+          </VueDraggable>
         </el-form-item>
         <el-form-item>
           <div class="flex-between w-full">
@@ -302,6 +314,8 @@ import { t } from '@/locales'
 import { useRoute } from 'vue-router'
 import { randomId } from '@/utils/common'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { VueDraggable } from 'vue-draggable-plus'
+import { reorderBranchWithAnchor, BRANCH_DRAG_IGNORE_SELECTOR } from '@/workflow/common/branch-drag'
 const getResourceDetail = inject('getResourceDetail') as any
 const route = useRoute()
 
@@ -560,6 +574,21 @@ function getSelectModel() {
     })
 }
 
+// “其他”为固定兜底分支，拖拽图标仅在非“其他”意图 >= 2 个时显示
+const canDragBranch = computed(() => form_data.value.branch.filter((b: any) => !b.isOther).length > 1)
+// 当前项是否可拖拽：可排序且非“其他”兜底分支
+const isDraggableCard = (index: number) => {
+  return canDragBranch.value && !form_data.value.branch[index].isOther
+}
+// 不允许将意图拖到“其他”兜底分支位置
+const onDragMove = (evt: any) => {
+  return !form_data.value.branch[evt.relatedIndex]?.isOther
+}
+function onEnd(event?: any) {
+  // 拖拽排序：整条意图分支（内容 + 锚点）一起移动，“其他”兜底不动（公共逻辑复用）
+  reorderBranchWithAnchor(props.nodeModel, event?.oldIndex, event?.newIndex)
+}
+
 onMounted(() => {
   getSelectModel()
   if (typeof props.nodeModel.properties.node_data?.is_result === 'undefined') {
@@ -570,4 +599,8 @@ onMounted(() => {
   set(props.nodeModel, 'validate', validate)
 })
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.intent-handle {
+  cursor: pointer;
+}
+</style>
