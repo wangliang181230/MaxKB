@@ -197,7 +197,9 @@
                   :description="item.desc"
                   class="cursor"
                   @click="toDocument(item)"
+                  @contextmenu.prevent="openContextMenu($event, item.id)"
                   :disabled="isBatch"
+                  :keep-actions-mounted="!isBatch"
                   :class="{
                     'border-active': multipleSelection.includes(item.id),
                   }"
@@ -246,10 +248,21 @@
                   </template>
                   <template #mouseEnter>
                     <div @click.stop v-if="!isShared">
-                      <el-dropdown trigger="click" v-if="MoreFilledPermission(item)">
-                        <el-button text @click.stop>
-                          <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
-                        </el-button>
+                      <el-button
+                        text
+                        @click.stop="openContextMenu($event, item.id)"
+                        v-if="MoreFilledPermission(item)"
+                      >
+                        <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
+                      </el-button>
+                      <el-dropdown
+                        trigger="click"
+                        :virtual-ref="contextMenuAnchor"
+                        virtual-triggering
+                        placement="bottom-start"
+                        :ref="(d: any) => (cardMenuRefs[item.id] = d)"
+                        v-if="MoreFilledPermission(item)"
+                      >
                         <template #dropdown>
                           <el-dropdown-menu>
                             <el-dropdown-item
@@ -457,6 +470,7 @@ import { numberFormat, i18n_name } from '@/utils/common'
 import { dateFormat } from '@/utils/time'
 import { SourceTypeEnum } from '@/enums/common'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { useContextMenu } from '@/utils/context-menu'
 import permissionMap from '@/permission'
 import useStore from '@/stores'
 import { t } from '@/locales'
@@ -512,6 +526,9 @@ const MoreFilledPermission = (item: any) => {
 }
 
 const loading = ref(false)
+
+// 右键卡片直接展开该卡片“更多”按钮的操作菜单
+const { contextMenuAnchor, cardMenuRefs, openContextMenu } = useContextMenu()
 
 const search_type = ref('name')
 const search_form = ref<any>({

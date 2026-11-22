@@ -5,6 +5,8 @@
     class="model-card"
     :class="canEdit ? 'cursor' : ''"
     @click="handleClickCard"
+    @contextmenu.prevent="openContextMenu($event, model.id)"
+    keep-actions-mounted
   >
     <template #icon>
       <span style="height: 32px; width: 32px" :innerHTML="icon"></span>
@@ -75,10 +77,17 @@
     </div>
 
     <template #mouseEnter v-if="MoreFilledPermission(model.id)">
-      <el-dropdown trigger="click" v-if="!isShared">
-        <el-button text @click.stop>
-          <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
-        </el-button>
+      <el-button text @click.stop="openContextMenu($event, model.id)" v-if="!isShared">
+        <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
+      </el-button>
+      <el-dropdown
+        trigger="click"
+        :virtual-ref="contextMenuAnchor"
+        virtual-triggering
+        placement="bottom-start"
+        :ref="(d: any) => (cardMenuRefs[model.id] = d)"
+        v-if="!isShared"
+      >
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item
@@ -176,9 +185,13 @@ import { dateFormat } from '@/utils/time'
 import permissionMap from '@/permission'
 import { useRoute } from 'vue-router'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { useContextMenu } from '@/utils/context-menu'
 
 const resourceMappingDrawerRef = ref<InstanceType<typeof ResourceMappingDrawer>>()
 const route = useRoute()
+
+// 右键卡片直接展开该卡片“更多”按钮的操作菜单
+const { contextMenuAnchor, cardMenuRefs, openContextMenu } = useContextMenu()
 
 const props = defineProps<{
   model: Model
