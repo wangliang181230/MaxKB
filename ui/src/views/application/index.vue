@@ -192,9 +192,10 @@
                     :title="item.name"
                     :description="item.desc"
                     class="cursor"
-                    @contextmenu.prevent
+                    @contextmenu.prevent="openContextMenu($event, item.id)"
                     @mousedown.stop="goApp($event, item)"
                     :disabled="isBatch"
+                    :keep-actions-mounted="!isBatch"
                     :class="{
                       'border-active': multipleSelection.includes(item.id),
                     }"
@@ -261,10 +262,16 @@
                           </el-button>
                         </el-tooltip>
                         <el-divider direction="vertical" />
-                        <el-dropdown trigger="click">
-                          <el-button text @click.stop>
-                            <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
-                          </el-button>
+                        <el-button text @click.stop="openContextMenu($event, item.id)">
+                          <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
+                        </el-button>
+                        <el-dropdown
+                          trigger="click"
+                          :virtual-ref="contextMenuAnchor"
+                          virtual-triggering
+                          placement="bottom-start"
+                          :ref="(d: any) => (cardMenuRefs[item.id] = d)"
+                        >
                           <template #dropdown>
                             <el-dropdown-menu>
                               <el-dropdown-item
@@ -441,6 +448,7 @@ import ResourceMappingDrawer from '@/components/resource_mapping/index.vue'
 import useStore from '@/stores'
 import { t } from '@/locales'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api.ts'
+import { useContextMenu } from '@/utils/context-menu'
 
 const router = useRouter()
 
@@ -477,6 +485,9 @@ const BatchClearStrategyDialogRef = ref<InstanceType<typeof BatchClearStrategyDi
 
 // 批量操作
 const isBatch = ref(false)
+
+// 右键卡片直接展开该卡片“更多”按钮的操作菜单
+const { contextMenuAnchor, cardMenuRefs, openContextMenu } = useContextMenu()
 const multipleSelection = ref<any[]>([])
 const checkAll = ref(false)
 const isIndeterminate = computed(() => {
@@ -593,6 +604,10 @@ function refreshApplicationList(row?: any) {
 }
 
 const goApp = (event: any, item: any) => {
+  // 右键用于弹出操作菜单，不进入详情
+  if (event?.button !== 0) {
+    return
+  }
   if (isBatch.value) {
     const index = multipleSelection.value.indexOf(item?.id)
     if (index === -1) {

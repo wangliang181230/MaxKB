@@ -181,7 +181,9 @@
                     'border-active': multipleSelection.includes(item.id),
                   }"
                   @click.stop="openEditDialog(item)"
+                  @contextmenu.prevent="openContextMenu($event, item.id)"
                   :disabled="!permissionPrecise.edit(item.id) || isBatch"
+                  :keep-actions-mounted="permissionPrecise.edit(item.id) && !isBatch"
                 >
                   <template #icon>
                     <el-avatar v-if="item?.icon" shape="square" :size="32" style="background: none">
@@ -267,10 +269,16 @@
                         v-if="permissionPrecise.switch(item.id)"
                       />
                       <el-divider direction="vertical" />
-                      <el-dropdown trigger="click">
-                        <el-button text @click.stop>
-                          <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
-                        </el-button>
+                      <el-button text @click.stop="openContextMenu($event, item.id)">
+                        <AppIcon iconName="app-more" class="color-secondary"></AppIcon>
+                      </el-button>
+                      <el-dropdown
+                        trigger="click"
+                        :virtual-ref="contextMenuAnchor"
+                        virtual-triggering
+                        placement="bottom-start"
+                        :ref="(d: any) => (cardMenuRefs[item.id] = d)"
+                      >
                         <template #dropdown>
                           <el-dropdown-menu>
                             <el-dropdown-item
@@ -542,6 +550,7 @@ import { MsgSuccess, MsgConfirm, MsgError } from '@/utils/message'
 import { SourceTypeEnum } from '@/enums/common'
 import { dateFormat } from '@/utils/time'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { useContextMenu } from '@/utils/context-menu'
 import permissionMap from '@/permission'
 import useStore from '@/stores'
 import { t } from '@/locales'
@@ -621,6 +630,9 @@ const search_form = ref<any>({
 const user_options = ref<any[]>([])
 
 const loading = ref(false)
+
+// 右键卡片直接展开该卡片“更多”按钮的操作菜单
+const { contextMenuAnchor, cardMenuRefs, openContextMenu } = useContextMenu()
 const changeStateloading = ref(false)
 const paginationConfig = reactive({
   current_page: 1,
