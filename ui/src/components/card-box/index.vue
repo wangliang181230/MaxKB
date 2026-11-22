@@ -37,8 +37,8 @@
       <div style="flex: 1">
         <slot name="footer"></slot>
       </div>
-      <div @mouseenter="subHoveredEnter">
-        <slot name="mouseEnter" v-if="$slots.mouseEnter && show" />
+      <div @mouseenter="subHoveredEnter" v-show="!keepActionsMounted || show">
+        <slot name="mouseEnter" v-if="$slots.mouseEnter && (show || keepActionsMounted)" />
       </div>
     </div>
   </el-card>
@@ -62,8 +62,19 @@ const props = withDefaults(
      */
     showIcon?: boolean
     disabled?: boolean
+    /**
+     * 鼠标移出卡片后仍然保留操作区组件（右键菜单等浮层渲染在卡片外，需要它不被卸载）
+     */
+    keepActionsMounted?: boolean
   }>(),
-  { title: t('common.title'), description: '', showIcon: true, border: true, disabled: false },
+  {
+    title: t('common.title'),
+    description: '',
+    showIcon: true,
+    border: true,
+    disabled: false,
+    keepActionsMounted: false,
+  },
 )
 
 watch(
