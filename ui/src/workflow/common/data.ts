@@ -112,6 +112,17 @@ export const baseNode = {
         assignment_method: 'user_input',
         input_type: 'TextInput',
       },
+      {
+        field: 'client_ip',
+        label: '客户端IP',
+        type: 'input',
+        variable: 'client_ip',
+        name: '客户端IP',
+        is_required: false,
+        default_value: '',
+        assignment_method: 'user_input',
+        input_type: 'TextInput',
+      },
     ],
   },
 }
