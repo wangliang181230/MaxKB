@@ -218,7 +218,7 @@ class OpenView(APIView):
         tags=[_('Chat')]  # type: ignore
     )
     def get(self, request: Request):
-        ip_address = _get_ip_address(request)
+        ip_address = request.query_params.get("client_ip") or _get_ip_address(request)
         # 仅允许 API Key（服务端）调用代传 chat_user_id 及用户信息；
         # 匿名/嵌入令牌必须使用令牌内签发的身份，防止伪造他人 chat_user_id 接管会话、篡改用户数据
         is_api_key_call = request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value
