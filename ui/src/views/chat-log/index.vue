@@ -77,16 +77,17 @@
           :label="$t('views.chatLog.table.abstract')"
         >
           <template #default="{ row }">
-            <span v-if="!highlightKeywords?.length" class="table-abstract">{{ row.abstract }}</span>
-            <span v-else class="table-abstract highlight-keyword" v-html="highlightAbstract(row.abstract)"></span>
+            <span v-if="!highlightKeywords?.length" class="table-abstract" :title="row.abstract">{{ row.abstract }}</span>
+            <span v-else class="table-abstract highlight-keyword" v-html="highlightAbstract(row.abstract)" :title="row.abstract"></span>
           </template>
         </el-table-column>
         <el-table-column
           prop="chat_record_count"
           :label="$t('views.chatLog.table.chat_record_count')"
           align="right"
+          width="100"
         />
-        <el-table-column prop="star_num" align="right">
+        <el-table-column prop="star_num" align="right" width="120">
           <template #header>
             <div>
               <span>{{ $t('views.chatLog.table.feedback.label') }}</span>
@@ -165,28 +166,28 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="mark_sum" :label="$t('views.chatLog.table.mark')" align="right" />
-        <el-table-column prop="asker" :label="$t('views.chatLog.table.user')">
+        <el-table-column prop="mark_sum" :label="$t('views.chatLog.table.mark')" align="right" width="100" />
+        <el-table-column prop="asker" :label="$t('views.chatLog.table.user')" align="center" width="150">
           <template #default="{ row }">
-            {{ row.asker?.username }}
+            <span :title="row.asker?.username">{{ row.asker?.username }}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="ip_address"
           :label="$t('views.operateLog.table.ip_address')"
-          width="120"
+          width="140"
+          align="center"
         >
           <template #default="{ row }">
             {{ row.ip_address || '-' }}
           </template>
         </el-table-column>
-
-        <el-table-column prop="source" :label="$t('views.tool.form.source.label')">
+        <el-table-column prop="source" :label="$t('views.tool.form.source.label')" align="center" width="90">
           <template #default="{ row }">
             {{ getSourceTypeName(row.source?.type) }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('views.chatLog.table.recenTimes')" width="180">
+        <el-table-column :label="$t('views.chatLog.table.recenTimes')" align="center" width="180">
           <template #default="{ row }">
             {{ datetimeFormat(row.update_time) }}
           </template>
